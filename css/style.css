@@ -1,1 +1,12 @@
+@charset "utf-8";
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Hiragino Kaku Gothic", "ヒラギノ角ゴ", メイリオ, Meiryo, "MS Ｐゴシック", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
