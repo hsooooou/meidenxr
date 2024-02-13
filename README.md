@@ -1,1 +1,1 @@
-https://hsooooou.github.io/meiden_xr/
+https://hsooooou.github.io/meidenxr/
