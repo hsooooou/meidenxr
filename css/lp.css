@@ -1,0 +1,40 @@
+.lp-bigtitle{
+    font-size: 35px;
+}
+
+.lp-17sentence{
+    font-size: 17px;
+}
+
+.lp-16sentence {
+    font-size: 16px;
+}
+
+.lp-smallsentence{
+  font-size: 13px;
+}
+
+.lp-9sentence {
+  font-size: 9px;
+}
+
+.lp-8sentence {
+    font-size: 8px;
+}
+
+.lp-7sentence {
+    font-size: 7px;
+}
+
+
+
+/* デザインC(PC) */
+@media screen and (min-width: 1025px) {
+  /* PC用レイアウト 1,025px以上の範囲に収めるデザインはこの中に記述 */
+
+.main {
+  width: 375px;
+  margin: 0 auto;
+}
+
+  }
