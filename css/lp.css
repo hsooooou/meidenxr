@@ -32,9 +32,6 @@
 @media screen and (min-width: 1025px) {
   /* PC用レイアウト 1,025px以上の範囲に収めるデザインはこの中に記述 */
 
-.main {
-  width: 375px;
-  margin: 0 auto;
-}
+
 
   }
