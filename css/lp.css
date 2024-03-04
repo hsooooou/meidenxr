@@ -46,7 +46,7 @@
 
   p{
     font-size: 10px;
-   /*子要素を水平方向の中央に配置する*/
+  /*子要素を水平方向の中央に配置する*/
   display: flex;
   justify-content: center;
   }
