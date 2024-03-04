@@ -31,7 +31,10 @@
 /* デザインC(PC) */
 @media screen and (min-width: 1025px) {
   /* PC用レイアウト 1,025px以上の範囲に収めるデザインはこの中に記述 */
-
-
+.main{
+  /*子要素を水平方向の中央に配置する*/
+  display: flex;
+  justify-content: center;
+}
 
   }
