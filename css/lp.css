@@ -1,8 +1,58 @@
-.lp-bigtitle {
-  font-size: 35px;
+.body {
+  background-color: #ffffff;
 }
 
-.lp-17sentence {
+.container {
+  background-color: #fafafa;
+}
+
+.lp-bigtitle {
+  font-size: 36px;
+  font-weight: 600;
+}
+
+.lp-bigsub {
+  font-size: 18px;
+}
+
+.lp-center-text {
+  font-size: 14px;
+  text-align: center;
+}
+
+.lp-bigbtn {
+  font-size: 18px;
+  text-align: center;
+}
+
+.lp-heading {
+  font-size: 18px;
+  text-align: center;
+}
+
+.lp-heading-sub {
+  font-size: 12px;
+  text-align: center;
+}
+
+.lp-smallbtn{
+  font-size: 12px;
+  text-align: center;
+}
+
+.lp-reco {
+  margin: 0 50px 0 50px;
+}
+
+.lp-aboutxr {
+  background-color: #F5F185;
+}
+
+.lp-xrfeature {
+  background-color: #F5F185;
+}
+
+/* .lp-17sentence {
   font-size: 17px;
 }
 
@@ -24,41 +74,37 @@
 
 .lp-7sentence {
   font-size: 7px;
-}
+} */
 
 
 
 /* デザインC(PC) */
 @media screen and (min-width: 1025px) {
 
-  /* PC用レイアウト 1,025px以上の範囲に収めるデザインはこの中に記述 */ 
+  /* PC用レイアウト 1,025px以上の範囲に収めるデザインはこの中に記述 */
 
+  .body {
+    background-image: url(../img/pc-bg.png);
+    background-size: contain;
+  }
 
-  .container{
-    font-size: 24px;
+  .container {
     margin: auto;
     width: 350px;
-    height: 200px;
-  /*子要素を水平方向の中央に配置する*/
-  display: flex;
-  justify-content: center;
+    height: auto;
+    /*子要素を水平方向の中央に配置する*/
+    display: flex;
+    justify-content: center;
   }
 
-  p{
-    font-size: 10px;
-  /*子要素を水平方向の中央に配置する*/
-  display: flex;
-  justify-content: center;
-  }
-
-  .child{
+  .child {
     margin: 10px;
     padding: 30px;
     width: 300px;
     height: 500px;
     border: 10px dashed #000;
     background-color: antiquewhite;
-    
+
   }
 
 }
