@@ -6,6 +6,10 @@
   background-color: #fafafa;
 }
 
+ul {
+  list-style: none;
+}
+
 .lp-bigtitle {
   font-size: 36px;
   font-weight: 600;
