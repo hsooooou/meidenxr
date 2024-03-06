@@ -31,9 +31,29 @@ ul {
   text-align: center;
 }
 
+.lp-btnlist{
+  padding: 30px 0;
+}
+
+.lp-btnlist a {
+  text-decoration: none;
+}
+
+.lp-btnlist a{
+  color: #231815;
+}
+
 .lp-bigbtn {
-  font-size: 18px;
+  font-size: 20px;
+  font-weight: 800;
   text-align: center;
+
+  background: #F5F185;
+
+  padding: 5px 10px;
+  margin: 20px 80px ;
+  border: 2px solid;
+  border-radius: 100px;
 }
 
 .lp-heading {
