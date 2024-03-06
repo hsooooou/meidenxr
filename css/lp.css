@@ -58,14 +58,23 @@ ul {
 
 .lp-reco {
   margin: 0 50px 0 50px;
+  padding: 30px 0;
+  text-align: center;
+}
+
+.lp-recoimg {
+  width: 160px;
+  margin: 20px;
 }
 
 .lp-aboutxr {
   background-color: #F5F185;
+  padding: 30px 0;
 }
 
 .lp-xrfeature {
   background-color: #F5F185;
+  padding: 30px 0;
 }
 
 .lp-notes {
