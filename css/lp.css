@@ -91,6 +91,7 @@ ul {
   .body {
     background-image: url(../img/pc-bg.png);
     background-size: contain;
+    background-attachment: fixed;
   }
 
   .container {
