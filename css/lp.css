@@ -10,6 +10,7 @@ ul {
   list-style: none;
 }
 
+
 .lp-bigtitle {
   font-size: 36px;
   font-weight: 600;
@@ -17,6 +18,8 @@ ul {
 
 .lp-bigsub {
   font-size: 18px;
+  padding-top: 20px;
+  line-height: 30px;
 }
 
 .lp-center-text {
@@ -31,6 +34,7 @@ ul {
 
 .lp-heading {
   font-size: 18px;
+  font-weight: 600;
   text-align: center;
 }
 
@@ -40,8 +44,12 @@ ul {
 }
 
 .lp-smallbtn{
-  font-size: 12px;
+  font-size: 14px;
   text-align: center;
+}
+
+.lp-contents {
+  padding: 50px 30px;
 }
 
 .lp-reco {
@@ -54,7 +62,10 @@ ul {
 
 .lp-xrfeature {
   background-color: #F5F185;
-  display: none;
+}
+
+.lp-notes {
+  font-size: 8px;
 }
 
 /* .lp-17sentence {
@@ -99,7 +110,7 @@ ul {
     width: 350px;
     height: auto;
     /*子要素を水平方向の中央に配置する*/
-    display: flex;
+    /* display: flex; */
     justify-content: center;
   }
 

@@ -10,3 +10,13 @@
 html {
   scroll-behavior: smooth;
 }
+
+.header {
+  background-color: #EFEA3A;
+  height: auto;
+}
+
+.header-logo img{
+  height: 60px;
+  padding: 10px
+}
