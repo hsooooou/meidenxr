@@ -14,11 +14,15 @@ html {
 
 
 .header {
-  
   height: auto;
+  display: flex;
 }
 
 .header-logo img{
   height: 60px;
   padding: 10px
 }
+
+
+/* ハンバーガーメニュー */
+
