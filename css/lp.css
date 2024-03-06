@@ -44,14 +44,14 @@ ul {
 }
 
 .lp-bigbtn {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
   text-align: center;
 
   background: #F5F185;
 
   padding: 5px 10px;
-  margin: 20px 80px ;
+  margin: 20px 70px ;
   border: 2px solid;
   border-radius: 100px;
 }
