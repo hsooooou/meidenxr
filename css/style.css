@@ -11,6 +11,14 @@ html {
   scroll-behavior: smooth;
 }
 
+/* <uniquifier>: Use a unique and descriptive class name
+
+.noto-sans jp-<uniquifier> {
+  font-family: "Noto Sans JP", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: normal;
+} */
 
 
 .header {
