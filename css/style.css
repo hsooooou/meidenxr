@@ -19,8 +19,9 @@ html {
 }
 
 .header-logo img{
-  height: 60px;
-  padding: 10px;
+  height: 50px;
+  width: auto;
+  margin: 10px;
 }
 
 /* 上に戻るボタン */
