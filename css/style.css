@@ -23,5 +23,44 @@ html {
   padding: 10px;
 }
 
+/* 上に戻るボタン */
+.pagetop {
+  height: 50px;
+  width: 50px;
+  position: fixed;
+  right: 5%;
+  bottom: 3%;
+  background: #e6e243;
+  border: solid 2px #231815;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.pagetop__arrow {
+  height: 10px;
+  width: 10px;
+  border-top: 3px solid #231815;
+  border-right: 3px solid #231815;
+  transform: translateY(20%) rotate(-45deg);
+}
+
+.pagetop {
+    box-shadow: 0 4px 6px rgb(0 0 0 / 20%);
+}
+
 
 /* ハンバーガーメニュー */
+
+
+
+
+
+@media screen and (min-width: 1025px) {
+  .pagetop {
+    display: none;
+  }
+
+}
