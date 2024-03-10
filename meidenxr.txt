@@ -5,3 +5,5 @@
 top-school 150ppi
 schoolmap 150ppi
 
+favicon
+16 32 64 128 256
