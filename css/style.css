@@ -41,11 +41,11 @@ html {
 }
 
 .pagetop__arrow {
-  height: 20px;
-  width: 20px;
+  height: 10px;
+  width: 10px;
   margin-bottom: 5%;
-  border-top: 5px solid #231815;
-  border-right: 5px solid #231815;
+  border-top: 3px solid #231815;
+  border-right: 3px solid #231815;
   transform: translateY(20%) rotate(-45deg);
 }
 
