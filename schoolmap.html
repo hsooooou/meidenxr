@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
+
+<head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
@@ -8,17 +9,64 @@
 
   <!-- css -->
   <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/schoolmap.css">
 
 </head>
 
-<body>
-  <a href="https://meidenid.com/" >test</a>
+<body class="body">
 
-  <img src="./img/map_sports@300x.png" usemap="#ImageMap" alt="" />
-<map name="ImageMap">
-  <area shape="rect" coords="430,389,974,494" href="https://meidenid.com/" alt="" />
-</map>
-  
+  <div class="container">
+    <!-- <div class="child"></div> -->
+
+    <header class="header">
+      <div class="header-logo">
+        <a href="./index.html"><img src="./img/meidenxr-sp.png"></a>
+      </div>
+
+
+
+    </header>
+
+    <main>
+      <!-- <img src="./img/map_sports@300x.png" usemap="#ImageMap" alt="" />
+      <map name="ImageMap">
+        <area shape="rect" coords="430,389,974,494" href="https://meidenid.com/" alt="" />
+      </map> -->
+
+      <div>
+        <p>学校マップ</p>
+        <p>最新設備が揃った魅力的な施設が沢山！<br>
+          VRで様々な施設を覗いてみよう！</p>
+        <p>ボタンを押すことで各施設の中に<br>
+          入ることができるよ！</p>
+      </div>
+
+      <div class="imgmap" id="map_north">
+        <p class="map-category">北校舎</p>
+        <img src="./img/schoolmap/map_north.png" usemap="#ImageMap" alt="map_north" />
+        <map name="ImageMap">
+          <area shape="rect" coords="527,150,709,204" href="https://meidenid.com/" alt="音楽室" />
+          <area shape="rect" coords="483,540,726,593" href="#" alt="化学実験室" />
+          <area shape="rect" coords="178,683,356,736" href="#" alt="廊下" />
+          <area shape="rect" coords="406,921,588,974" href="#" alt="美術室" />
+          <area shape="rect" coords="132,1024,349,1077" href="#" alt="普通教室" />
+          <area shape="rect" coords="475,1246,712,1329" href="#" alt="アクティブラーニング室" />
+          <area shape="rect" coords="121,1398,356,1483" href="#" alt="メディアライブラリー" />
+          <area shape="rect" coords="414,1402,721,1456" href="#" alt="コンピュータ教室" />
+          <area shape="rect" coords="136,1680,419,1734" href="#" alt="サテライト教室" />
+          <area shape="rect" coords="450,1644,736,1698" href="https://meidenid.com" alt="情報デザイン室" />
+          <area shape="rect" coords="189,1804,364,1857" href="#" alt="売店" />
+          <area shape="rect" coords="524,1803,706,1860" href="#" alt="光の庭" />
+          <area shape="rect" coords="80,2049,294,2102" href="#" alt="正面玄関" />
+          <area shape="rect" coords="439,2051,723,2105" href="#" alt="喬徳館" />
+        </map>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/image-map-resizer@1.0.10/js/imageMapResizer.min.js"></script>
+  <script>imageMapResize();</script>
 </body>
 
 </html>
