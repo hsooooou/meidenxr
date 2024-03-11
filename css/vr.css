@@ -15,6 +15,11 @@ ul {
   position: absolute;
   z-index: -100;
 }
+/* VR UI */
+.a-loader-title {
+  color: #231815;
+}
+
 
 /* 下メニューUI */
 .under-list {
@@ -94,7 +99,7 @@ ul {
 
 /* テキストエリア */
 .vr-info-textarea {
-  padding: 0 10%;
+  padding: 0 3% 0 6%;
   color: #231815;
 }
 .vr-text-number {
@@ -133,7 +138,7 @@ ul {
 /* リンク */
 .vr-info-link {
   display: flex;
-  padding: 20px 0;
+  padding: 20px 5% 20px 0;
 }
 .vr-info-logo {
   display: flex;
