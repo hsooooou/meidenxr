@@ -158,6 +158,10 @@ ul {
   margin: 0 1% 0 10%;
 }
 
+.lp-expe-text a {
+  text-decoration: none;
+}
+
 .lp-expe-big {
   font-size: 18px;
   font-weight: 800;
