@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+  <title>学校マップ | MeidenXR</title>
+
+  <!-- css -->
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/schoolmap.css">
+
+  <link rel="icon" type="image/x-icon" href="https://hsooooou.github.io/meidenxr/favicon.ico">
+  <link rel="apple-touch-icon" href="https://hsooooou.github.io/meidenxr/favicon-apple.ico" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://hsooooou.github.io/meidenxr/android-touch-icon.png" sizes="192x192">
+
+  <!-- GoogleFonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet">
+
+</head>
+
+<body class="body">
+
+  <div class="container">
+    <!-- <div class="child"></div> -->
+
+    <header class="header">
+      <div class="header-logo">
+        <a href="./index.html"><img src="./img/meidenxr-sp.png"></a>
+      </div>
+
+      <nav>
+        <ul class="list-nav-header">
+          <!-- <li><a href="#">ホーム</a></li>
+          <li><a href="#">使い方</a></li>
+          <li><a href="#">学校マップ</a></li>
+          <li><a href="#">コンテンツについて</a></li> -->
+        </ul>
+        <div class="burger"></div>
+        <div class="menu">  
+          <div>
+          <li class="menu-menu">MENU</li>
+          <li class="menu-list"><a href="./index.html">ホーム</a></li>
+          <li class="menu-list"><a href="./use.html">使い方</a></li>
+          <li class="menu-list"><a href="./schoolmap.html">学校マップ</a></li>
+          <li class="menu-list"><a href="./lp.html">コンテンツについて</a></li>
+          <li class="menu-list"><a href="https://www.meiden.ed.jp">公式サイト</a></li>
+        </div>
+        </div>
+      </nav>
+
+    </header>
+
+    <main>
+      <!-- <img src="./img/map_sports@300x.png" usemap="#ImageMap" alt="" />
+      <map name="ImageMap">
+        <area shape="rect" coords="430,389,974,494" href="https://meidenid.com/" alt="" />
+      </map> -->
+
+      <div>
+        <p>学校マップ</p>
+        <p>最新設備が揃った魅力的な施設が沢山！<br>
+          VRで様々な施設を覗いてみよう！</p>
+        <p>ボタンを押すことで各施設の中に<br>
+          入ることができるよ！</p>
+      </div>
+
+      <div>
+        <nav class="map-nav">
+          <ul>
+            <li class="map-cate"><a href="#map_north">北校舎</a></li>
+            <li class="map-cate"><a href="#map_sports">スポーツ</a></li>
+            <li class="map-cate"><a href="#map_south">南校舎</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="imgmap" id="map_north">
+        <p class="map-category">北校舎</p>
+        <img src="./img/schoolmap/map_north.png" usemap="#ImageMap" alt="map_north" />
+        <map name="ImageMap">
+          <area shape="rect" coords="527,150,709,204" href="https://meidenid.com/" alt="音楽室" />
+          <area shape="rect" coords="483,540,726,593" href="./construction.html" alt="化学実験室" />
+          <area shape="rect" coords="178,683,356,736" href="./construction.html" alt="廊下" />
+          <area shape="rect" coords="406,921,588,974" href="./construction.html" alt="美術室" />
+          <area shape="rect" coords="132,1024,349,1077" href="./construction.html" alt="普通教室" />
+          <area shape="rect" coords="475,1246,712,1329" href="./construction.html" alt="アクティブラーニング室" />
+          <area shape="rect" coords="121,1398,356,1483" href="./construction.html" alt="メディアライブラリー" />
+          <area shape="rect" coords="414,1402,721,1456" href="./construction.html" alt="コンピュータ教室" />
+          <area shape="rect" coords="136,1680,419,1734" href="./construction.html" alt="サテライト教室" />
+          <area shape="rect" coords="450,1644,736,1698" href="./schoolmap/vr-00-test.html" alt="情報デザイン室" />
+          <area shape="rect" coords="189,1804,364,1857" href="./construction.html" alt="売店" />
+          <area shape="rect" coords="524,1803,706,1860" href="./construction.html" alt="光の庭" />
+          <area shape="rect" coords="80,2049,294,2102" href="./construction.html" alt="正面玄関" />
+          <area shape="rect" coords="439,2051,723,2105" href="./construction.html" alt="喬徳館" />
+        </map>
+      </div>
+
+      <div class="imgmap" id="map_sports">
+        <p class="map-category">スポーツ</p>
+      </div>
+
+      <div class="imgmap" id="map_south">
+        <p class="map-category">南校舎</p>
+      </div>
+
+      <div class="rightbtn">
+        <a class="pagetop" href="#">
+          <div class="pagetop__arrow">
+          </div>
+        </a>
+        <!-- <a class="pagetop-2" href="#">
+          TOP
+        </a> -->
+      </div>
+    </main>
+
+    <footer id="footer">
+      <p class="footer-text-big">MENU</p>
+      <div class="footer-menu">
+        <ul>
+          <li class="footer-cate"><a href="./index.html">ホーム</a></li>
+          <li class="footer-cate"><a href="./use.html">使い方</a></li>
+          <li class="footer-cate"><a href="./schoolmap.html">学校マップ</a></li>
+          <li class="footer-cate"><a class="footer-btn" href="https://www.meiden.ed.jp">公式サイト</a></li>
+        </ul>
+      </div>
+      <img class="footer-img" src="./img/meiden-logo.svg" alt="">
+    </footer>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://unpkg.com/image-map-resizer@1.0.10/js/imageMapResizer.min.js"></script>
+  
+  <script src="./js/nav.js"></script>
+  <script>imageMapResize();</script>
+
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+.body {
+  background-color: #ffffff;
+}
+
+.container {
+  background-color: #fafafa;
+}
+
+ul {
+  list-style: none;
+}
+
+.imgmap img{
+  width: 100%;
+  height: auto;
+}
+
+/* デザインC(PC) */
+@media screen and (min-width: 1025px) {
+
+  /* PC用レイアウト 1,025px以上の範囲に収めるデザインはこの中に記述 */
+
+  .body {
+    background-image: url(../img/pc-bg.png);
+    background-size: contain;
+    background-attachment: fixed;
+  }
+
+  .container {
+    margin: auto;
+    width: 450px;
+    height: auto;
+    /*子要素を水平方向の中央に配置する*/
+    /* display: flex; */
+    justify-content: center;
+  }
+
+  .imgmap img{
+    width: 100%;
+    height: auto;
+  }
+
+}
