@@ -29,6 +29,9 @@ ul {
 .lp-center-text {
   font-size: 14px;
   text-align: center;
+  font-weight: 600;
+
+  margin: 5% 2% 2%;
 }
 
 .lp-btnlist{
@@ -51,7 +54,7 @@ ul {
   background: #F5F185;
 
   padding: 5px 10px;
-  margin: 20px 70px ;
+  margin: 20px 20% ;
   border: 2px solid;
   border-radius: 100px;
 }
@@ -60,18 +63,34 @@ ul {
   font-size: 18px;
   font-weight: 600;
   text-align: center;
+  padding: 1%;
+  margin: 1% 15%;
+  border: 2px solid #231815;
+  border-radius: 100px;
+}
+
+.lp-heading-under{
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  padding: 1%;
+  margin: 3% 30%;
+
+  border-bottom: 2px solid #231815;
 }
 
 .lp-heading-sub {
   font-size: 12px;
   text-align: center;
+  font-weight: 600;
 }
 
 .lp-smallbtn{
-  width: 150px;
+  width: 110px;
   font-size: 14px;
+  font-weight: 600;
   text-align: center;
-  margin: 10px auto;
+  margin: 20px auto 10px auto;
   display: block;
   
   color: #ffffff;
@@ -108,8 +127,52 @@ ul {
   padding: 30px 0;
 }
 
+.lp-expe {
+  padding: 30px 0;
+}
+
+.lp-expe-cate {
+  margin: 5% 10% 0% 0%;
+  padding: 5% 5% 5% 5%;
+  
+  display: flex;
+  background-color: #ffffff;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.lp-number {
+  font-size: 27px;
+  font-weight: 800;
+  text-align: center;
+  
+  width: 40px;
+  height: 40px;
+  margin: 0 0 0 15%;
+  border: 2px solid #231815;
+  border-radius: 100px;
+  background: #f5f185;
+}
+
+.lp-expe-text {
+  margin: 0 1% 0 10%;
+}
+
+.lp-expe-big {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 2%;
+}
+
+.lp-expe-sml {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 5%;
+}
+
 .lp-notes {
   font-size: 8px;
+  font-weight: 500;
 }
 
 /* .lp-17sentence {
@@ -137,6 +200,27 @@ ul {
 } */
 
 
+@media (min-width: 568px){
+
+  .lp-number{
+    margin-left: 30%;
+  }
+
+  .lp-expe-text {
+    margin-left: 13%;
+  }
+
+  .lp-reco {
+    margin: 3% 30% 3% 30%;
+  }
+
+  .lp-bigbtn {
+    margin: 3% 30%;
+  }
+
+  }
+
+
 
 /* デザインC(PC) */
 @media screen and (min-width: 1025px) {
@@ -158,6 +242,25 @@ ul {
     justify-content: center;
   }
 
+  .lp-reco {
+    margin: 15% 15% 5% 15%;
+    padding: 10px 10px 30px 10px;
+    
+  }
+
+  .lp-bigbtn {
+    padding: 5px 10px;
+    margin: 20px 20% ;
+  }
+
+  .lp-number {
+    margin: 0 0 0 15%;
+  }
+
+  .lp-expe-text {
+    margin: 0 1% 0 7%;
+  }
+
   /* .child {
     margin: 10px;
     padding: 30px;
@@ -167,5 +270,6 @@ ul {
     background-color: antiquewhite;
 
   } */
+  
 
 }
