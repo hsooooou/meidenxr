@@ -19,6 +19,18 @@ ul {
 .a-loader-title {
   color: #231815;
 }
+.a-dialog-allow-button {
+  background-color: #ebdd5e;
+  color: #231815;
+}
+.a-dialog-deny-button {
+  background-color: #5d5d68;
+  color: #fafafa;
+}
+.a-dialog-ok-button {
+  background-color:#ebdd5e;
+  color: #231815;
+}
 
 
 /* 下メニューUI */
