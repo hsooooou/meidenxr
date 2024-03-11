@@ -141,9 +141,51 @@ a {
   clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
 }
 
+/* ４つの特徴 */
 .lp-xrfeature {
   background-color: #F5F185;
-  padding: 30px 0;
+  height: auto;
+}
+
+.lp-fea-menu {
+  padding: 0 30px;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.lp-fea-cate {
+  text-align: center;
+  width: 140px;
+  height: auto;
+  padding: 10px;
+  margin: 5px;
+  background: linear-gradient(180deg,#eed183 0%, #eed183 50%, #fafafa 50%, #fafafa 100%);
+  border: 2px solid #231815;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+}
+.lp-fea-img{
+  width: 35px;
+  height: auto;
+}
+.lp-fea-numb {  
+  font-size: 16px;
+    font-weight: 800;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    margin: 0 auto 5px auto;
+    border: 2px solid #231815;
+    border-radius: 100px;
+    background: #f5f185;
+}
+.lp-fea-text {
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .lp-expe {
