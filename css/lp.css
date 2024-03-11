@@ -1,16 +1,16 @@
-.lp-bigtitle{
-    font-size: 35px;
+.lp-bigtitle {
+  font-size: 35px;
 }
 
-.lp-17sentence{
-    font-size: 17px;
+.lp-17sentence {
+  font-size: 17px;
 }
 
 .lp-16sentence {
-    font-size: 16px;
+  font-size: 16px;
 }
 
-.lp-smallsentence{
+.lp-smallsentence {
   font-size: 13px;
 }
 
@@ -19,22 +19,68 @@
 }
 
 .lp-8sentence {
-    font-size: 8px;
+  font-size: 8px;
 }
 
 .lp-7sentence {
-    font-size: 7px;
+  font-size: 7px;
 }
 
+.hazime {
+  display: flex;
+  background-color: #FAFAFA;
+  margin-top: 20px;
+}
 
+.left {
+  position: absolute;
+  margin: 0 0 0 40px;
+  padding: 0;
+}
+
+.sumaho {
+  width: 123px;
+  height: 167px;
+  padding: 0;
+  overflow: hidden;
+  margin-left: auto;
+}
+
+.hazime .legt .lp-smallsentence {
+  margin: 10px 0 0;
+  padding: 0;
+}
+
+.hutatume {
+  background-color: #F5F185;
+  margin: 0 auto;
+  text-align: center; 
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.mittume{
+  background-color: #F5F185;
+  margin: 0 auto;
+  text-align: center; 
+}
+
+.hutetume .lp-17sentence{
+  padding-bottom: 20px;
+  text-decoration:underline;
+}
+
+.hutatume .lp-smallsentence{
+  padding-bottom: 20px;
+}
 
 /* デザインC(PC) */
 @media screen and (min-width: 1025px) {
   /* PC用レイアウト 1,025px以上の範囲に収めるデザインはこの中に記述 */
 
-.main {
-  width: 375px;
-  margin: 0 auto;
-}
-
+  .main {
+    width: 375px;
+    margin: 0 auto;
   }
+
+}
