@@ -20,15 +20,15 @@ ul {
   color: #231815;
 }
 .a-dialog-allow-button {
-  background: #ebdd5e;
+  background-color: #ebdd5e;
   color: #231815;
 }
 .a-dialog-deny-button {
-  background: #5d5d68;
+  background-color: #5d5d68;
   color: #fafafa;
 }
 .a-dialog-ok-button {
-  background:#ebdd5e;
+  background-color:#ebdd5e;
   color: #231815;
 }
 .a-enter-vr-button{
@@ -68,6 +68,7 @@ ul {
 .question {
   width: 50px;
   height: 50px;
+  bottom: 1.5px;
   background-image: url(../img/vr/vr-btn-question.svg);
   background-size: 50px;
   background-position: center;
