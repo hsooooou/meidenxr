@@ -1,0 +1,160 @@
+.body {
+  background-color: #ffffff;
+}
+
+.container {
+  background-color: #fafafa;
+}
+
+ul {
+  list-style: none;
+}
+
+/* 表示するVR画像 */
+.vr-img {
+  position: absolute;
+  z-index: -100;
+}
+
+/* 下メニューUI */
+.under-list {
+  color: #231815;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  position: fixed;
+  bottom: 0;
+  z-index: 20; 
+  margin: 0 auto 20px auto;
+}
+.under-list li {
+  text-decoration: none;
+  list-style: none;
+}
+.vr-menu-list {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.vr-menu-icon {
+  width: 50px;
+  height: 50px;
+}
+.question {
+  width: 50px;
+  height: 50px;
+  background-image: url(../img/vr/vr-btn-question.svg);
+  background-size: 50px;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* margin: 0 0 0 40px; */
+  cursor: pointer;
+  border-radius: 100px;
+  border: 2px solid #231815;
+  background-color: #231815;
+  position: relative;
+  z-index: 5;
+}
+.question.is-active {
+  background-image: url(../img/vr/vr-btn-back.svg);
+}
+
+/* 情報エリア */
+/* ヘッダー上書き */
+.header{
+  height: 50px;
+  margin: 10px 0 50px 0;
+  padding: 0;
+}
+.header-logo img {
+  margin: 0;
+}
+.vr-info {
+  color: #231815;
+  display: flex;
+  /* align-items: center; 上下中央寄せ*/ 
+  /* justify-content: center; 左右中央寄せ*/
+  width: 100%;
+  height: 100vh;
+  background-color: #fafafa;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 10; 
+  display: none;
+}
+.vr-info.is-active {
+  display: flex;
+}
+.vr-info-area {
+  padding: 2% 5% 0 10px;
+  width: 100%;
+}
+
+/* テキストエリア */
+.vr-info-textarea {
+  padding: 0 10%;
+  color: #231815;
+}
+.vr-text-number {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  border-bottom: 3px solid #231815;
+  display: inline-block;
+}
+.vr-text-title {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+}
+.vr-text-kana{
+  font-size: 12px;
+  font-weight: 700;
+  color: #5d5d68;
+}
+.vr-info-border {
+  border: 1px solid #231815;
+  margin: 5% 0;
+} 
+.vr-text-cate {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+.vr-text-normal {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  padding-top: 10px;
+}
+/* リンク */
+.vr-info-link {
+  display: flex;
+  padding: 20px 0;
+}
+.vr-info-logo {
+  display: flex;
+  margin: 0 0 0 auto;
+  gap: 20px;
+}
+.vr-info-link img {
+  width: 40px;
+  height: 40px;
+}
+
+@media (min-width: 568px){
+
+}
+
+
+
+/* デザインC(PC) */
+@media screen and (min-width: 1025px) {
+  .vr-info {
+    width: 35%;
+  }
+
+}
