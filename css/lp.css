@@ -100,6 +100,10 @@ ul {
   border-radius: 30px;
 }
 
+a {
+  text-decoration: none;
+}
+
 .lp-contents {
   margin: 50px 10% 0 10%;
   display: flex;

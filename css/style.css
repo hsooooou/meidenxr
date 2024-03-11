@@ -20,15 +20,19 @@ html {
   font-style: normal;
 } */
 
-
+a {
+  text-decoration: none;
+}
 
 .header {
-  height: auto;
+  height: 80px;
   display: flex;
   width: 100%;
   z-index: 100;
   position: sticky;
   top: 0;
+  align-items: center;
+  padding: 0 24px 0 0;
 }
 
 .header-logo img {
@@ -97,9 +101,85 @@ html {
 } */
 
 /* ハンバーガーメニュー */
+.header nav {
+  margin: 0 0 0 auto;
+  display: flex;
+  align-items: center;
+}
 
+.list-nav-header {
+  display: flex;
+  align-items: center;
+  gap: 40px;
 
+}
 
+.list-nav-header li  a {
+  color: #231815;
+}
+
+.burger {
+  width: 50px;
+  height: 50px;
+  background-image: url(../img/burger-white.svg);
+  background-size: 30px;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 0 0 0 40px;
+  cursor: pointer;
+  border-radius: 100px;
+  background-color: #231815;
+  border: 2px solid #231815;
+  position: relative;
+  z-index: 2;
+}
+/* .burger:hover{
+  background-color: #e6e243;
+} */
+.burger.is-active {
+  background-image: url(../img/close-white.svg);
+}
+
+/* メニュー */
+.menu {
+  color: #231815;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: #e6e243;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1; 
+  display: none;
+}
+.menu.is-active {
+  display: flex;
+}
+
+.menu li {
+  list-style: none;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.menu-menu {
+  font-size: 30px;
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 900;
+  margin: 20px;
+  padding: 0 0 10px 0;
+  border-bottom: 2px solid #231815;
+}
+
+.menu-list a{
+  color: #231815;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+}
 
 /* フッター */
 #footer { 
@@ -110,6 +190,7 @@ html {
 }
 
 .footer-text-big {
+  font-family: "Noto Sans JP", sans-serif;
   font-size: 30px;
   font-weight: 800;
 
@@ -129,6 +210,7 @@ html {
 #footer a {
   text-decoration: none;
   color: #231815;
+  font-family: "Noto Sans JP", sans-serif;
   font-size: 20px;
   font-weight: 600;
 }
