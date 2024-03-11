@@ -131,7 +131,7 @@ a {
   background-color: #231815;
   border: 2px solid #231815;
   position: relative;
-  z-index: 2;
+  z-index: 21;
 }
 /* .burger:hover{
   background-color: #e6e243;
@@ -152,7 +152,7 @@ a {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1; 
+  z-index: 20; 
   display: none;
 }
 .menu.is-active {
