@@ -22,6 +22,7 @@ ul {
 
 .lp-bigsub {
   font-size: 18px;
+  font-weight: 600;
   padding-top: 20px;
   line-height: 30px;
 }
@@ -70,10 +71,10 @@ ul {
 }
 
 .lp-heading-under{
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   text-align: center;
-  padding: 1%;
+  padding: 3% 0 1% 0;
   margin: 3% 30%;
 
   border-bottom: 2px solid #231815;
@@ -100,7 +101,14 @@ ul {
 }
 
 .lp-contents {
-  padding: 50px 30px;
+  margin: 50px 10% 0 10%;
+  display: flex;
+}
+
+.lp-3dsp {
+  width: auto;
+  margin-left: auto;
+  justify-content: flex-end;
 }
 
 .lp-reco {
@@ -120,6 +128,13 @@ ul {
 .lp-aboutxr {
   background-color: #F5F185;
   padding: 30px 0;
+  z-index: 0;
+}
+
+.lp-aboutxr-bg{
+  background-color: #F5F185;
+  z-index: -1;
+  clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
 }
 
 .lp-xrfeature {

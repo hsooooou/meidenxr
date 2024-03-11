@@ -21,12 +21,17 @@ html {
 } */
 
 
+
 .header {
   height: auto;
   display: flex;
+  width: 100%;
+  z-index: 100;
+  position: sticky;
+  top: 0;
 }
 
-.header-logo img{
+.header-logo img {
   height: 50px;
   width: auto;
   margin: 10px;
@@ -59,7 +64,7 @@ html {
 }
 
 .pagetop {
-    box-shadow: 0 4px 6px rgb(0 0 0 / 20%);
+  box-shadow: 0 4px 6px rgb(0 0 0 / 20%);
 }
 
 /* .pagetop__arrow{
@@ -96,6 +101,49 @@ html {
 
 
 
+/* フッター */
+#footer { 
+  height: auto;
+  background-color: #e6e243;
+
+  text-align: center;
+}
+
+.footer-text-big {
+  font-size: 30px;
+  font-weight: 800;
+
+  padding: 20px 0 5px 0;
+  margin: 0 30%;
+  border-bottom: 4px solid #231815;
+}
+
+.footer-menu {
+  padding: 20px 0; 
+}
+
+.footer-cate {
+  padding-bottom: 20px;
+}
+
+#footer a {
+  text-decoration: none;
+  color: #231815;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.footer-btn {
+  background: #fefefd;
+  padding: 1% 25%;
+  border: 2px solid #231815;
+  border-radius: 100px;
+}
+
+footer img {
+  width: 50px;
+  padding:0 0 20px 0;
+}
 
 @media screen and (min-width: 1025px) {
   .pagetop {
