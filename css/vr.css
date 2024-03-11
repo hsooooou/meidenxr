@@ -20,18 +20,22 @@ ul {
   color: #231815;
 }
 .a-dialog-allow-button {
-  background-color: #ebdd5e;
+  background: #ebdd5e;
   color: #231815;
 }
 .a-dialog-deny-button {
-  background-color: #5d5d68;
+  background: #5d5d68;
   color: #fafafa;
 }
 .a-dialog-ok-button {
-  background-color:#ebdd5e;
+  background:#ebdd5e;
   color: #231815;
 }
-
+.a-enter-vr-button{
+  display: none;
+  position: fixed;
+  z-index: -500;
+}
 
 /* 下メニューUI */
 .under-list {
@@ -44,6 +48,9 @@ ul {
   bottom: 0;
   z-index: 20; 
   margin: 0 auto 20px auto;
+}
+.under-list.is-active {
+  display: none;
 }
 .under-list li {
   text-decoration: none;
