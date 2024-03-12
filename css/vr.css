@@ -186,6 +186,18 @@ ul {
 .vr-info-btn a{
   color: #231815;
 }
+.vr-copy-area {
+  width: 100vw; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.footer-copy {
+  position: fixed;
+  bottom: 5px;
+  z-index: 110;
+  padding-bottom: 0;
+}
 
 @media (min-width: 568px){
 
