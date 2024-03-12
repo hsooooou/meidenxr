@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+  <title>VR - 00 - チュートリアル | MeidenXR</title>
+
+  <!-- css -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/vr.css">
+
+  <link rel="icon" type="image/x-icon" href="https://hsooooou.github.io/meidenxr/favicon.ico">
+  <link rel="apple-touch-icon" href="https://hsooooou.github.io/meidenxr/favicon-apple.ico" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://hsooooou.github.io/meidenxr/android-touch-icon.png" sizes="192x192">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet">
+
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+</head>
+
+<body class="body">
+
+
+  <!-- VR画像 -->
+  <a-scene  vr-mode-ui="enabled: false;" loading-screen="dotsColor: #e6e243; backgroundoColor: #ebdd5e" 
+  device-orientation-permission-ui="allowButtonText: 許可; denyButtonText: 拒否; cancelButtonText:キャンセル; deviceMotionMessage: このWenサイトでは、デバイスのモーションセンサーのアクセスを許可する必要があります。" >
+    <a-assets class="vr-img">
+      <img id="panorama" src="../img/vr/vr-00-tutorial.png">
+    </a-assets>
+    <a-sky src="#panorama"></a-sky>
+  </a-scene>
+
+  <!-- ヘッダー -->
+  <div class="header-box"></div>
+
+
+  <!-- 下のメニュー -->
+  <div class="under-list">
+    <nav>
+      <div>
+        <div class="vr-menu-list">
+          <li><a href=""><img class="vr-menu-icon" src="../img/vr/vr-btn-left.svg" alt="left"></a></li>
+          <li>
+            <div class="question"></div>
+          </li>
+          <li><a href=""><img class="vr-menu-icon" src="../img/vr/vr-btn-right.svg" alt="right"></a></li>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- 表示させる情報 -->
+  <div class="vr-info">
+    <div class="vr-info-area">
+      <header class="header">
+        <div class="header-logo">
+          <a href="../index.html"><img src="../img/meidenxr-sp.png"></a>
+        </div>
+
+        <nav>
+          <ul class="list-nav-header">
+          </ul>
+          <div class="burger"></div>
+          <div class="menu">
+            <div>
+              <li class="menu-menu">MENU</li>
+              <li class="menu-list"><a href="../index.html">ホーム</a></li>
+              <li class="menu-list"><a href="../use.html">使い方</a></li>
+              <li class="menu-list"><a href="../schoolmap.html">学校マップ</a></li>
+              <li class="menu-list"><a href="../lp.html">コンテンツについて</a></li>
+              <li class="menu-list"><a href="https://www.meiden.ed.jp">公式サイト</a></li>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="vr-info-textarea">
+        <p class="vr-text-number">北校舎 - No.02</p>
+        <div>
+          <p class="vr-text-title">情報デザイン室</p>
+          <p class="vr-text-kana">じょうほうでざいんしつ</p>
+        </div>
+        <div class="vr-info-border"></div>
+        <div class="vr-info-about">
+          <p class="vr-text-cate">・どんな場所？</p>
+          <p class="vr-text-normal">Macがあり、デザインや編集などのソフトが利用できるよ。<br>
+            主に専門学科や情報デザイン部の生徒が利用しているよ。</p>
+        </div>
+        <div class="vr-info-border"></div>
+        <div class="vr-info-about">
+          <p class="vr-text-cate">・部活動 - 情報デザイン部</p>
+          <p class="vr-text-normal">Macがあり、デザインや編集などのソフトが利用できるよ。<br>
+            主に専門学科や情報デザイン部の生徒が利用しているよ。</p>
+        </div>
+        <div class="vr-info-link">
+          <ul class="vr-info-logo">
+            <li><a href="https://meidenid.com"><img src="../img/link-hp.svg"></a></li>
+            <li><a href="https://www.instagram.com/meiden_amidc/"><img src="../img/link-inst-logo.svg"></a></li>
+            <li><a href="https://twitter.com/meidenid"><img src="../img/link-x-logo.svg"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <main>
+
+  </main>
+
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="../js/nav.js"></script>
+  <script src="../js/vr.js"></script>
+</body>
+
+</html>
