@@ -190,13 +190,13 @@ ul {
   width: 100vw; 
   display: flex;
   align-items: center;
-  
+
   justify-content: center;
 }
 .footer-copy {
   position: fixed;
   bottom: 5px;
-  z-index: 110;
+  z-index: 15;
   padding-bottom: 0;
 }
 
