@@ -116,11 +116,12 @@ ul {
 .vr-info-area {
   padding: 2% 5% 0 10px;
   width: 100%;
+  overflow: auto;
 }
 
 /* テキストエリア */
 .vr-info-textarea {
-  padding: 0 3% 0 6%;
+  padding: 0 3% 30% 6%;
   color: #231815;
 }
 .vr-text-number {
@@ -178,7 +179,7 @@ ul {
     background: #F5F185;
   
     padding: 1px 10px;
-    margin: 20px 10% ;
+    margin: 20px 10% 0 10%;
     border: 2px solid;
     border-radius: 100px;
 }
