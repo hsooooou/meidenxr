@@ -187,7 +187,7 @@ ul {
   color: #231815;
 }
 .vr-copy-area {
-  width: 100vw; 
+  /* width: 100vw;  */
   display: flex;
   align-items: center;
 
