@@ -1,8 +1,246 @@
-.lp-bigtitle {
-  font-size: 35px;
+.body {
+  background-color: #ffffff;
 }
 
-.lp-17sentence {
+.container {
+  background-color: #fafafa;
+}
+
+ul {
+  list-style: none;
+}
+
+.header {
+  background-color: #EFEA3A;
+}
+
+
+.lp-bigtitle {
+  font-size: 36px;
+  font-weight: 600;
+}
+
+.lp-bigsub {
+  font-size: 18px;
+  font-weight: 600;
+  padding-top: 20px;
+  line-height: 30px;
+}
+
+.lp-center-text {
+  font-size: 14px;
+  text-align: center;
+  font-weight: 600;
+
+  margin: 5% 2% 2%;
+}
+
+.lp-btnlist{
+  padding: 30px 0;
+}
+
+.lp-btnlist a {
+  text-decoration: none;
+}
+
+.lp-btnlist a{
+  color: #231815;
+}
+
+.lp-bigbtn {
+  font-size: 18px;
+  font-weight: 800;
+  text-align: center;
+
+  background: #F5F185;
+
+  padding: 5px 10px;
+  margin: 20px 20% ;
+  border: 2px solid;
+  border-radius: 100px;
+}
+
+.lp-heading {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  padding: 1%;
+  margin: 1% 15%;
+  border: 2px solid #231815;
+  border-radius: 100px;
+}
+
+.lp-heading-under{
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  padding: 3% 0 1% 0;
+  margin: 3% 30%;
+
+  border-bottom: 2px solid #231815;
+}
+
+.lp-heading-sub {
+  font-size: 12px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.lp-smallbtn{
+  width: 110px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  margin: 20px auto 10px auto;
+  display: block;
+  
+  color: #ffffff;
+
+  background: #231815;
+  border-radius: 30px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.lp-contents {
+  margin: 50px 10% 0 10%;
+  display: flex;
+}
+
+.lp-3dsp {
+  width: auto;
+  margin-left: auto;
+  justify-content: flex-end;
+}
+
+.lp-reco {
+  margin: 15% 15% 5% 15%;
+  padding: 10px 10px 30px 10px;
+  text-align: center;
+  
+  border: 2px solid;
+  border-radius: 30px;
+}
+
+.lp-recoimg {
+  width: 160px;
+  margin: 20px;
+}
+
+.lp-aboutxr {
+  background-color: #F5F185;
+  padding: 30px 0;
+  z-index: 0;
+}
+
+.lp-aboutxr-bg{
+  background-color: #F5F185;
+  z-index: -1;
+  clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+}
+
+/* ４つの特徴 */
+.lp-xrfeature {
+  background-color: #F5F185;
+  height: auto;
+}
+
+.lp-fea-menu {
+  padding: 0 30px;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.lp-fea-cate {
+  text-align: center;
+  width: 140px;
+  height: auto;
+  padding: 10px;
+  margin: 5px;
+  background: linear-gradient(180deg,#eed183 0%, #eed183 50%, #fafafa 50%, #fafafa 100%);
+  border: 2px solid #231815;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+}
+.lp-fea-img{
+  width: 35px;
+  height: auto;
+}
+.lp-fea-numb {  
+  font-size: 16px;
+    font-weight: 800;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    margin: 0 auto 5px auto;
+    border: 2px solid #231815;
+    border-radius: 100px;
+    background: #f5f185;
+}
+.lp-fea-text {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.lp-expe {
+  padding: 30px 0;
+}
+
+.lp-expe-cate {
+  margin: 5% 10% 0% 0%;
+  padding: 5% 5% 5% 5%;
+  
+  display: flex;
+  background-color: #ffffff;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.lp-number {
+  font-size: 27px;
+  font-weight: 800;
+  text-align: center;
+  
+  width: 40px;
+  height: 40px;
+  margin: 0 0 0 13%;
+  border: 2px solid #231815;
+  border-radius: 100px;
+  background: #f5f185;
+}
+
+.lp-expe-text {
+  margin: 0 1% 0 10%;
+}
+
+.lp-expe-text a {
+  text-decoration: none;
+}
+
+.lp-expe-big {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 2%;
+}
+
+.lp-expe-sml {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 5%;
+}
+
+.lp-notes {
+  font-size: 8px;
+  font-weight: 500;
+}
+
+/* .lp-17sentence {
   font-size: 17px;
 }
 
@@ -24,41 +262,79 @@
 
 .lp-7sentence {
   font-size: 7px;
-}
+} */
+
+
+@media (min-width: 568px){
+
+  .lp-number{
+    margin-left: 30%;
+  }
+
+  .lp-expe-text {
+    margin-left: 13%;
+  }
+
+  .lp-reco {
+    margin: 3% 30% 3% 30%;
+  }
+
+  .lp-bigbtn {
+    margin: 3% 30%;
+  }
+
+  }
 
 
 
 /* デザインC(PC) */
 @media screen and (min-width: 1025px) {
 
-  /* PC用レイアウト 1,025px以上の範囲に収めるデザインはこの中に記述 */ 
+  /* PC用レイアウト 1,025px以上の範囲に収めるデザインはこの中に記述 */
 
+  .body {
+    background-image: url(../img/pc-bg.png);
+    background-size: contain;
+    background-attachment: fixed;
+  }
 
-  .container{
-    font-size: 24px;
+  .container {
     margin: auto;
-    width: 350px;
-    height: 200px;
-  /*子要素を水平方向の中央に配置する*/
-  display: flex;
-  justify-content: center;
+    width: 450px;
+    height: auto;
+    /*子要素を水平方向の中央に配置する*/
+    /* display: flex; */
+    justify-content: center;
   }
 
-  p{
-    font-size: 10px;
-  /*子要素を水平方向の中央に配置する*/
-  display: flex;
-  justify-content: center;
+  .lp-reco {
+    margin: 15% 15% 5% 15%;
+    padding: 10px 10px 30px 10px;
+    
   }
 
-  .child{
+  .lp-bigbtn {
+    padding: 5px 10px;
+    margin: 20px 20% ;
+  }
+
+  .lp-number {
+    margin: 0 0 0 15%;
+  }
+
+  .lp-expe-text {
+    margin: 0 1% 0 7%;
+  }
+
+  /* .child {
     margin: 10px;
     padding: 30px;
     width: 300px;
     height: 500px;
     border: 10px dashed #000;
     background-color: antiquewhite;
-    
-  }
+
+  } */
+  
 
 }

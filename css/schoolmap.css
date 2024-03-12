@@ -1,0 +1,126 @@
+.body {
+  background-color: #ffffff;
+}
+
+.container {
+  background-color: #fafafa;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  color: #fafafa;
+}
+
+/* 共通エリア */
+.main-cate-textarea {
+  text-align: center;
+}
+
+.main-cate-bg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ebdd5e;
+  width: 160px;
+  height: 26px;
+  margin: 20px auto;
+}
+
+.main-cate {
+  font-family: "Noto Sans JP", sans-serif;
+  position: relative;
+  font-size: 24px;
+  font-weight: 900;
+  width: 160px;
+  bottom: 1px;
+}
+
+.main-cate-text p {
+  font-family: "Noto Sans JP", sans-serif;
+  padding: 5px 20px;
+  font-size: 14px;
+}
+
+.imgmap img {
+  width: 100%;
+  height: auto;
+}
+
+.main-btn-list {
+  text-align: center;
+  margin: 15px 50px;
+}
+
+.main-btn-list li {
+  padding: 5px 0;
+}
+
+
+
+/* チュートリアルボタン */
+.map-tuto-btn {
+  padding: 5px 20px;
+  background: #d58bb9;
+  display: inline-block;
+  border-radius: 100px;
+}
+
+.map-tuto-btn a {
+  color: #fafafa;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+/* マップリストUI */
+.main-cate-list {
+  text-align: center;
+  padding: 10px 0 30px 0;
+  display: flex;
+  justify-content: center;
+}
+.main-cate-btn {
+  padding: 5px 30px;
+  background: #ebdd5e;
+  border-radius: 100px;
+  margin: 10px;
+  position: relative;
+  border: 2px solid #231815;
+}
+.main-cate-btn a {
+  color: #231815;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+  position: relative;
+}
+
+/* デザインC(PC) */
+@media screen and (min-width: 1025px) {
+
+  /* PC用レイアウト 1,025px以上の範囲に収めるデザインはこの中に記述 */
+
+  .body {
+    background-image: url(../img/pc-bg.png);
+    background-size: contain;
+    background-attachment: fixed;
+  }
+
+  .container {
+    margin: auto;
+    width: 450px;
+    height: auto;
+    /*子要素を水平方向の中央に配置する*/
+    /* display: flex; */
+    justify-content: center;
+  }
+
+  .imgmap img {
+    width: 100%;
+    height: auto;
+  }
+
+}
