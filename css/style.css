@@ -232,6 +232,8 @@ footer img {
   color: #231815;
   font-weight: 500;
   padding-bottom: 10px;
+  position: static;
+  z-index: 110;
 }
 
 @media screen and (min-width: 1025px) {
