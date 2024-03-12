@@ -143,23 +143,23 @@ ul {
 }
 .vr-info-border {
   border: 1px solid #231815;
-  margin: 3% 0;
+  margin: 3.5% 0;
 } 
 .vr-text-cate {
   font-family: "Noto Sans JP", sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
 }
 .vr-text-normal {
   font-family: "Noto Sans JP", sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   padding-top: 10px;
 }
 /* リンク */
 .vr-info-link {
   display: flex;
-  padding: 20px 5% 20px 0;
+  padding: 15px 5% 0 0;
 }
 .vr-info-logo {
   display: flex;
@@ -169,6 +169,21 @@ ul {
 .vr-info-link img {
   width: 40px;
   height: 40px;
+}
+.vr-info-btn {
+    font-size: 18px;
+    font-weight: 800;
+    text-align: center;
+  
+    background: #F5F185;
+  
+    padding: 1px 10px;
+    margin: 20px 10% ;
+    border: 2px solid;
+    border-radius: 100px;
+}
+.vr-info-btn a{
+  color: #231815;
 }
 
 @media (min-width: 568px){
