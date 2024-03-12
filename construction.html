@@ -21,18 +21,24 @@
   <link rel="stylesheet" href="./css/style.css">
   <style>
     .constr {
+      width: 100vw;
+      height: 100vh;
+      /* padding: 50px 10px 50px 0; */
+      display: flex;
       text-align: center;
+      align-items: center;
+      justify-content: center;
     }
 
     .constr img {
-      padding-top: 40%;
+      /* padding-top: 40%; */
       width: 50%;
       height: auto;
     }
 
     .constr-big {
       font-size: 30px;
-      padding-top: 10%;
+      padding-top: 5%;
 
       font-family: "Noto Sans JP", sans-serif;
       font-optical-sizing: auto;
@@ -48,7 +54,7 @@
     } */
 
     .constr-a {
-      margin-top: 30%;
+      margin-top: 10%;
     }
 
     .constr-btn {
@@ -65,13 +71,16 @@
       color: #fdfdfe;
       background: #231815;
     }
-
+    
+    .footer-copy {
+      padding-top: 30px;
+    }
 
     @media screen and (min-width: 1025px) {
-      .constr img {
+      /* .constr img {
         padding-top: 15%;
         width: 15%;
-      }
+      } */
 
       .constr-big {
         font-size: 36px;
@@ -101,22 +110,22 @@
   <div class="container">
     <!-- <div class="child"></div> -->
 
-    <header class="header">
-      <!-- <div class="header-logo">
+    <!-- <header class="header">
+      <div class="header-logo">
         <a href="./index.html"><img src="./img/meidenxr-sp.png"></a>
-      </div> -->
-
-
-
-    </header>
+      </div> 
+    </header> -->
 
     <main>
 
       <div class="constr">
-        <img src="./img/meidenxr-sp.png">
-        <p class="constr-big">このページは製作中です</p>
-        <div class="constr-a">
-          <a href="#" onclick="history.back(-1)" class="constr-btn" return false;>戻る</a>
+        <div>
+          <img src="./img/meidenxr-sp.png">
+          <p class="constr-big">このページは製作中です</p>
+          <div class="constr-a">
+            <a href="#" onclick="history.back(-1)" class="constr-btn" return false;>戻る</a>
+          </div>
+          <p class="footer-copy" style="padding-bottom: 0;">&copy; 2024 MeidenXR </p>
         </div>
       </div>
     </main>
