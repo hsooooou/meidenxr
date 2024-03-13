@@ -182,14 +182,6 @@ ul {
     margin: 20px 10% 0 10%;
     border: 2px solid;
     border-radius: 100px;
-    box-shadow: 0 2px #66606B;
-}
-.vr-info-btn:hover {
-  box-shadow: none;
-  transform: translate3d(0, 2px, 0);
-  transition-duration: 0.1s;
-  background: #231815;
-  color: #fafafa;
 }
 .vr-info-btn a{
   color: #231815;
@@ -220,4 +212,14 @@ ul {
     width: 35%;
   }
 
+  .vr-info-btn {
+    box-shadow: 0 2px #66606B;
+  }
+  .vr-info-btn:hover {
+    box-shadow: none;
+    transform: translate3d(0, 2px, 0);
+    transition-duration: 0.1s;
+    background: #231815;
+    color: #fafafa;
+  }
 }
