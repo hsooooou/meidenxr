@@ -11,52 +11,6 @@ ul {
 }
 
 
-/* 共通エリア */
-.main-cate-textarea {
-  text-align: center;
-}
-
-.main-cate-bg {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #ebdd5e;
-  width: 160px;
-  height: 26px;
-  margin: 20px auto;
-}
-
-.main-cate {
-  font-family: "Noto Sans JP", sans-serif;
-  position: relative;
-  font-size: 24px;
-  font-weight: 900;
-  width: 160px;
-  bottom: 1px;
-}
-
-.main-cate-text p {
-  font-family: "Noto Sans JP", sans-serif;
-  padding: 5px 20px;
-  font-size: 14px;
-}
-
-.imgmap img {
-  width: 100%;
-  height: auto;
-}
-
-.main-btn-list {
-  text-align: center;
-  margin: 15px 50px;
-}
-
-.main-btn-list li {
-  padding: 5px 0;
-}
-
-
-
 /* チュートリアルボタン */
 .map-tuto-btn {
   padding: 5px 20px;
@@ -127,6 +81,12 @@ ul {
   /* display: inline; */
 }
 
+@media (min-width: 568px){
+  .map-category {
+    margin: 20px 38%;
+  }
+}
+
 /* デザインC(PC) */
 @media screen and (min-width: 1025px) {
 
@@ -152,4 +112,7 @@ ul {
     height: auto;
   }
 
+  .map-category {
+    margin: 20px 25%;
+  }
 }

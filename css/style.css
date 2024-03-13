@@ -181,6 +181,57 @@ a {
   font-weight: 700;
 }
 
+
+
+/* 共通エリア */
+.main-cate-textarea {
+  text-align: center;
+  padding: 20px 20px;
+  position: relative;
+}
+
+.main-cate-bg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ebdd5e;
+  width: 160px;
+  height: 26px;
+  margin: 0px auto;
+}
+
+.main-cate {
+  font-family: "Noto Sans JP", sans-serif;
+  position: relative;
+  font-size: 24px;
+  font-weight: 900;
+  width: 160px;
+  bottom: 1px;
+}
+
+.main-cate-text p {
+  font-family: "Noto Sans JP", sans-serif;
+  padding: 0px 0px;
+  font-size: 14px;
+  margin: 30px 0 0 0;
+}
+
+.imgmap img {
+  width: 100%;
+  height: auto;
+}
+
+.main-btn-list {
+  text-align: center;
+  margin: 15px 50px;
+}
+
+.main-btn-list li {
+  padding: 5px 0;
+}
+
+
+
 /* フッター */
 #footer { 
   height: auto;
@@ -241,4 +292,8 @@ footer img {
     display: none;
   }
 
+  .container {
+    border-left: 1px solid #231815;
+    border-right: 1px solid #231815;
+  }
 }
