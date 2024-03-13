@@ -82,7 +82,7 @@ ul {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
-  width: fit-content;
+  width: fit-content ;
 }
 .main-cate-list a {
   display: inline-flex;
