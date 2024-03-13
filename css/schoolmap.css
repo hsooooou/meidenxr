@@ -82,11 +82,11 @@ ul {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
-  width: fit-content ;
+  width: fit-content(130px) ;
 }
 .main-cate-list a {
   display: inline-flex;
-  padding: 0.5em 2em;
+  padding: 0.5em 1.5em;
   background: #231815;
   color: #fafafa;
   border: 0;
@@ -113,7 +113,6 @@ ul {
 .map-category {
   text-align: center;
   margin: 20px 25%;
-
 }
 
 .map-category p {
