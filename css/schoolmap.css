@@ -10,9 +10,6 @@ ul {
   list-style: none;
 }
 
-a {
-  color: #fafafa;
-}
 
 /* 共通エリア */
 .main-cate-textarea {
@@ -76,26 +73,59 @@ a {
 }
 
 /* マップリストUI */
-.main-cate-list {
-  text-align: center;
-  padding: 10px 0 30px 0;
+.main-btn-area {
   display: flex;
   justify-content: center;
+  margin: 50px;
 }
-.main-cate-btn {
-  padding: 5px 30px;
-  background: #ebdd5e;
-  border-radius: 100px;
-  margin: 10px;
-  position: relative;
-  border: 2px solid #231815;
+.main-cate-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  width: fit-content;
 }
-.main-cate-btn a {
-  color: #231815;
+.main-cate-list a {
+  display: inline-flex;
+  padding: 0.5em 2em;
+  background: #231815;
+  color: #fafafa;
+  border: 0;
   border-radius: 100px;
-  font-size: 12px;
+}
+.main-cate-list a::before {
+  transform: rotate(135deg);
+  width: 10px;
+  height: 10px;
+  margin-right: 20px;
+  display: flex;
+  bottom: -2px;
+  border-top: 2px solid #fff;
+  border-right: 2px solid #fff;
+  content: '';
+}
+.main-cate-list p {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 14px;
   font-weight: 700;
-  position: relative;
+}
+
+
+.map-category {
+  text-align: center;
+  margin: 20px 25%;
+
+}
+
+.map-category p {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  background: #231815;
+  /* border: 2px solid #231815; */
+  color: #fafafa;
+  border-radius: 100px;
+  padding: 5px 30px;
+  /* display: inline; */
 }
 
 /* デザインC(PC) */
