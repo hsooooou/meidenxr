@@ -39,6 +39,9 @@ ul {
   gap: 0.5em;
   width: fit-content(130px) ;
 }
+.map-cate-btn {
+  position: relative;
+}
 .main-cate-list a {
   display: inline-flex;
   padding: 0.5em 1.5em;
@@ -49,14 +52,15 @@ ul {
 }
 .main-cate-list a::before {
   transform: rotate(135deg);
-  width: 10px;
-  height: 10px;
+  width: 7px;
+  height: 7px;
   margin-right: 20px;
   display: flex;
-  bottom: -2px;
+  bottom: -4px;
   border-top: 2px solid #fff;
   border-right: 2px solid #fff;
   content: '';
+  position: relative;
 }
 .main-cate-list p {
   font-family: "Noto Sans JP", sans-serif;

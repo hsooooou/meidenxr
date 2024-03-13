@@ -150,6 +150,7 @@ ul {
   color: #fafafa;
   width: max-content;
   margin-top: 5px;
+  padding: 0 5px;
 }
 
 .schoolmap-cate-a {
@@ -159,6 +160,7 @@ ul {
   color: #fafafa;
   width: max-content;
   margin-top: 5px;
+  padding: 0.5px 5px 0 5px;
 }
 
 .schoolmap-cate-s {
@@ -168,6 +170,7 @@ ul {
   color: #fafafa;
   width: max-content;
   margin-top: 5px;
+  padding: 0 5px;
 }
 
 .schoolmap-name {
