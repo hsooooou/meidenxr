@@ -62,28 +62,70 @@ ul {
 
 
 /* 学校施設 */
+.main-viewarea {
+  margin: 20px;
+}
+.main-viewin {
+  margin: 15px 20px;
+}
+.main-view-smlcate {
+  justify-content: center;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+}
+.map-vr-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.main-vr-preview {
+  width: max-content;
+  margin: 10px;
+}
+.main-vr-preview img {
+  width: max-content;
+}
 .schoolmap-cate-n {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   background-color: #d58bb9;
   color: #fafafa;
-  width: max-content ;
+  width: max-content;
+  margin-top: 5px;
 }
 .schoolmap-cate-a {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   background-color: #ee9f26;
   color: #fafafa;
-  width: max-content ;
+  width: max-content;
+  margin-top: 5px;
 }
 .schoolmap-cate-s {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   background-color: #4655a4;
   color: #fafafa;
-  width: max-content ;
+  width: max-content;
+  margin-top: 5px;
+}
+.schoolmap-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #231815;
+  margin: 3px 0 ;
+  overflow-wrap: break-word;
 }
 
+@media screen and (min-width: 698px) {
+  .main-vr-preview img {
+    width: 130px;
+  }
+  .schoolmap-name {
+    width: 130px;
+  }
+}
 
 /* デザインC(PC) */
 @media screen and (min-width: 1025px) {
@@ -103,5 +145,13 @@ ul {
     /*子要素を水平方向の中央に配置する*/
     /* display: flex; */
     justify-content: center;
+  }
+
+
+  .main-vr-preview img {
+    width: 160px;
+  }
+  .schoolmap-name {
+    width: 150px;
   }
 }
