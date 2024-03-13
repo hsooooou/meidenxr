@@ -186,7 +186,7 @@ a {
 /* 共通エリア */
 .main-cate-textarea {
   text-align: center;
-  padding: 20px 20px;
+ margin: 20px 20px;
   position: relative;
 }
 
