@@ -14,13 +14,14 @@ ul {
 .rightbar {
   position: absolute;
   margin: 0;
-  padding-bottom: 100px;
+  padding-bottom: 140px;
   right: 0;
   top: 6%;
   transform: rotate(90deg);
   font-family: "Noto Sans JP", sans-serif;
   font-size: 20px;
   font-weight: 900;
+  color: #231815;
 }
 
 .main-cate span {
@@ -70,6 +71,7 @@ ul {
 
 /* 学校施設 */
 .main-viewarea {
+  position: relative;
   margin: 40px 20px 20px 20px;
 }
 
@@ -126,6 +128,7 @@ ul {
 .main-vr-preview {
   width: max-content;
   margin: 10px;
+  position: relative;
 }
 
 .main-vr-preview img {
@@ -184,6 +187,9 @@ ul {
   .schoolmap-name {
     width: 130px;
   }
+  .rightbar{
+    top: 10%;
+  }
 }
 
 /* デザインC(PC) */
@@ -217,5 +223,8 @@ ul {
 
   .schoolmap-name {
     width: 150px;
+  }
+  .rightbar{
+    top: 13%;
   }
 }
