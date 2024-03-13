@@ -13,7 +13,7 @@ ul {
 
 .rightbar {
   position: absolute;
-  margin: 0 ;
+  margin: 0;
   padding-bottom: 100px;
   right: 0;
   top: 6%;
@@ -22,6 +22,7 @@ ul {
   font-size: 20px;
   font-weight: 900;
 }
+
 .main-cate span {
   font-size: 28px;
   text-align: center;
@@ -30,10 +31,12 @@ ul {
   bottom: -1.5px;
   color: #4258a6;
 }
+
 .main-txar-btn {
   padding: 30px 0 20px 0;
   text-align: center;
 }
+
 .main-txar-btn p {
   display: inline-flex;
   padding: 0.5em 1.5em;
@@ -46,7 +49,8 @@ ul {
   font-weight: 700;
   position: relative;
 }
-.main-txar-btn p::after{
+
+.main-txar-btn p::after {
   transform: rotate(45deg);
   width: 7px;
   height: 7px;
@@ -63,29 +67,70 @@ ul {
 
 /* 学校施設 */
 .main-viewarea {
-  margin: 20px;
+  margin: 40px 20px 20px 20px;
 }
+
+.main-content-view {
+  width: 100%;
+  background: #d58bb9;
+  color: #fafafa;
+  border-radius: 100px;
+  padding: 30px 0 15px;
+  font-size: 13px;
+  font-weight: 700;
+
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.main-content-title {
+  background-color: #231815;
+  color: #fafafa;
+  border-radius: 100px;
+  padding: 7px 17px;
+  font-size: 20px;
+  top: -1em;
+  left: 50%;
+  white-space: nowrap;
+  transform: translateX(-50%);
+
+  position: absolute;
+}
+
+.main-content-view> :last-child {
+  margin-bottom: 0;
+}
+
 .main-viewin {
   margin: 15px 20px;
 }
+
 .main-view-smlcate {
   justify-content: center;
   text-align: center;
   font-size: 20px;
   font-weight: 700;
 }
+
 .map-vr-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
+
 .main-vr-preview {
   width: max-content;
   margin: 10px;
 }
+
 .main-vr-preview img {
-  width: max-content;
+  width: 270px;
+  height: auto;
+  border-radius: 10px;
 }
+
 .schoolmap-cate-n {
   font-size: 12px;
   font-weight: 700;
@@ -94,6 +139,7 @@ ul {
   width: max-content;
   margin-top: 5px;
 }
+
 .schoolmap-cate-a {
   font-size: 12px;
   font-weight: 700;
@@ -102,6 +148,7 @@ ul {
   width: max-content;
   margin-top: 5px;
 }
+
 .schoolmap-cate-s {
   font-size: 12px;
   font-weight: 700;
@@ -110,11 +157,12 @@ ul {
   width: max-content;
   margin-top: 5px;
 }
+
 .schoolmap-name {
   font-size: 17px;
   font-weight: 700;
   color: #231815;
-  margin: 3px 0 ;
+  margin: 3px 0;
   overflow-wrap: break-word;
 }
 
@@ -122,6 +170,14 @@ ul {
   .main-vr-preview img {
     width: 130px;
   }
+
+  .main-content-view {
+    width: 80%;
+    left: 50%;
+    white-space: nowrap;
+    transform: translateX(-50%);
+  }
+
   .schoolmap-name {
     width: 130px;
   }
@@ -151,6 +207,11 @@ ul {
   .main-vr-preview img {
     width: 160px;
   }
+
+  .main-content-view {
+    width: 100%;
+  }
+
   .schoolmap-name {
     width: 150px;
   }
