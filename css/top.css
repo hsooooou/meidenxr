@@ -2,6 +2,11 @@
   background-color: #fafafa;
 }
 
+/* iOS */
+.iOS_body {
+  overflow-x: hidden;
+}
+
 .container {
   background-color: #fafafa;
   position: relative;
@@ -33,9 +38,10 @@ ul {
   color: #4258a6;
 }
 
-.main-cate-img img{
+.main-cate-img img {
   width: max-content;
 }
+
 .main-txar-btn {
   padding: 30px 0 20px 0;
   text-align: center;
@@ -187,7 +193,8 @@ ul {
   .schoolmap-name {
     width: 130px;
   }
-  .rightbar{
+
+  .rightbar {
     top: 10%;
   }
 }
@@ -224,7 +231,8 @@ ul {
   .schoolmap-name {
     width: 150px;
   }
-  .rightbar{
+
+  .rightbar {
     top: 13%;
   }
 }
