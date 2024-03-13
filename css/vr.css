@@ -221,5 +221,6 @@ ul {
     transition-duration: 0.1s;
     background: #231815;
     color: #fafafa;
+    border: 2px solid #231815;
   }
 }
