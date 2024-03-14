@@ -29,7 +29,10 @@
 
   <!-- VR画像 -->
   <a-scene vr-mode-ui="enabled: false;" loading-screen="dotsColor: #e6e243; backgroundoColor: #ebdd5e"
-    device-orientation-permission-ui="allowButtonText: 許可; denyButtonText: 拒否; cancelButtonText:キャンセル; deviceMotionMessage: このWenサイトでは、デバイスのモーションセンサーのアクセスを許可する必要があります。">
+    device-orientation-permission-ui="allowButtonText: 許可; denyButtonText: 拒否; cancelButtonText:キャンセル; deviceMotionMessage: このWenサイトでは、デバイスのモーションセンサーのアクセスを許可する必要があります。"
+    style=".a-dialog-allow-button {background-color:  #ebdd5e;} .a-dialog-deny-button {
+      background-color: #5d5d68;} .a-dialog-ok-button {background-color : #ebdd5e;}
+   ">
     <a-assets class="vr-img">
       <img id="panorama" src="../img/vr/vr-00-tutorial.png">
     </a-assets>
