@@ -10,6 +10,10 @@
   <!-- css -->
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/vr.css">
+  <style>
+    .a-dialog-allow-button {background:  #ebdd5e;} .a-dialog-deny-button {
+      background: #5d5d68;} .a-dialog-ok-button {background: #ebdd5e;}
+  </style>
 
   <link rel="icon" type="image/x-icon" href="https://hsooooou.github.io/meidenxr/favicon.ico">
   <link rel="apple-touch-icon" href="https://hsooooou.github.io/meidenxr/favicon-apple.ico" sizes="180x180">
@@ -29,10 +33,7 @@
 
   <!-- VR画像 -->
   <a-scene vr-mode-ui="enabled: false;" loading-screen="dotsColor: #e6e243; backgroundoColor: #ebdd5e"
-    device-orientation-permission-ui="allowButtonText: 許可; denyButtonText: 拒否; cancelButtonText:キャンセル; deviceMotionMessage: このWenサイトでは、デバイスのモーションセンサーのアクセスを許可する必要があります。"
-    style=".a-dialog-allow-button {background:  #ebdd5e;} .a-dialog-deny-button {
-      background: #5d5d68;} .a-dialog-ok-button {background: #ebdd5e;}
-   ">
+    device-orientation-permission-ui="allowButtonText: 許可; denyButtonText: 拒否; cancelButtonText:キャンセル; deviceMotionMessage: このWebサイトでは、デバイスのモーションセンサーのアクセスを許可する必要があります。">
     <a-assets class="vr-img">
       <img id="panorama" src="../img/vr/vr-00-tutorial.png">
     </a-assets>
