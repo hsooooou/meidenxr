@@ -96,6 +96,8 @@ ul {
   font-family: "Noto Sans JP", sans-serif;
   font-size: 17px;
   font-weight: 700;
+  line-height: 1.7;
+
 }
 .use-text-nor {
   font-family: "Noto Sans JP", sans-serif;
@@ -146,5 +148,5 @@ ul {
   .use-box {
     margin: 20px;
   }
-  
+
 }
