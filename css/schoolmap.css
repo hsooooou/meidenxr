@@ -51,7 +51,7 @@ ul {
   border-radius: 100px;
 }
 .main-cate-list a::before {
-  transform: rotate(135deg);
+  transform: rotate(135deg) ;
   width: 7px;
   height: 7px;
   margin-right: 20px;
