@@ -10,9 +10,86 @@ ul {
   list-style: none;
 }
 
-.imgmap img{
-  width: 100%;
-  height: auto;
+
+/* チュートリアルボタン */
+.map-tuto-btn {
+  padding: 5px 20px;
+  background: #d58bb9;
+  display: inline-block;
+  /* border: 2px solid #57384B; */
+  border-radius: 100px;
+}
+
+.map-tuto-btn a {
+  color: #fafafa;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+/* マップリストUI */
+.main-btn-area {
+  display: flex;
+  justify-content: center;
+  margin: 50px;
+}
+.main-cate-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  width: fit-content(130px) ;
+}
+.map-cate-btn {
+  position: relative;
+}
+.main-cate-list a {
+  display: inline-flex;
+  padding: 0.5em 1.5em;
+  background: #231815;
+  color: #fafafa;
+  border: 0;
+  border-radius: 100px;
+}
+.main-cate-list a::before {
+  transform: rotate(135deg);
+  width: 7px;
+  height: 7px;
+  margin-right: 20px;
+  display: flex;
+  bottom: -4px;
+  border-top: 2px solid #fff;
+  border-right: 2px solid #fff;
+  content: '';
+  position: relative;
+}
+.main-cate-list p {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+
+.map-category {
+  text-align: center;
+  margin: 20px 25%;
+}
+
+.map-category p {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  background: #231815;
+  /* border: 2px solid #231815; */
+  color: #fafafa;
+  border-radius: 100px;
+  padding: 5px 30px;
+  /* display: inline; */
+}
+
+@media (min-width: 568px){
+  .map-category {
+    margin: 20px 38%;
+  }
 }
 
 /* デザインC(PC) */
@@ -35,9 +112,25 @@ ul {
     justify-content: center;
   }
 
-  .imgmap img{
+  .imgmap img {
     width: 100%;
     height: auto;
+  }
+
+  .map-category {
+    margin: 20px 25%;
+  }
+
+  .map-tuto-btn {
+    box-shadow: 0 3px #968791;
+  }
+  .map-tuto-btn:hover {
+    box-shadow: none;
+    transform: translate3d(0, 3px, 0);
+    transition-duration: 0.1s;
+    /* opacity: 0.8; */
+    background: #ebdd5e;
+    color: #231815;
   }
 
 }

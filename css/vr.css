@@ -15,6 +15,27 @@ ul {
   position: absolute;
   z-index: -100;
 }
+/* VR UI */
+.a-loader-title {
+  color: #231815;
+}
+.a-dialog-allow-button {
+  background-color: #ebdd5e;
+  color: #231815;
+}
+.a-dialog-deny-button {
+  background-color: #5d5d68;
+  color: #fafafa;
+}
+.a-dialog-ok-button {
+  background-color:#ebdd5e;
+  color: #231815;
+}
+.a-enter-vr-button{
+  display: none;
+  position: fixed;
+  z-index: -500;
+}
 
 /* 下メニューUI */
 .under-list {
@@ -27,6 +48,9 @@ ul {
   bottom: 0;
   z-index: 20; 
   margin: 0 auto 20px auto;
+}
+.under-list.is-active {
+  display: none;
 }
 .under-list li {
   text-decoration: none;
@@ -44,6 +68,7 @@ ul {
 .question {
   width: 50px;
   height: 50px;
+  bottom: 1.5px;
   background-image: url(../img/vr/vr-btn-question.svg);
   background-size: 50px;
   background-position: center;
@@ -64,7 +89,7 @@ ul {
 /* ヘッダー上書き */
 .header{
   height: 50px;
-  margin: 10px 0 50px 0;
+  margin: 2% 0 5% 0;
   padding: 0;
 }
 .header-logo img {
@@ -83,6 +108,7 @@ ul {
   right: 0;
   z-index: 10; 
   display: none;
+  box-shadow: 0 4px 6px rgb(0 0 0 / 50%);
 }
 .vr-info.is-active {
   display: flex;
@@ -90,11 +116,12 @@ ul {
 .vr-info-area {
   padding: 2% 5% 0 10px;
   width: 100%;
+  overflow: auto;
 }
 
 /* テキストエリア */
 .vr-info-textarea {
-  padding: 0 10%;
+  padding: 0 3% 30% 6%;
   color: #231815;
 }
 .vr-text-number {
@@ -117,23 +144,23 @@ ul {
 }
 .vr-info-border {
   border: 1px solid #231815;
-  margin: 5% 0;
+  margin: 3.5% 0;
 } 
 .vr-text-cate {
   font-family: "Noto Sans JP", sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
 }
 .vr-text-normal {
   font-family: "Noto Sans JP", sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   padding-top: 10px;
 }
 /* リンク */
 .vr-info-link {
   display: flex;
-  padding: 20px 0;
+  padding: 15px 5% 0 0;
 }
 .vr-info-logo {
   display: flex;
@@ -143,6 +170,34 @@ ul {
 .vr-info-link img {
   width: 40px;
   height: 40px;
+}
+.vr-info-btn {
+    font-size: 18px;
+    font-weight: 800;
+    text-align: center;
+  
+    background: #F5F185;
+  
+    padding: 1px 10px;
+    margin: 20px 10% 0 10%;
+    border: 2px solid;
+    border-radius: 100px;
+}
+.vr-info-btn a{
+  color: #231815;
+}
+.vr-copy-area {
+  /* width: 100vw;  */
+  display: flex;
+  align-items: center;
+
+  justify-content: center;
+}
+.footer-copy {
+  position: fixed;
+  bottom: 5px;
+  z-index: 15;
+  padding-bottom: 0;
 }
 
 @media (min-width: 568px){
@@ -157,4 +212,15 @@ ul {
     width: 35%;
   }
 
+  .vr-info-btn {
+    box-shadow: 0 2px #66606B;
+  }
+  .vr-info-btn:hover {
+    box-shadow: none;
+    transform: translate3d(0, 2px, 0);
+    transition-duration: 0.1s;
+    background: #231815;
+    color: #fafafa;
+    border: 2px solid #231815;
+  }
 }
