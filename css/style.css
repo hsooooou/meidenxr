@@ -245,7 +245,8 @@ a {
 
 .footer-text-big {
   font-family: "Noto Sans JP", sans-serif;
-  font-size: 30px;
+  /* font-size: 30px; */
+  font-size: 24px;
   font-weight: 800;
 
   padding: 20px 0 5px 0;
@@ -265,7 +266,8 @@ a {
   text-decoration: none;
   color: #231815;
   font-family: "Noto Sans JP", sans-serif;
-  font-size: 20px;
+  /* font-size: 20px; */
+  font-size: 16px;
   font-weight: 600;
 }
 
