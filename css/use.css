@@ -67,11 +67,53 @@ ul {
   padding: 5px 30px;
 }
 
+/* ボックス */
+.use-box {
+  margin: 20px;
+  padding: 15px 35px 10px 20px;
+  background: #EDEA86;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+}
+.use-box-num {
+  padding: 0.2em 0.5em 0.5em 0.5em;
+  width: 40px;
+  height: 40px;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  background: #231815;
+  color: #fafafa;
+  border-radius: 50%;
+}
+.use-text-area {
+  margin: 1px;
+  padding: 0 0 0 15px;
+  width: 400px;
+}
+.use-text-tit {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+}
+.use-text-nor {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 15px 0;
+}
+.use-text-area img {
+  width: 100%;
+}
 
 
 @media (min-width: 568px){
   .map-category {
     margin: 20px 38%;
+  }
+  .use-box {
+    margin: 20px 20%;
   }
 }
 
@@ -98,6 +140,10 @@ ul {
   }
 
   .map-category {
-    margin: 20px 25%;
+    margin: 40px 25% 20px 25%;
+  }
+
+  .use-box {
+    margin: 20px;
   }
 }
