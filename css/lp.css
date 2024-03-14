@@ -208,9 +208,9 @@ a {
   font-weight: 800;
   text-align: center;
   
-  width: 40px;
-  height: 40px;
-  margin: 0 0 0 13%;
+  min-width: 40px;
+  max-height: 40px;
+  margin: 0 0 0 6%;
   border: 2px solid #231815;
   border-radius: 100px;
   background: #f5f185;
@@ -218,6 +218,7 @@ a {
 
 .lp-expe-text {
   margin: 0 1% 0 10%;
+  width: 200px;
 }
 
 .lp-expe-text a {
