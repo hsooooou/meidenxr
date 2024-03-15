@@ -16,6 +16,41 @@ ul {
   list-style: none;
 }
 
+
+/* トップビジュアル */
+.top-visual {
+  margin: 10px 20px 60px 20px;
+  position: relative;
+  border-radius: 100px;
+}
+.top-vis-img {
+  border-radius: 20px;
+  justify-content: center;
+  /* background-color: #ee9f26; */
+  height: max-content;
+}
+.top-vis-pc {
+  width: 100%;
+  min-height: 300px;
+  display: none;
+  object-fit: cover;
+}
+.top-vis-sp {
+  width: 100%;
+  min-height: 370px;
+  object-fit: cover;
+  border-radius: 20px;
+}
+.top-vis-txt {
+  position: absolute;
+  left: 0;
+  top: 10vh;
+}
+.top-vis-txt p {
+  background: #fafafa;
+  padding: 0.2em 0.2em 0.2em 0;
+}
+
 .rightbar {
   position: absolute;
   margin: 0;
@@ -199,9 +234,18 @@ ul {
     width: 130px;
   }
 
+  /* トップビジュ */
+  .top-vis-pc {
+    display: block;
+  }
+  .top-vis-sp {
+    display: none;
+  }
+
   .rightbar {
     top: 10%;
   }
+
 }
 
 /* デザインC(PC) */
@@ -239,5 +283,14 @@ ul {
 
   .rightbar {
     top: 13%;
+  }
+
+  .top-vis-pc {
+    display: none;
+  }
+
+  .top-vis-sp {
+    display: block;
+    min-height: 600px;
   }
 }
