@@ -46,7 +46,7 @@ ul {
 .top-vis-txt-area {
   position: absolute;
   left: 0;
-  top: 20vh;
+  top: 130px;
   z-index: 10;
 }
 .top-vis-txt-area p {
@@ -228,7 +228,7 @@ ul {
   overflow-wrap: break-word;
 }
 
-@media screen and (min-width: 698px) {
+@media screen and (min-width: 698px) and (max-width: 1024px){
   .main-vr-preview img {
     width: 130px;
   }
@@ -251,9 +251,10 @@ ul {
   .top-vis-sp {
     display: none;
   }
-  .top-vis-txt-area {
-    top: 15vh;
+  .top-vis-txt-area p{
+    font-size: 25px;
   }
+
 
   .rightbar {
     top: 10%;
