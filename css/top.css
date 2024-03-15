@@ -38,7 +38,7 @@ ul {
 }
 .top-vis-sp {
   width: 100%;
-  height: 75vh;
+  height: 70vh;
   min-height: 370px;
   object-fit: cover;
   border-radius: 20px;
@@ -250,6 +250,9 @@ ul {
   }
   .top-vis-sp {
     display: none;
+  }
+  .top-vis-txt-area {
+    top: 15vh;
   }
 
   .rightbar {
