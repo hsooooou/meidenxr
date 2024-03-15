@@ -18,6 +18,9 @@ ul {
 
 
 /* トップビジュアル */
+.top-area {
+  position: relative;
+}
 .top-visual {
   margin: 10px 20px 60px 20px;
   position: relative;
@@ -46,7 +49,7 @@ ul {
 .top-vis-txt-area {
   position: absolute;
   left: 0;
-  top: 130px;
+  top: 2em;
   z-index: 10;
 }
 .top-vis-txt-area p {
