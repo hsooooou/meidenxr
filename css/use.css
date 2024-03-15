@@ -33,6 +33,7 @@ ul {
   color: #fafafa;
   border: 0;
   border-radius: 100px;
+  box-shadow: 0 2px #72A1A3;
 }
 
 .main-cate-list a::before {
@@ -150,6 +151,12 @@ ul {
 
   .use-box {
     margin: 20px;
+  }
+
+  .map-cate-btn:hover{
+    box-shadow: none;
+    transform: translate3d(0, 2px, 0);
+    transition-duration: 0.3s;
   }
 
 }

@@ -18,6 +18,7 @@ ul {
   display: inline-block;
   /* border: 2px solid #57384B; */
   border-radius: 100px;
+  box-shadow: 0 3px #968791;
 }
 
 .map-tuto-btn a {
@@ -41,6 +42,7 @@ ul {
 }
 .map-cate-btn {
   position: relative;
+  box-shadow: 0 2px #72A1A3;
 }
 .main-cate-list a {
   display: inline-flex;
@@ -131,6 +133,11 @@ ul {
     /* opacity: 0.8; */
     background: #ebdd5e;
     color: #231815;
+  }
+  .map-cate-btn:hover{
+    box-shadow: none;
+    transform: translate3d(0, 2px, 0);
+    transition-duration: 0.3s;
   }
 
 }
