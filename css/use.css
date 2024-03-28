@@ -55,6 +55,10 @@ ul {
 }
 
 /* カテゴリトップ */
+.use-area {
+  margin-bottom: 40px;
+  padding: 5px 0;
+}
 .map-category {
   text-align: center;
   margin: 20px 30%;
@@ -114,11 +118,64 @@ ul {
 }
 
 
+/* 大きいボタン */
+.use-btnbox {
+  background: #9A81BA;
+  position: relative;
+  margin: 20px;
+  height: 70px;
+  border-radius: 10px;
+  align-items: center;
+}
+.use-btn-in {
+  display: flex;
+  color: #fafafa;
+  align-items: center;
+  margin: 10px;
+  padding: 10px;
+  height: max-content;
+  position: relative;
+}
+.use-btn-text{
+  padding: 0 0 0 0.8em ;
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 700;
+}
+.use-btn-tit {
+  font-size: 17px;
+}
+.use-btn-abo {
+  font-size: 14px;
+  margin-top:  1px;
+}
+.use-arrow-bg {
+  background-color: #231815;
+  right: 0;
+  top: 0px;
+  position: absolute;
+  height:70px;
+  width: 60px;
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.use-btn-arrow {
+  height: 30px;
+  width: auto;
+}
+
+
 @media (min-width: 568px){
   .map-category {
     margin: 20px 38%;
   }
   .use-box {
+    margin: 20px 20%;
+  }
+  .use-btnbox {
     margin: 20px 20%;
   }
 }
@@ -150,6 +207,10 @@ ul {
   }
 
   .use-box {
+    margin: 20px;
+  }
+
+  .use-btnbox{
     margin: 20px;
   }
 
