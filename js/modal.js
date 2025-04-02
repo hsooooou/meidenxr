@@ -20,8 +20,5 @@ $(function copyUrl() {
   var url = 'https://forms.gle/yU6vn54oNLNisK5S8';
   navigator.clipboard.writeText(url);
 
-  // フラッシュメッセージ表示
-  $('.success-msg').fadeIn("slow", function () {
-    $(this).delay(2000).fadeOut("slow");
-  });
+
 });
