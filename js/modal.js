@@ -40,4 +40,4 @@ function abortTimer() {
   clearTimeout( timerId );
 }
 
-setTimeout(startTimer, 2000)
+setTimeout(startTimer, 2000);
