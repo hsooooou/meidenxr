@@ -19,6 +19,7 @@ span.onclick = function () {
 $(function copyUrl() {
   var url = 'https://forms.gle/yU6vn54oNLNisK5S8';
   navigator.clipboard.writeText('https://forms.gle/yU6vn54oNLNisK5S8');
+  document.execCommand('url')
 
   const copybtn = document.getElementById('copybtn');
   const copyok = document.getElementById('copyok');
