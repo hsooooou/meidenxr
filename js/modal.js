@@ -25,17 +25,20 @@ $(function copyUrl() {
 const copybtn = document.getElementById('copybtn');
 const copyok = document.getElementById('copyok');
 
-copybtn.addEventListener('click', () => {
-  // ボタンクリックでhiddenクラスを付け外しする
-  copyok.classList.toggle('copy-hidden');
-});
+// copybtn.addEventListener('click', () => {
+//   // ボタンクリックでhiddenクラスを付け外しする
+//   copyok.classList.toggle('copy-hidden');
+// });
 
 function startTimer() {
   timerId = setTimeout( function() {
-     copyok.classList.toggle('copy-hidden');
-  } , 5000 );
+     copyok.classList.add('copy-hidden');
+  } , 3000 );
 }
+setTimeout(startTimer, 3000);
 
-setTimeout(startTimer, 2000);
+timerId = setTimeout( function() {
+  copyok.classList.remove('copy-hidden');
+} , 3000 );
 
 });
