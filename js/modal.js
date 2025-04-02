@@ -19,7 +19,7 @@ span.onclick = function () {
 $(function copyUrl() {
   var url = 'https://forms.gle/yU6vn54oNLNisK5S8';
   navigator.clipboard.writeText('https://forms.gle/yU6vn54oNLNisK5S8');
-  document.execCommand('url')
+  // document.execCommand('url')
 
   const copybtn = document.getElementById('copybtn');
   const copyok = document.getElementById('copyok');
@@ -29,17 +29,19 @@ $(function copyUrl() {
   //   copyok.classList.toggle('copy-hidden');
   // });
 
-  copybtn.addEventListener('click', () => { function startTimer() {
-    timerId = setTimeout(function () {
-      copyok.classList.add('copy-hidden');
-    }, 4000);
-  }
-  setTimeout(startTimer, 1000);
+  copybtn.addEventListener('click', () => {
+    function startTimer() {
+      timerId = setTimeout(function () {
+        copyok.classList.add('copy-hidden');
+      }, 4000);
+    }
+    setTimeout(startTimer, 1000);
 
-  timerId = setTimeout(function () {
-    copyok.classList.remove('copy-hidden');
-  }, 500);
-});
-return
+    timerId = setTimeout(function () {
+      copyok.classList.remove('copy-hidden');
+    }, 500);
+  });
+  navigator.clipboard.writeText('https://forms.gle/yU6vn54oNLNisK5S8');
+  return
 });
 
