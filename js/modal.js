@@ -20,6 +20,7 @@ $(function copyUrl() {
   var url = 'https://forms.gle/yU6vn54oNLNisK5S8';
   navigator.clipboard.writeText(url);
 
+});
 
 const copybtn = document.getElementById('copybtn');
 const copyok = document.getElementById('copyok');
@@ -39,6 +40,4 @@ function abortTimer() {
   clearTimeout( timerId );
 }
 
-setTimeout(startTimer, 2000);
-
-});
+setTimeout(startTimer, 2000)
