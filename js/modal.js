@@ -18,27 +18,27 @@ span.onclick = function () {
 //　リンクコピー
 $(function copyUrl() {
   var url = 'https://forms.gle/yU6vn54oNLNisK5S8';
-  navigator.clipboard.writeText(url);
+  navigator.clipboard.writeText('https://forms.gle/yU6vn54oNLNisK5S8');
 
+  const copybtn = document.getElementById('copybtn');
+  const copyok = document.getElementById('copyok');
 
+  // copybtn.addEventListener('click', () => {
+  //   // ボタンクリックでhiddenクラスを付け外しする
+  //   copyok.classList.toggle('copy-hidden');
+  // });
 
-const copybtn = document.getElementById('copybtn');
-const copyok = document.getElementById('copyok');
+  copybtn.addEventListener('click', () => { function startTimer() {
+    timerId = setTimeout(function () {
+      copyok.classList.add('copy-hidden');
+    }, 4000);
+  }
+  setTimeout(startTimer, 1000);
 
-// copybtn.addEventListener('click', () => {
-//   // ボタンクリックでhiddenクラスを付け外しする
-//   copyok.classList.toggle('copy-hidden');
-// });
-
-function startTimer() {
-  timerId = setTimeout( function() {
-     copyok.classList.add('copy-hidden');
-  } , 3000 );
-}
-setTimeout(startTimer, 3000);
-
-timerId = setTimeout( function() {
-  copyok.classList.remove('copy-hidden');
-} , 3000 );
-
+  timerId = setTimeout(function () {
+    copyok.classList.remove('copy-hidden');
+  }, 500);
 });
+return
+});
+
