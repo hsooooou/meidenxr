@@ -20,7 +20,7 @@ $(function copyUrl() {
   var url = 'https://forms.gle/yU6vn54oNLNisK5S8';
   navigator.clipboard.writeText(url);
 
-});
+
 
 const copybtn = document.getElementById('copybtn');
 const copyok = document.getElementById('copyok');
@@ -35,9 +35,7 @@ function startTimer() {
      copyok.classList.toggle('copy-hidden');
   } , 5000 );
 }
-// タイマーの中止
-function abortTimer() {
-  clearTimeout( timerId );
-}
 
 setTimeout(startTimer, 2000);
+
+});
