@@ -401,3 +401,14 @@ footer img {
 
 }
 
+
+.copy-hidden { /* リンクコピー隠れている部分 */
+  display: none;
+}
+
+#copyok {
+  padding: 10px 0;
+  font-size: 12px;
+  font-weight: 400;
+  color: #231815;
+}
