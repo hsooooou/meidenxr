@@ -130,13 +130,16 @@ ul {
   font-size: 16px;
   font-weight: 700;
   margin-bottom: 5px;
-  border-bottom: 3px solid #231815;
+  border-bottom: 3px solid #F5F185;
   display: inline-block;
 }
 .vr-text-title {
   font-family: "Noto Sans JP", sans-serif;
   font-size: 24px;
   font-weight: 900;
+  color: #a654f3;
+  line-height: 28px;
+  margin-bottom: 5px;
 }
 .vr-text-kana{
   font-size: 12px;
@@ -155,8 +158,9 @@ ul {
 .vr-text-normal {
   font-family: "Noto Sans JP", sans-serif;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
   padding-top: 10px;
+  color: #34343a;
 }
 /* リンク */
 .vr-info-link {
