@@ -86,7 +86,7 @@
             <li>
               <div class="question"></div>
             </li>
-            <li><a href="./vr-n03-cor.html"><img class="vr-menu-icon" src="../img/ar/key.svg" alt="right"></a>
+            <li id="openModal"><img class="vr-menu-icon" src="../img/ar/key.svg" alt="right">
             </li>
           </div>
         </div>
@@ -151,6 +151,17 @@
             <p class="footer-copy">&copy; 2024 MeidenXR </p>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- モーダル中身 -->
+    <div id="qrModal" class="qrModal-in">
+      <div class="modal-content">
+        <ul></ul><span id="closeModal">&times;</span>
+        <ul  class="modal-text-btn">
+          <button id="copybtn" onclick="copyUrl()">リンクをコピー</button>
+          <p id="copyok" class="copy-hidden">リンクがコピーされました！</p>
+        </ul>
       </div>
     </div>
 
