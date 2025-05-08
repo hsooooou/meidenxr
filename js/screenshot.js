@@ -1,28 +1,22 @@
-window.addEventListener('load', () => {
-  const screenshotLi = document.getElementById('screenshot');
-  if (!screenshotLi) {
-    console.warn('Screenshot button not found.');
+document.getElementById('screenshot').addEventListener('click', function () {
+  const scene = document.querySelector('a-scene');
+
+  if (!scene || !scene.renderer || !scene.canvas) {
+    console.warn("Scene or canvas not found.");
     return;
   }
 
-  screenshotLi.addEventListener('click', () => {
-    setTimeout(() => {
-      const scene = document.querySelector('a-scene');
-      if (!scene || !scene.renderer) {
-        console.warn('A-Frame scene or renderer not available.');
-        return;
-      }
+  // レンダリングされたcanvasを取得
+  const canvas = scene.canvas;
 
-      const canvas = scene.renderer.domElement;
-      const dataURL = canvas.toDataURL('image/png');
+  // canvasから画像データを取得
+  const imageDataURL = canvas.toDataURL('image/png');
 
-      const now = new Date();
-      const filename = `screenshot_${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}.png`;
-
-      const link = document.createElement('a');
-      link.href = dataURL;
-      link.download = filename;
-      link.click();
-    }, 1000);
-  });
+  // 自動ダウンロード
+  const a = document.createElement('a');
+  a.href = imageDataURL;
+  a.download = 'ar_screenshot.png';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 });
