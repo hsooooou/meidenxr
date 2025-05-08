@@ -223,17 +223,19 @@ html, body {
 }
 
 a-scene {
-  position: fixed;  
+  position: fixed;  /* スクロールしないようにする */
   top: 0;
   left: 0;
   width: 100% !important;
   height: 100% !important;
 }
 
+/* 縦長の画像に合わせてサイズを調整 */
 canvas {
   display: block;
-  width: 100% !important;
-  height: 100% !important;
+  width: auto !important;  /* 横幅を自動で調整 */
+  height: 100% !important; /* 高さは100% */
+  object-fit: cover; /* 画像を縦横比を維持してフィットさせる */
 }
 
 /* コンテンツ幅の終わり */
