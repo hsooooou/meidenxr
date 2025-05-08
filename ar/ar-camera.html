@@ -60,7 +60,7 @@
 
   <!-- AR表示設定 -->
   <!-- <a-scene embedded arjs="debugUIEnabled:false;" renderer="preserveDrawingBuffer: true"> -->
-    <a-scene embedded arjs="debugUIEnabled: false;" renderer="preserveDrawingBuffer: true; alpha: false;">
+  <a-scene embedded arjs="debugUIEnabled: false;" renderer="preserveDrawingBuffer: true; alpha: false;">
     <a-entity camera></a-entity>
 
     <!-- Markerを表示した際の処理を以下に記述する -->
@@ -161,18 +161,23 @@
   <!-- モーダル中身 -->
   <div id="qrModal" class="qrModal-in">
     <div class="modal-content">
-      <ul></ul><span id="closeModal">&times;</span>
-      <ul class="modal-text-btn">
-        <button id="copybtn" onclick="copyUrl()">リンクをコピー</button>
-        <p id="copyok" class="copy-hidden">リンクがコピーされました！</p>
-      </ul>
+      <ul></ul>
+      <span id="closeModal">&times;</span>
+
+      <!-- <div class="modal-text-btn"> -->
+      <div>
+        <p class="form-label">合言葉を入力</p>
+        <input id="keywordInput" type="text" placeholder="ここに合言葉を入力" class="form-input">
+        <button onclick="checkKeyword()" class="submit-btn">送信</button>
+        <p id="keywordResult" class="copy-hidden"></p>
+      </div>
     </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="../js/nav.js"></script>
   <script src="../js/modal.js"></script>
-  <script src="../js/vr.js"></script>
+  <script src="../js/ar.js"></script>
   <script src="../js/screenshot.js"></script>
 
 </body>

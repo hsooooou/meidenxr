@@ -19,23 +19,28 @@ ul {
   position: absolute;
   z-index: -100;
 }
+
 /* VR UI */
 .a-loader-title {
   color: #231815;
 }
+
 .a-dialog-allow-button {
   background-color: #ebdd5e;
   color: #231815;
 }
+
 .a-dialog-deny-button {
   background-color: #5d5d68;
   color: #fafafa;
 }
+
 .a-dialog-ok-button {
-  background-color:#ebdd5e;
+  background-color: #ebdd5e;
   color: #231815;
 }
-.a-enter-vr-button{
+
+.a-enter-vr-button {
   display: none;
   position: fixed;
   z-index: -500;
@@ -53,27 +58,32 @@ ul {
   align-items: center;
   justify-content: center;
 }
+
 .under-list.is-active {
   display: none;
 }
+
 .under-list li {
   text-decoration: none;
   list-style: none;
 }
+
 .vr-menu-list {
   display: flex;
   align-items: center;
   gap: 25px;
-  
+
   /* test */
   background-color: #fafafa;
   padding: 10px 20px;
   border-radius: 100px;
 }
+
 .vr-menu-icon {
   width: 50px;
   height: 50px;
 }
+
 .question {
   width: 50px;
   height: 50px;
@@ -90,24 +100,27 @@ ul {
   position: relative;
   z-index: 5;
 }
+
 .question.is-active {
   background-image: url(../img/vr/vr-btn-back.svg);
 }
 
 /* 情報エリア */
 /* ヘッダー上書き */
-.header{
+.header {
   height: 50px;
   margin: 2% 0 5% 0;
   padding: 0;
 }
+
 .header-logo img {
   margin: 0;
 }
+
 .vr-info {
   color: #231815;
   display: flex;
-  /* align-items: center; 上下中央寄せ*/ 
+  /* align-items: center; 上下中央寄せ*/
   /* justify-content: center; 左右中央寄せ*/
   width: 100%;
   height: 100vh;
@@ -115,13 +128,15 @@ ul {
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 10; 
+  z-index: 10;
   display: none;
   box-shadow: 0 4px 6px rgb(0 0 0 / 50%);
 }
+
 .vr-info.is-active {
   display: flex;
 }
+
 .vr-info-area {
   padding: 2% 5% 0 10px;
   width: 100%;
@@ -133,6 +148,7 @@ ul {
   padding: 0 3% 50% 6%;
   color: #231815;
 }
+
 .vr-text-number {
   font-family: "Noto Sans JP", sans-serif;
   font-size: 16px;
@@ -141,6 +157,7 @@ ul {
   border-bottom: 3px solid #F5F185;
   display: inline-block;
 }
+
 .vr-text-title {
   font-family: "Noto Sans JP", sans-serif;
   font-size: 24px;
@@ -149,20 +166,24 @@ ul {
   line-height: 28px;
   margin-bottom: 5px;
 }
-.vr-text-kana{
+
+.vr-text-kana {
   font-size: 12px;
   font-weight: 700;
   color: #5d5d68;
 }
+
 .vr-info-border {
   border: 1px solid #231815;
   margin: 4% 0;
-} 
+}
+
 .vr-text-cate {
   font-family: "Noto Sans JP", sans-serif;
   font-size: 18px;
   font-weight: 700;
 }
+
 .vr-text-normal {
   font-family: "Noto Sans JP", sans-serif;
   font-size: 14px;
@@ -170,35 +191,41 @@ ul {
   padding-top: 10px;
   color: #34343a;
 }
+
 /* リンク */
 .vr-info-link {
   display: flex;
   padding: 15px 5% 0 0;
 }
+
 .vr-info-logo {
   display: flex;
   margin: 0 0 0 auto;
   gap: 20px;
 }
+
 .vr-info-link img {
   width: 40px;
   height: 40px;
 }
+
 .vr-info-btn {
-    font-size: 18px;
-    font-weight: 800;
-    text-align: center;
-  
-    background: #F5F185;
-  
-    padding: 1px 10px;
-    margin: 10% 10% 0 10%;
-    border: 2px solid;
-    border-radius: 100px;
+  font-size: 18px;
+  font-weight: 800;
+  text-align: center;
+
+  background: #F5F185;
+
+  padding: 1px 10px;
+  margin: 10% 10% 0 10%;
+  border: 2px solid;
+  border-radius: 100px;
 }
-.vr-info-btn a{
+
+.vr-info-btn a {
   color: #231815;
 }
+
 .vr-copy-area {
   /* width: 100vw;  */
   display: flex;
@@ -206,6 +233,7 @@ ul {
 
   justify-content: center;
 }
+
 .footer-copy {
   position: fixed;
   bottom: 5px;
@@ -213,36 +241,62 @@ ul {
   padding-bottom: 0;
 }
 
-/* コンテンツ幅が100%であることを示す */
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  height: 100%;
+/* フォーム */
+.form-label {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #231815;
+  line-height: 28px;
+  margin: 10px 0 0 0;
+}
+
+/* 合言葉入力フィールド */
+.form-input {
   width: 100%;
+  padding: 20px;
+  margin: 30px 0;
+  font-size: 14px;
+  border: 2px solid #ccc;
+  border-radius: 100px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
 }
 
-a-scene {
-  position: fixed;  /* スクロールしないようにする */
-  top: 0;
-  left: 0;
-  width: 100% !important;
-  height: 100% !important;
+/* フォーカス時 */
+.form-input:focus {
+  border-color: #4caf50;
+  outline: none;
 }
 
-/* 縦長の画像に合わせてサイズを調整 */
-canvas {
-  display: block;
-  width: auto !important;  /* 横幅を自動で調整 */
-  height: 100% !important; /* 高さは100% */
-  object-fit: cover; /* 画像を縦横比を維持してフィットさせる */
+/* 送信ボタン */
+.submit-btn {
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  background: #F5F185;
+  padding: 10px 10%;
+  margin: 0 0 10px 0;
+  border: 2px solid #ccc;
+  border-radius: 100px;
+  
 }
 
-/* コンテンツ幅の終わり */
 
-@media (min-width: 568px){
-
+/* エラーメッセージ */
+#keywordResult {
+  font-size: 12px;
+  font-weight: 0;
+  color: #231815;
+  margin: 0 0 5px 0;
 }
+
+/* 正常な場合のメッセージ */
+.copy-hidden {
+  display: none;
+}
+
+@media (min-width: 568px) {}
 
 
 
@@ -255,6 +309,7 @@ canvas {
   .vr-info-btn {
     box-shadow: 0 2px #66606B;
   }
+
   .vr-info-btn:hover {
     box-shadow: none;
     transform: translate3d(0, 2px, 0);
