@@ -10,6 +10,9 @@ ul {
   list-style: none;
 }
 
+.a-canvas {
+  z-index: -100;
+}
 
 /* 表示するVR画像 */
 .vr-img {
@@ -61,6 +64,11 @@ ul {
   display: flex;
   align-items: center;
   gap: 25px;
+  
+  /* test */
+  background-color: #fafafa;
+  padding: 10px 20px;
+  border-radius: 100px;
 }
 .vr-menu-icon {
   width: 50px;
@@ -148,7 +156,7 @@ ul {
 }
 .vr-info-border {
   border: 1px solid #231815;
-  margin: 6% 0;
+  margin: 4% 0;
 } 
 .vr-text-cate {
   font-family: "Noto Sans JP", sans-serif;
@@ -184,7 +192,7 @@ ul {
     background: #F5F185;
   
     padding: 1px 10px;
-    margin: 20px 10% 0 10%;
+    margin: 10% 10% 0 10%;
     border: 2px solid;
     border-radius: 100px;
 }
@@ -230,7 +238,7 @@ ul {
   }
 
   .vr-menu-list {
-    gap: 40px;
+    gap: 25px;
   }
 
   .vr-info-textarea {
