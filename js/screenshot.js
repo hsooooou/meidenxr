@@ -3,14 +3,21 @@ document.getElementById('screenshot').addEventListener('click', function () {
   const canvas = scene?.canvas;
   const video = document.querySelector('video');
 
-  if (!canvas || !video || video.readyState < 2) {
-    console.warn("Canvas or video not ready");
+  if (!canvas || !video) {
+    console.warn("Canvas or video not found");
     return;
   }
 
+  // 現在時刻からファイル名を生成
   const now = new Date();
-  const fileName = `ar_screenshot_${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}.png`;
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  const h = String(now.getHours()).padStart(2, '0');
+  const min = String(now.getMinutes()).padStart(2, '0');
+  const fileName = `ar_screenshot_${y}${m}${d}${h}${min}.png`;
 
+  // 出力キャンバス作成
   const outputCanvas = document.createElement('canvas');
   const width = canvas.width;
   const height = canvas.height;
@@ -18,27 +25,11 @@ document.getElementById('screenshot').addEventListener('click', function () {
   outputCanvas.height = height;
   const ctx = outputCanvas.getContext('2d');
 
-  // video アスペクト比を保って描画
-  const vw = video.videoWidth;
-  const vh = video.videoHeight;
-  const aspect = vw / vh;
-
-  let drawVideoWidth = width;
-  let drawVideoHeight = width / aspect;
-  if (drawVideoHeight > height) {
-    drawVideoHeight = height;
-    drawVideoWidth = height * aspect;
-  }
-
-  const offsetX = (width - drawVideoWidth) / 2;
-  const offsetY = (height - drawVideoHeight) / 2;
-
-  // 背景: video
-  ctx.drawImage(video, offsetX, offsetY, drawVideoWidth, drawVideoHeight);
-
-  // 上に WebGL canvas を重ねる
+  // カメラ映像（video）＋ WebGL描画（canvas）を合成
+  ctx.drawImage(video, 0, 0, width, height);
   ctx.drawImage(canvas, 0, 0, width, height);
 
+  // ダウンロード
   const imageDataURL = outputCanvas.toDataURL('image/png');
   const a = document.createElement('a');
   a.href = imageDataURL;
