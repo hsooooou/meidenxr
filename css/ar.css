@@ -10,9 +10,10 @@ ul {
   list-style: none;
 }
 
-.a-canvas {
-  z-index: -50;
-}
+/* 後ろにいってAR表示されなくなる */
+/* .a-canvas {
+ z-index: -50;
+} */
 
 /* 表示するVR画像 */
 .vr-img {
