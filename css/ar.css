@@ -286,7 +286,6 @@ ul {
 /* エラーメッセージ */
 #keywordResult {
   font-size: 12px;
-  font-weight: 0;
   color: #231815;
   margin: 0 0 5px 0;
 }
