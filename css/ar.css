@@ -253,7 +253,7 @@ ul {
 
 /* 合言葉入力フィールド */
 .form-input {
-  width: 100%;
+  width: 70vw;
   padding: 20px;
   margin: 30px 0;
   font-size: 14px;
@@ -324,5 +324,9 @@ ul {
 
   .vr-info-textarea {
     padding: 0 3% 30% 6%;
+  }
+
+  .form-input {
+    width: 30vw;
   }
 }
