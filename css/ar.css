@@ -213,6 +213,31 @@ ul {
   padding-bottom: 0;
 }
 
+/* コンテンツ幅が100%であることを示す */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+
+a-scene {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* コンテンツ幅の終わり */
+
 @media (min-width: 568px){
 
 }
