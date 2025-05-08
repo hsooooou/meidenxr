@@ -11,7 +11,7 @@ ul {
 }
 
 .a-canvas {
-  z-index: -100;
+  z-index: -50;
 }
 
 /* 表示するVR画像 */
