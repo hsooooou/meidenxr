@@ -1,7 +1,7 @@
 // サポート画面開く
-$('.question').click(function () { //class="question" を持つ要素に対してクリックイベント
-  $('.question').toggleClass('is-active'); //クリックされた際にis-activeというクラスを切り替える操作を行う
-  $('.vr-info').toggleClass('is-active'); //すでにあれば消去、なければ追加する
+$('.question').click(function () {
+  $('.question').toggleClass('is-active'); //クリックされた際にis-activeというクラスを切り替える
+  $('.vr-info').toggleClass('is-active'); //すでにあれば消去、なければ追加
 
   updateButtonState(); // 状態更新処理を呼び出す
 });
@@ -13,23 +13,22 @@ $(window).resize(function () {
 
 // 状態更新処理
 function updateButtonState() {
-  if ($(window).width() < 1025) { //現在のウインドウ幅を取得 1025px未満のときだけ実行
-    const isActive = $('.question').hasClass('is-active'); //is-active がついているか判断しrue または falseを格納
+  const isActive = $('.question').hasClass('is-active'); //is-activeがついているか判断
 
-    // 各要素のアイコン切り替え  ex) trueの場合map.svg falseの場合map_white.svg になる
-    $('#map-icon').attr('src', isActive ? '../img/ar/map.svg' : '../img/ar/map_white.svg');
-    $('#panorama-icon-img').attr('src', isActive ? '../img/ar/panorama.svg' : '../img/ar/panorama_white.svg');
-    $('#key-icon').attr('src', isActive ? '../img/ar/key.svg' : '../img/ar/key_white.svg');
+  // アイコンの切り替え
+  $('#map-icon').attr('src', isActive ? '../img/ar/map.svg' : '../img/ar/map_white.svg');
+  $('#panorama-icon-img').attr('src', isActive ? '../img/ar/panorama.svg' : '../img/ar/panorama_white.svg');
+  $('#key-icon').attr('src', isActive ? '../img/ar/key.svg' : '../img/ar/key_white.svg');
 
-    // question ボタンを動的に背景画像・枠線 切り替え
-    $('.question').css({
-      'background-image': isActive
-        ? 'url(../img/vr/vr-btn-back.svg)' //trueの場合
-        : 'url(../img/vr/vr-btn-question_white.svg)', //falseの場合
-      'border': isActive ? '2px solid #231815' : 'none' //isActiveがtrueの場合にボタンに枠線（2px solid #231815）を表示 falseの場合は枠線を非表示
-    });
-  }
+  // question ボタンを動的に背景画像・枠線切り替え
+  $('.question').css({
+    'background-image': isActive
+      ? 'url(../img/vr/vr-btn-back.svg)' // trueの場合
+      : 'url(../img/vr/vr-btn-question_white.svg)', // falseの場合
+    'border': isActive ? '2px solid #231815' : 'none' // isActiveがtrueの場合にボタンに枠線（2px solid #231815）を表示
+  });
 }
+
 
 
 
