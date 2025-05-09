@@ -1,22 +1,22 @@
 // サポート画面開く
-$('.question').click(function () {
-  $('.question').toggleClass('is-active');
-  $('.vr-info').toggleClass('is-active');
+$('.question').click(function () { //class="question" を持つ要素に対してクリックイベント
+  $('.question').toggleClass('is-active'); //クリックされた際にis-activeというクラスを切り替える操作を行う
+  $('.vr-info').toggleClass('is-active'); //すでにあれば消去、なければ追加する
 
-  if ($(window).width() < 1025) {
-    const isActive = $('.question').hasClass('is-active');
+  if ($(window).width() < 1025) { //現在のウインドウ幅を取得 1025px未満のときだけ実行
+    const isActive = $('.question').hasClass('is-active'); //is-active がついているか判断しrue または falseを格納
 
-    // アイコン切り替え（1024px以下のみ）
+    // 各要素のアイコン切り替え  ex) trueの場合map.svg falseの場合map_white.svg になる
     $('#map-icon').attr('src', isActive ? '../img/ar/map.svg' : '../img/ar/map_white.svg');
     $('#panorama-icon-img').attr('src', isActive ? '../img/ar/panorama.svg' : '../img/ar/panorama_white.svg');
     $('#key-icon').attr('src', isActive ? '../img/ar/key.svg' : '../img/ar/key_white.svg');
 
-    // question ボタンの背景画像・枠線 切り替え（1024px以下のみ）
+    // question ボタンを動的に背景画像・枠線 切り替え
     $('.question').css({
       'background-image': isActive
-        ? 'url(../img/vr/vr-btn-back.svg)'
-        : 'url(../img/vr/vr-btn-question_white.svg)',
-      'border': isActive ? '2px solid #231815' : 'none'
+        ? 'url(../img/vr/vr-btn-back.svg)' //trueの場合
+        : 'url(../img/vr/vr-btn-question_white.svg)', //falseの場合
+      'border': isActive ? '2px solid #231815' : 'none' //isActiveがtrueの場合にボタンに枠線（2px solid #231815）を表示 falseの場合は枠線を非表示
     });
   }
 });
@@ -32,26 +32,26 @@ $('.burger').click(function(){
 
 
 
-
+///////////////////////////////////////////////////
 
 
 
 
 // 合言葉モーダル
-function checkKeyword() {
+function checkKeyword() { //正解のキーワードを”correctKeyword”に設定
   const correctKeyword = "とまと";  // 正解の合言葉をここに設定
-  const input = document.getElementById("keywordInput").value.trim();
-  const result = document.getElementById("keywordResult");
+  const input = document.getElementById("keywordInput").value.trim(); //keywordInputの要素を取得 .valueで内容を取得 .trim()で不必要なスペースの消去
+  const result = document.getElementById("keywordResult"); //id="keywordResult"を持つエラーメッセージを示す要素を取得
 
-  if (input === correctKeyword) {
-    window.location.href = "./ar-finish.html";
+  if (input === correctKeyword) { //キーワードと一致するか確かめる
+    window.location.href = "./ar-finish.html"; //一致した場合指定するページへ移動
   } else {
-    result.innerHTML = "合言葉が違うよ！<br>もう一度試してね。";
-    result.style.display = "block";
+    result.innerHTML = "合言葉が違うよ！<br>もう一度試してね。"; //エラーメッセージを表示する
+    result.style.display = "block"; //エラーメッセージ要素を表示する
 
     setTimeout(() => {
-      result.style.display = "none";
-    }, 10000);
+      result.style.display = "none"; //エラーメッセージを非表示
+    }, 10000); //10000 ミリ秒 = 10秒後に処理を実行
   }
 }
 
@@ -129,7 +129,7 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
 
 
 
-
+///////////////////////////////////////////////////
 
 
 
@@ -138,42 +138,44 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
 
 // VRリンク UI直ボタン
 window.addEventListener('DOMContentLoaded', () => {
-  const button = document.querySelector('#panorama-icon');
-  const icon = button.querySelector('.vr-menu-icon');
+  const button = document.querySelector('#panorama-icon'); //panorama-iconの要素を取得
+  const icon = button.querySelector('.vr-menu-icon'); // .vr-menu-icon クラスを持つimgタグを取得
 
-  // マーカーごとの設定（2つ目を Hiro に）
+
+
+  // マーカーごとの設定
   const markers = [
-    {
-      patternUrl: 'pattern-club_information_design.patt', // クラブ用
+    { //n02-idr 情報デザイン室
+      patternUrl: 'pattern-club_information_design.patt', 
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html'
     },
-    {
-      
-      // テスト用マーカー
-      patternUrl: 'hiro', // Hiro マーカー（type="pattern" を省略しても a-frame 上は対応）
-      link: 'https://hsooooou.github.io/meidenxr/'
+    
+    { // テスト用マーカー
+      patternUrl: 'hiro', // Hiro マーカー（type="pattern" を省略しても a-frame 上は対応） patternUrl（マーカー画像のパターンファイル）
+      link: 'https://hsooooou.github.io/meidenxr/' //対応するリンク
     }
   ];
 
-  markers.forEach(marker => {
+  markers.forEach(marker => { //forEach すべてのマーカー設定に対して処理を行う
     // Hiro の場合、type="pattern" ではなく type="barcode" or type="pattern" なので柔軟に選定
     const markerSelector = marker.patternUrl === 'hiro'
       ? 'a-marker[type="pattern"][preset="hiro"], a-marker[preset="hiro"]'
       : `a-marker[url*="${marker.patternUrl}"]`;
 
+    // 上記のセレクタに基づき、実際のマーカー要素(a-marker)を取得
     const markerEl = document.querySelector(markerSelector);
-    if (!markerEl) return;
+    if (!markerEl) return; //見つからなかった場合終了
 
-    markerEl.addEventListener('markerFound', () => {
-      icon.src = '../img/ar/panorama_active.svg'; // 色つきバージョン
-      button.onclick = () => {
-        window.location.href = marker.link;
+    markerEl.addEventListener('markerFound', () => { //マーカーが見つかった時に動作
+      icon.src = '../img/ar/panorama_active.svg'; // 色つきに変更する
+      button.onclick = () => { //指定のリンクへと移動させる
+        window.location.href = marker.link; 
       };
     });
 
-    markerEl.addEventListener('markerLost', () => {
-      icon.src = '../img/ar/panorama_white.svg'; // 通常バージョンに戻す
-      button.onclick = null;
+    markerEl.addEventListener('markerLost', () => { //マーカーが消えた時に動作
+      icon.src = '../img/ar/panorama_white.svg'; // 元のアイコンに戻す
+      button.onclick = null; //onclick イベントを 解除（null） ない状態でクリックしても動作しない
     });
   });
 });
