@@ -26,30 +26,12 @@ function checkKeyword() {
   }
 }
 
-// ARボタン - ページ遷移
 window.addEventListener('DOMContentLoaded', () => {
   const button = document.querySelector('#button-img');
 
-  // タップで判定
-  window.addEventListener('click', function (event) {
-    // Raycasterセットアップ
-    const scene = document.querySelector('a-scene');
-    const camera = scene.camera;
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-
-    // タップ座標を正規化 [-1, 1] に変換
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    raycaster.setFromCamera(mouse, camera);
-
-    // A-Frameのメッシュを取得して交差判定
-    const intersects = raycaster.intersectObject(button.object3D, true);
-
-    if (intersects.length > 0) {
-      window.location.href = 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html';
-    }
+  // ボタンがクリックされたときの処理
+  button.addEventListener('click', () => {
+    // ページ遷移先のURLに移動
+    window.location.href = 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html';
   });
 });
-
