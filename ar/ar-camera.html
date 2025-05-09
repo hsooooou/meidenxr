@@ -61,7 +61,8 @@
   <!-- AR表示設定 -->
   <!-- <a-scene embedded arjs="debugUIEnabled:false;" renderer="preserveDrawingBuffer: true  alpha: false;"> -->
   <a-scene embedded arjs="debugUIEnabled: false;" renderer="preserveDrawingBuffer: true;">
-    <a-entity camera></a-entity>
+    <a-entity camera><a-cursor fuse="false" raycaster="objects: .ar-btn">
+      </a-cursor></a-entity>
 
     <!-- Markerを表示した際の処理を以下に記述する -->
     <!-- ARマーカーのファイル名をここで指定する -->
@@ -83,7 +84,7 @@
 -->
       <a-image class="ar-btn" id="button-img" width="0.5" height="0.5" position="0.2 0.4 2.0" rotation="-90 0 0"
         src="https://hsooooou.github.io/meidenxr/img/ar/map.png"></a-image>
-      
+
     </a-marker>
   </a-scene>
 

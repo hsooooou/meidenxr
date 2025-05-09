@@ -298,9 +298,11 @@ ul {
 
 
 /* ARボタン */
-#botton-img {
+ar-btn {
   z-index: 100;
 }
+
+
 
 @media (min-width: 568px) {}
 
