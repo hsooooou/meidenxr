@@ -303,8 +303,7 @@ ul {
 
 @media (min-width: 568px) {
   .vr-info-textarea {
-    padding: 0 3% 50% 6%;
-    color: #231815;
+    padding: 0 3% 10% 6%;
     margin-bottom: 10vw;
   }
   

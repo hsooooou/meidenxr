@@ -202,6 +202,10 @@ ul {
 }
 
 @media (min-width: 568px){
+  .vr-info-textarea {
+    padding: 0 3% 10% 6%;
+    margin-bottom: 10vw;
+  }
 
 }
 
@@ -223,5 +227,10 @@ ul {
     background: #231815;
     color: #fafafa;
     border: 2px solid #231815;
+  }
+
+  .vr-info-textarea {
+    padding: 0 3% 20% 6%;
+    margin-bottom: 0vw;
   }
 }
