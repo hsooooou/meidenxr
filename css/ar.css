@@ -296,6 +296,12 @@ ul {
   display: none;
 }
 
+
+/* ARボタン */
+#botton-img {
+  z-index: 100;
+}
+
 @media (min-width: 568px) {}
 
 

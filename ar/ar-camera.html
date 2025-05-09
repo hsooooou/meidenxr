@@ -59,8 +59,8 @@
 <body class="body" style="margin : 0px; overflow: hidden;">
 
   <!-- AR表示設定 -->
-  <!-- <a-scene embedded arjs="debugUIEnabled:false;" renderer="preserveDrawingBuffer: true"> -->
-  <a-scene embedded arjs="debugUIEnabled: false;" renderer="preserveDrawingBuffer: true; alpha: false;">
+  <!-- <a-scene embedded arjs="debugUIEnabled:false;" renderer="preserveDrawingBuffer: true  alpha: false;"> -->
+  <a-scene embedded arjs="debugUIEnabled: false;" renderer="preserveDrawingBuffer: true;">
     <a-entity camera></a-entity>
 
     <!-- Markerを表示した際の処理を以下に記述する -->
@@ -72,8 +72,11 @@
       <!-- 画像を表示させる位置は position で設定可能 -->
       <!-- 画像を水平に表示させる場合は下記の rotation でOK -->
       <a-image width="4" height="2" position="0.2 0.4 0.4" rotation="-90 0 0"
-        src="https://hsooooou.github.io/meiden_pamphlet.github.io/img/ar_information_design.png">
+        src="https://hsooooou.github.io/meidenxr/img/ar/object_img/arimg_test.png">
       </a-image>
+
+      <a-image class="ar-btn" id="button-img" width="0.5" height="0.5" position="0.2 0.1 0.39" rotation="-90 0 0"
+        src="https://hsooooou.github.io/meidenxr/img/ar/camera.svg"></a-image>
     </a-marker>
   </a-scene>
 
