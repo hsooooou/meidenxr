@@ -48,22 +48,23 @@ window.addEventListener('DOMContentLoaded', () => {
   marker.addEventListener('markerFound', () => {
     const button = document.querySelector('#button-img');
     if (button) {
+      // クリックイベント
       button.addEventListener('click', () => {
         window.location.href = 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html';
+      });
+
+      // ホバーしたとき色変更
+      button.addEventListener('mouseenter', () => {
+        button.setAttribute('material', 'color', '#F5F185'); // 明るい黄色
+      });
+
+      button.addEventListener('mouseleave', () => {
+        button.setAttribute('material', 'color', '#fafafa'); // 元の色
       });
     }
   });
 });
 
-
-// カーソルホバー時
-button.addEventListener('click', () => {
-  button.setAttribute('material', 'color', '#F5F185'); // 押した瞬間の色
-  setTimeout(() => {
-    button.setAttribute('material', 'color', '#fafafa'); // 元の色に戻す
-    window.location.href = 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html';
-  }, 100); // 100ミリ秒後に遷移
-});
 
 
 
