@@ -26,11 +26,17 @@ function checkKeyword() {
   }
 }
 
+// ARボタン - ページ遷移
 window.addEventListener('DOMContentLoaded', () => {
-  const button = document.querySelector('#button-img');
+  const marker = document.querySelector('a-marker');
 
-  // A-Frameがentityを描画し終えてからリスナー追加
-  button.addEventListener('click', () => {
-    window.location.href = 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html';
+  marker.addEventListener('markerFound', () => {
+    const button = document.querySelector('#button-img');
+    if (button) {
+      button.addEventListener('click', () => {
+        window.location.href = 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html';
+      });
+    }
   });
 });
+
