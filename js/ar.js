@@ -3,6 +3,16 @@ $('.question').click(function () { //class="question" を持つ要素に対し�
   $('.question').toggleClass('is-active'); //クリックされた際にis-activeというクラスを切り替える操作を行う
   $('.vr-info').toggleClass('is-active'); //すでにあれば消去、なければ追加する
 
+  updateButtonState(); // 状態更新処理を呼び出す
+});
+
+// ウィンドウリサイズ時に再度アイコンとボタンの状態を更新
+$(window).resize(function () {
+  updateButtonState();
+});
+
+// 状態更新処理
+function updateButtonState() {
   if ($(window).width() < 1025) { //現在のウインドウ幅を取得 1025px未満のときだけ実行
     const isActive = $('.question').hasClass('is-active'); //is-active がついているか判断しrue または falseを格納
 
@@ -19,13 +29,12 @@ $('.question').click(function () { //class="question" を持つ要素に対し�
       'border': isActive ? '2px solid #231815' : 'none' //isActiveがtrueの場合にボタンに枠線（2px solid #231815）を表示 falseの場合は枠線を非表示
     });
   }
-});
+}
 
 
 
 
-
-$('.burger').click(function(){
+$('.burger').click(function () {
   $('.under-list').toggleClass('is-active');
 })
 
@@ -68,11 +77,11 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
 
   // ここにマーカーパターンを記入　IDの設定に注意
   const markers = [
-    { 
+    {
       //n02-idr 情報デザイン室
       patternUrl: 'pattern-club_information_design.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html',
-      buttonId: 'button-n02-idr' 
+      buttonId: 'button-n02-idr'
     },
     {
       //テスト用マーカー hiro
@@ -99,7 +108,7 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
       const handleEnter = () => { // ホバー（マウスが乗ったとき）で色を変更
         button.setAttribute('material', 'color', '#F5F185');
         cursor.setAttribute('material', 'color', '#231815');
-      };  
+      };
       const handleLeave = () => {  // ホバーが外れたときに元の色に戻す
         button.setAttribute('material', 'color', '#fafafa');
         cursor.setAttribute('material', 'color', 'white');
@@ -146,10 +155,10 @@ window.addEventListener('DOMContentLoaded', () => {
   // マーカーごとの設定
   const markers = [
     { //n02-idr 情報デザイン室
-      patternUrl: 'pattern-club_information_design.patt', 
+      patternUrl: 'pattern-club_information_design.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html'
     },
-    
+
     { // テスト用マーカー
       patternUrl: 'hiro', // Hiro マーカー（type="pattern" を省略しても a-frame 上は対応） patternUrl（マーカー画像のパターンファイル）
       link: 'https://hsooooou.github.io/meidenxr/' //対応するリンク
@@ -169,7 +178,7 @@ window.addEventListener('DOMContentLoaded', () => {
     markerEl.addEventListener('markerFound', () => { //マーカーが見つかった時に動作
       icon.src = '../img/ar/panorama_active.svg'; // 色つきに変更する
       button.onclick = () => { //指定のリンクへと移動させる
-        window.location.href = marker.link; 
+        window.location.href = marker.link;
       };
     });
 
