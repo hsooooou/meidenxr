@@ -102,10 +102,10 @@ ul {
   z-index: 5;
 }
 
-.question.is-active {
+/* .question.is-active {
   background-image: url(../img/vr/vr-btn-back.svg);
   border: 2px solid #231815
-}
+} */
 
 
 

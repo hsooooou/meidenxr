@@ -6,13 +6,22 @@ $('.question').click(function () {
   if ($(window).width() < 1025) {
     const isActive = $('.question').hasClass('is-active');
 
-    // is-active が付いたとき（開いたとき） → 黒アイコンに
-    // is-active が外れたとき（閉じたとき） → 白アイコンに
+    // アイコン切り替え（1024px以下のみ）
     $('#map-icon').attr('src', isActive ? '../img/ar/map.svg' : '../img/ar/map_white.svg');
     $('#panorama-icon-img').attr('src', isActive ? '../img/ar/panorama.svg' : '../img/ar/panorama_white.svg');
     $('#key-icon').attr('src', isActive ? '../img/ar/key.svg' : '../img/ar/key_white.svg');
+
+    // question ボタンの背景画像・枠線 切り替え（1024px以下のみ）
+    $('.question').css({
+      'background-image': isActive
+        ? 'url(../img/vr/vr-btn-back.svg)'
+        : 'url(../img/vr/vr-btn-question_white.svg)',
+      'border': isActive ? '2px solid #231815' : 'none'
+    });
   }
 });
+
+
 
 
 
