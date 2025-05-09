@@ -58,36 +58,68 @@ function checkKeyword() {
 
 
 
-
+///////////////////////////////////////////////////
 
 
 
 // ARボタン - ページ遷移
-window.addEventListener('DOMContentLoaded', () => {
-  const marker = document.querySelector('a-marker');
+window.addEventListener('DOMContentLoaded', () => { //全て読み込まれてから実行
+  const cursor = document.querySelector('a-cursor'); //a-frame からcursor要素の取得
 
-  marker.addEventListener('markerFound', () => {
-    const button = document.querySelector('#button-img');
-    const cursor = document.querySelector('a-cursor');
-
-    if (button && cursor) {
-      // クリックイベント
-      button.addEventListener('click', () => {
-        window.location.href = 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html';
-      });
-
-      // ホバー時：ボタンとカーソルの色を変える
-      button.addEventListener('mouseenter', () => {
-        button.setAttribute('material', 'color', '#F5F185');     // ボタンを黄色
-        cursor.setAttribute('material', 'color', '#231815');     // カーソルを黒に
-      });
-
-      // ホバー外れたら：元に戻す
-      button.addEventListener('mouseleave', () => {
-        button.setAttribute('material', 'color', '#fafafa');     // ボタン元に戻す
-        cursor.setAttribute('material', 'color', 'white');       // カーソル白に戻す
-      });
+  // ここにマーカーパターンを記入　IDの設定に注意
+  const markers = [
+    { 
+      //n02-idr 情報デザイン室
+      patternUrl: 'pattern-club_information_design.patt',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html',
+      buttonId: 'button-n02-idr' 
+    },
+    {
+      //テスト用マーカー hiro
+      patternUrl: 'hiro', //マーカー画像のパターン
+      link: 'https://hsooooou.github.io/meidenxr/', //遷移するURL
+      buttonId: 'button-test-hiro' //a-imageに設定したidをここに記入
     }
+  ];
+
+  markers.forEach(marker => { //マーカーを一つずつ処理する
+    //hiroマーカーのみ特殊に処理
+    const markerSelector = marker.patternUrl === 'hiro'
+      ? 'a-marker[type="pattern"][preset="hiro"], a-marker[preset="hiro"]'
+      : `a-marker[url*="${marker.patternUrl}"]`;
+
+    // マーカーとボタンとカーソルが取得できなければスキップ
+    const markerEl = document.querySelector(markerSelector);
+    const button = document.querySelector(`#${marker.buttonId}`);
+    if (!markerEl || !button || !cursor) return;
+
+    // 各マーカーの表示時 → マーカーが検出されたときの処理を定義
+    markerEl.addEventListener('markerFound', () => {
+      const handleClick = () => window.location.href = marker.link; //ボタンがクリックされたら設定したURLにジャン     
+      const handleEnter = () => { // ホバー（マウスが乗ったとき）で色を変更
+        button.setAttribute('material', 'color', '#F5F185');
+        cursor.setAttribute('material', 'color', '#231815');
+      };  
+      const handleLeave = () => {  // ホバーが外れたときに元の色に戻す
+        button.setAttribute('material', 'color', '#fafafa');
+        cursor.setAttribute('material', 'color', 'white');
+      };
+
+      //上の関数をイベントとしてボタンに登録
+      button.addEventListener('click', handleClick);
+      button.addEventListener('mouseenter', handleEnter);
+      button.addEventListener('mouseleave', handleLeave);
+
+      markerEl.addEventListener('markerLost', () => { //マーカーが見えなくなったとき
+        // イベントを解除（残ったままだと別マーカーでバグる可能性があるため）
+        button.removeEventListener('click', handleClick);
+        button.removeEventListener('mouseenter', handleEnter);
+        button.removeEventListener('mouseleave', handleLeave);
+        // 色を初期状態に戻す
+        button.setAttribute('material', 'color', '#fafafa');
+        cursor.setAttribute('material', 'color', 'white');
+      });
+    });
   });
 });
 
@@ -103,7 +135,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
-// VRリンク
+
+// VRリンク UI直ボタン
 window.addEventListener('DOMContentLoaded', () => {
   const button = document.querySelector('#panorama-icon');
   const icon = button.querySelector('.vr-menu-icon');
