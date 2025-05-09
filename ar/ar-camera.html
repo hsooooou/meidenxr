@@ -60,13 +60,13 @@
 
   <!-- AR表示設定 -->
   <!-- <a-scene embedded arjs="debugUIEnabled:false;" renderer="preserveDrawingBuffer: true  alpha: false;"> -->
-  <a-scene embedded arjs="debugUIEnabled: false;" renderer="preserveDrawingBuffer: true;">
+  <a-scene embedded arjs="debugUIEnabled: false;" renderer="preserveDrawingBuffer: true;" raycaster="objects: .ar-btn">
     <a-entity camera></a-entity>
     <!--a-entityの中に入れる→ <a-cursor fuse="false" raycaster="objects: .ar-btn">
       </a-cursor> -->
 
     <!-- カーソルをマウス（=スマホのタップ）に対応させる -->
-    <a-entity cursor="rayOrigin: mouse" raycaster="objects: .ar-btn; far: 100; interval: 100">
+    <a-entity cursor="rayOrigin: mouse" >
     </a-entity>
 
     <!-- Markerを表示した際の処理を以下に記述する -->
@@ -87,7 +87,7 @@
           y → 高さ方向（+y = 上に浮く、-y = 地面に沈む）
           z → 前後移動（+z = 奥、-z = 手前）
 -->
-      <a-image class="ar-btn" id="button-img" width="0.5" height="0.5" position="0.2 0.45 2.0" rotation="-90 0 0"
+      <a-image class="ar-btn" id="button-img" width="0.5" height="0.5" position="0.2 0.2 2.0" rotation="-90 0 0"
         src="https://hsooooou.github.io/meidenxr/img/ar/map.png">
       </a-image>
 
