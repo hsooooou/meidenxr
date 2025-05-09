@@ -8,6 +8,14 @@ $('.burger').click(function(){
   $('.under-list').toggleClass('is-active');
 })
 
+
+
+
+
+
+
+
+
 // 合言葉モーダル
 function checkKeyword() {
   const correctKeyword = "とまと";  // 正解の合言葉をここに設定
@@ -26,6 +34,13 @@ function checkKeyword() {
   }
 }
 
+
+
+
+
+
+
+
 // ARボタン - ページ遷移
 window.addEventListener('DOMContentLoaded', () => {
   const marker = document.querySelector('a-marker');
@@ -40,6 +55,11 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+
+
+
+
+
 // カーソルホバー時
 const button = document.querySelector('#button-img');
 
@@ -50,6 +70,12 @@ button.addEventListener('mouseenter', () => {
 button.addEventListener('mouseleave', () => {
   button.setAttribute('material', 'color', '#fafafa'); // 元の色
 });
+
+
+
+
+
+
 
 
 // VRリンク
@@ -64,6 +90,8 @@ window.addEventListener('DOMContentLoaded', () => {
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html'
     },
     {
+      
+      // テスト用マーカー
       patternUrl: 'hiro', // Hiro マーカー（type="pattern" を省略しても a-frame 上は対応）
       link: 'https://hsooooou.github.io/meidenxr/'
     }
