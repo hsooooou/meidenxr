@@ -66,7 +66,8 @@
       </a-cursor> -->
 
     <!-- カーソルをマウス（=スマホのタップ）に対応させる -->
-    <a-entity cursor="rayOrigin: mouse" raycaster="objects: .ar-btn"></a-entity>
+    <a-entity cursor="rayOrigin: mouse" raycaster="objects: .ar-btn; far: 100; interval: 100">
+    </a-entity>
 
     <!-- Markerを表示した際の処理を以下に記述する -->
     <!-- ARマーカーのファイル名をここで指定する -->

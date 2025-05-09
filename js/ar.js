@@ -26,10 +26,13 @@ function checkKeyword() {
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+AFRAME.scenes[0].addEventListener('loaded', () => {
   const button = document.querySelector('#button-img');
-
-  button.addEventListener('click', () => {
-    window.location.href = 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html';
-  });
+  if (button) {
+    button.addEventListener('click', () => {
+      window.location.href = 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html';
+    });
+  } else {
+    console.warn('ボタンが見つかりませんでした');
+  }
 });
