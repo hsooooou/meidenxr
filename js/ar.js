@@ -40,3 +40,14 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// カーソルホバー時
+const button = document.querySelector('#button-img');
+
+button.addEventListener('mouseenter', () => {
+  button.setAttribute('material', 'color', '#F5F185'); // ホバー時の色
+});
+
+button.addEventListener('mouseleave', () => {
+  button.setAttribute('material', 'color', '#fafafa'); // 元の色
+});
+
