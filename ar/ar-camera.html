@@ -61,7 +61,7 @@
   <!-- AR表示設定 -->
   <!-- <a-scene embedded arjs="debugUIEnabled:false;" renderer="preserveDrawingBuffer: true"> -->
   <a-scene embedded arjs="debugUIEnabled: false;" renderer="preserveDrawingBuffer: true; alpha: false;">
-    <a-entity camera><a-cursor></a-cursor></a-entity>
+    <a-entity camera></a-entity>
 
     <!-- Markerを表示した際の処理を以下に記述する -->
     <!-- ARマーカーのファイル名をここで指定する -->
@@ -75,13 +75,6 @@
         src="https://hsooooou.github.io/meiden_pamphlet.github.io/img/ar_information_design.png">
       </a-image>
     </a-marker>
-
-    <a-image id="main-svg"
-             src="../img/ar/map.svg"
-             position="0 0 0"
-             width="0.5"
-             height="0.5">
-    </a-image>
   </a-scene>
 
   <!-- 下のメニュー -->
