@@ -51,3 +51,43 @@ button.addEventListener('mouseleave', () => {
   button.setAttribute('material', 'color', '#fafafa'); // 元の色
 });
 
+
+// VRリンク
+window.addEventListener('DOMContentLoaded', () => {
+  const button = document.querySelector('#panorama-icon');
+  const icon = button.querySelector('.vr-menu-icon');
+
+  // マーカーごとの設定（2つ目を Hiro に）
+  const markers = [
+    {
+      patternUrl: 'pattern-club_information_design.patt', // クラブ用
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html'
+    },
+    {
+      patternUrl: 'hiro', // Hiro マーカー（type="pattern" を省略しても a-frame 上は対応）
+      link: 'https://hsooooou.github.io/meidenxr/'
+    }
+  ];
+
+  markers.forEach(marker => {
+    // Hiro の場合、type="pattern" ではなく type="barcode" or type="pattern" なので柔軟に選定
+    const markerSelector = marker.patternUrl === 'hiro'
+      ? 'a-marker[type="pattern"][preset="hiro"], a-marker[preset="hiro"]'
+      : `a-marker[url*="${marker.patternUrl}"]`;
+
+    const markerEl = document.querySelector(markerSelector);
+    if (!markerEl) return;
+
+    markerEl.addEventListener('markerFound', () => {
+      icon.src = '../img/ar/panorama_active.svg'; // 色つきバージョン
+      button.onclick = () => {
+        window.location.href = marker.link;
+      };
+    });
+
+    markerEl.addEventListener('markerLost', () => {
+      icon.src = '../img/ar/panorama.svg'; // 通常バージョンに戻す
+      button.onclick = null;
+    });
+  });
+});

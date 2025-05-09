@@ -60,7 +60,7 @@ ul {
 .vr-menu-list {
   display: flex;
   align-items: center;
-  gap: 40px;
+  gap: 25px;
 }
 .vr-menu-icon {
   width: 50px;
