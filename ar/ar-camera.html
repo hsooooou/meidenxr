@@ -61,7 +61,7 @@
   <!-- AR表示設定 -->
   <!-- <a-scene embedded arjs="debugUIEnabled:false;" renderer="preserveDrawingBuffer: true  alpha: false;"> -->
   <a-scene embedded arjs="debugUIEnabled: false;" renderer="preserveDrawingBuffer: true;" raycaster="objects: .ar-btn">
-    <a-entity camera><a-cursor fuse="false" cursor="rayOrigin: mouse" ></a-cursor></a-entity>
+    <a-entity camera><a-cursor fuse="false" cursor="rayOrigin: mouse"></a-cursor></a-entity>
     <!--a-entityの中に入れる→ <a-cursor fuse="false" raycaster="objects: .ar-btn">
       </a-cursor> -->
 
@@ -90,15 +90,18 @@
       <a-image class="ar-btn" id="button-img" width="0.5" height="0.5" position="0.2 0.2 2.0" rotation="-90 0 0"
         material="shader: flat " src="https://hsooooou.github.io/meidenxr/img/ar/map.png">
       </a-image>
-
-      <!-- テストマーカ- -->
-      <a-marker preset="hiro">
-        <!-- Hiroマーカー上に四角いオブジェクト -->
-        <a-box position="0 0.5 0" rotation="0 0 0" width="1" height="1" depth="1" color="#4CC3D9">
-        </a-box>
     </a-marker>
 
+
+    <!-- テストマーカ- -->
+    <a-marker preset="hiro">
+      <!-- Hiroマーカー上に四角いオブジェクト -->
+      <a-box position="0 0.5 0" rotation="0 0 0" width="1" height="1" depth="1" color="#4CC3D9">
+      </a-box>
     </a-marker>
+
+
+    
   </a-scene>
 
   <!-- 下のメニュー -->
