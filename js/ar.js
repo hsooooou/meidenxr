@@ -25,3 +25,13 @@ function checkKeyword() {
     }, 10000);
   }
 }
+
+// ARボタン - ページ遷移
+window.addEventListener('DOMContentLoaded', () => {
+  const btn = document.querySelector('#button-img');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      window.location.href = 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html'; // ← 遷移先をここに記入
+    });
+  }
+});
