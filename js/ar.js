@@ -26,13 +26,11 @@ function checkKeyword() {
   }
 }
 
-AFRAME.scenes[0].addEventListener('loaded', () => {
+window.addEventListener('DOMContentLoaded', () => {
   const button = document.querySelector('#button-img');
-  if (button) {
-    button.addEventListener('click', () => {
-      window.location.href = 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html';
-    });
-  } else {
-    console.warn('ボタンが見つかりませんでした');
-  }
+
+  // A-Frameがentityを描画し終えてからリスナー追加
+  button.addEventListener('click', () => {
+    window.location.href = 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html';
+  });
 });
