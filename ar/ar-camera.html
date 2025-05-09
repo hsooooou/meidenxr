@@ -61,8 +61,9 @@
   <!-- AR表示設定 -->
   <!-- <a-scene embedded arjs="debugUIEnabled:false;" renderer="preserveDrawingBuffer: true  alpha: false;"> -->
   <a-scene embedded arjs="debugUIEnabled: false;" renderer="preserveDrawingBuffer: true;">
-    <a-entity camera><a-cursor fuse="false" raycaster="objects: .ar-btn">
-      </a-cursor></a-entity>
+    <a-entity camera></a-entity>
+    <!--a-entityの中に入れる→ <a-cursor fuse="false" raycaster="objects: .ar-btn">
+      </a-cursor> -->
 
     <!-- Markerを表示した際の処理を以下に記述する -->
     <!-- ARマーカーのファイル名をここで指定する -->
