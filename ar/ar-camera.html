@@ -66,7 +66,7 @@
       </a-cursor> -->
 
     <!-- カーソルをマウス（=スマホのタップ）に対応させる -->
-    <a-entity cursor="rayOrigin: mouse"></a-entity>
+    <a-entity cursor="rayOrigin: mouse" raycaster="objects: .ar-btn"></a-entity>
 
     <!-- Markerを表示した際の処理を以下に記述する -->
     <!-- ARマーカーのファイル名をここで指定する -->
@@ -86,9 +86,9 @@
           y → 高さ方向（+y = 上に浮く、-y = 地面に沈む）
           z → 前後移動（+z = 奥、-z = 手前）
 -->
-      <a-entity class="ar-btn" id="button-img" geometry="primitive: plane; height: 0.5; width: 0.5"
-        material="src: https://hsooooou.github.io/meidenxr/img/ar/map.png;  side: double" position="0.2 0.45 2.0"
-        rotation="-90 0 0"></a-entity>
+      <a-image class="ar-btn" id="button-img" width="0.5" height="0.5" position="0.2 0.45 0.4" rotation="-90 0 0"
+        src="https://hsooooou.github.io/meidenxr/img/ar/map.png">
+      </a-image>
 
     </a-marker>
   </a-scene>

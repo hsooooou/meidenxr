@@ -29,9 +29,7 @@ function checkKeyword() {
 window.addEventListener('DOMContentLoaded', () => {
   const button = document.querySelector('#button-img');
 
-  // ボタンがクリックされたときの処理
   button.addEventListener('click', () => {
-    // ページ遷移先のURLに移動
     window.location.href = 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html';
   });
 });
