@@ -61,13 +61,13 @@
   <!-- AR表示設定 -->
   <!-- <a-scene embedded arjs="debugUIEnabled:false;" renderer="preserveDrawingBuffer: true  alpha: false;"> -->
   <a-scene embedded arjs="debugUIEnabled: false;" renderer="preserveDrawingBuffer: true;" raycaster="objects: .ar-btn" cursor="rayOrigin: mouse">
-    <a-entity camera></a-entity>
+    <a-entity camera><a-entity cursor="rayOrigin: mouse" >
+    </a-entity></a-entity>
     <!--a-entityの中に入れる→ <a-cursor fuse="false" raycaster="objects: .ar-btn">
       </a-cursor> -->
 
     <!-- カーソルをマウス（=スマホのタップ）に対応させる -->
-    <a-entity cursor="rayOrigin: mouse" >
-    </a-entity>
+    
 
     <!-- Markerを表示した際の処理を以下に記述する -->
     <!-- ARマーカーのファイル名をここで指定する -->
