@@ -1,8 +1,18 @@
 // サポート画面開く
+// 元々のクリックイベント
 $('.question').click(function(){
   $('.question').toggleClass('is-active');
   $('.vr-info').toggleClass('is-active');
-})
+  
+  // 画面幅が1025px未満の場合にアイコンの変更を行う
+  if ($(window).width() < 1025) {
+    // アイコン変更処理
+    $('#map-icon').attr('src', '../img/ar/new-map-icon.svg');  // 新しいSVGアイコンに変更
+    $('#panorama-icon-img').attr('src', '../img/ar/new-panorama-icon.svg');
+    $('#key-icon').attr('src', '../img/ar/new-key-icon.svg');
+  }
+});
+
 
 $('.burger').click(function(){
   $('.under-list').toggleClass('is-active');
@@ -47,23 +57,31 @@ window.addEventListener('DOMContentLoaded', () => {
 
   marker.addEventListener('markerFound', () => {
     const button = document.querySelector('#button-img');
-    if (button) {
+    const cursor = document.querySelector('a-cursor');
+
+    if (button && cursor) {
       // クリックイベント
       button.addEventListener('click', () => {
         window.location.href = 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html';
       });
 
-      // ホバーしたとき色変更
+      // ホバー時：ボタンとカーソルの色を変える
       button.addEventListener('mouseenter', () => {
-        button.setAttribute('material', 'color', '#F5F185'); // 明るい黄色
+        button.setAttribute('material', 'color', '#F5F185');     // ボタンを黄色
+        cursor.setAttribute('material', 'color', '#231815');     // カーソルを黒に
       });
 
+      // ホバー外れたら：元に戻す
       button.addEventListener('mouseleave', () => {
-        button.setAttribute('material', 'color', '#fafafa'); // 元の色
+        button.setAttribute('material', 'color', '#fafafa');     // ボタン元に戻す
+        cursor.setAttribute('material', 'color', 'white');       // カーソル白に戻す
       });
     }
   });
 });
+
+
+
 
 
 
