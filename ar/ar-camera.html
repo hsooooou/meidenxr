@@ -93,7 +93,7 @@
           z → 前後移動（+z = 奥、-z = 手前）-->
       <a-image class="ar-btn" id="button-img" geometry="primitive: plane; height: 0.5; width: 0.5"
         position="0.2 0.2 1.5" rotation="-90 0 0" material="shader: flat "
-        src="https://hsooooou.github.io/meidenxr/img/ar/map.png">
+        src="https://hsooooou.github.io/meidenxr/img/ar/panorama.png">
       </a-image>
     </a-marker>
 
@@ -114,19 +114,23 @@
     <nav>
       <div>
         <div class="vr-menu-list">
-          <li id="openModal-map"><img class="vr-menu-icon" src="../img/ar/map.svg" alt="map">
+          <li id="openModal-map">
+            <img id="map-icon" class="vr-menu-icon" src="../img/ar/map_white.svg" alt="map">
           </li>
-          <li id="panorama-icon"><img class="vr-menu-icon" src="../img/ar/panorama.svg" alt="panorama">
+          <li id="panorama-icon">
+            <img id="panorama-icon-img" class="vr-menu-icon" src="../img/ar/panorama_white.svg" alt="panorama">
           </li>
           <li>
             <div class="question"></div>
           </li>
-          <li id="openModal"><img class="vr-menu-icon" src="../img/ar/key.svg" alt="key">
+          <li id="openModal">
+            <img id="key-icon" class="vr-menu-icon" src="../img/ar/key_white.svg" alt="key">
           </li>
         </div>
       </div>
     </nav>
   </div>
+  
 
   <!-- 表示させる情報 -->
   <div class="vr-info">

@@ -1,15 +1,16 @@
 // サポート画面開く
-// 元々のクリックイベント
-$('.question').click(function(){
+$('.question').click(function () {
   $('.question').toggleClass('is-active');
   $('.vr-info').toggleClass('is-active');
-  
-  // 画面幅が1025px未満の場合にアイコンの変更を行う
+
   if ($(window).width() < 1025) {
-    // アイコン変更処理
-    $('#map-icon').attr('src', '../img/ar/new-map-icon.svg');  // 新しいSVGアイコンに変更
-    $('#panorama-icon-img').attr('src', '../img/ar/new-panorama-icon.svg');
-    $('#key-icon').attr('src', '../img/ar/new-key-icon.svg');
+    const isActive = $('.question').hasClass('is-active');
+
+    // is-active が付いたとき（開いたとき） → 黒アイコンに
+    // is-active が外れたとき（閉じたとき） → 白アイコンに
+    $('#map-icon').attr('src', isActive ? '../img/ar/map.svg' : '../img/ar/map_white.svg');
+    $('#panorama-icon-img').attr('src', isActive ? '../img/ar/panorama.svg' : '../img/ar/panorama_white.svg');
+    $('#key-icon').attr('src', isActive ? '../img/ar/key.svg' : '../img/ar/key_white.svg');
   }
 });
 
@@ -128,7 +129,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     markerEl.addEventListener('markerLost', () => {
-      icon.src = '../img/ar/panorama.svg'; // 通常バージョンに戻す
+      icon.src = '../img/ar/panorama_white.svg'; // 通常バージョンに戻す
       button.onclick = null;
     });
   });
