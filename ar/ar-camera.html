@@ -39,6 +39,7 @@
     content="MeidenXRはXRを用いてスマホからでも、遠く離れた場所からどこでも愛知工業大学名電高等学校の施設見学が可能なコンテンツです！主要な施設のほとんどを再現しています！">
 
   <!-- AR/VRの読み込み -->
+  <script src="../js/pageshow-handler.js"></script>
   <script src="../js/aframe.min.1.7.1.js"></script>
   <!-- <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.7.7/aframe/build/aframe-ar.js"></script> -->
   <script src="../js/aframe-ar.3.4.0.js"></script>
@@ -62,8 +63,7 @@
   <!-- <a-scene embedded arjs="debugUIEnabled:false;" renderer="preserveDrawingBuffer: true  alpha: false;"> -->
   <a-scene embedded arjs="debugUIEnabled: false;" renderer="preserveDrawingBuffer: true;" raycaster="objects: .ar-btn">
     <a-entity camera>
-      <a-cursor fuse="false" material="color: white; opacity: 0.15"
-        raycaster="objects: .ar-btn">
+      <a-cursor fuse="false" material="color: white; opacity: 0.15" raycaster="objects: .ar-btn">
       </a-cursor>
     </a-entity>
     <a-entity cursor="rayOrigin: mouse" raycaster="objects: .ar-btn"></a-entity>
@@ -136,7 +136,7 @@
       </div>
     </nav>
   </div>
-  
+
 
 
   <!-- 表示させる情報 -->
