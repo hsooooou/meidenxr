@@ -1,0 +1,108 @@
+@charset "utf-8";
+
+.ar-main {
+  margin: 20px;
+}
+
+.ar-areabox {
+  padding-bottom: 40px;
+}
+
+/*  */
+/*  */
+
+.ar-title {
+  color: #231815;
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 900;
+  font-size: 48px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.ar-title-sub {
+  color: #231815;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 14px;
+  text-align: center;
+  padding: 10px;
+}
+
+.ar-contents-number {
+  color: #6d6562;
+  font-size: 14px;
+  font-family: "Noto Sans JP", sans-serif;
+  padding: 0 5px;
+  border-left: 4px solid #c0bcbb;
+  margin: 5px 0;
+}
+
+/*  */
+/*  */
+
+.ar-subtitle {
+  color: #668BC7;
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 900;
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.ar-subtitle-copy {
+  color: #668BC7;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 16px;
+  margin: 3px 0;
+}
+
+.ar-maintext {
+  color: #231815;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 14px;
+  padding: 10px 0 0 0;
+}
+
+.ar-maintext-sub {
+  color: #6d6562;
+  font-weight: 600;
+  font-size: 12px;
+  margin: 5px 0;
+}
+
+.ar-notetext {
+  color: #6d6562;
+  font-size: 10px;
+  margin: 10px 0;
+}
+
+/*  */
+/*  */
+.ar-explanation-title {
+  color: #231815;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 18px;
+  padding: 0 10px;
+  text-align: center;
+}
+
+.ar-experience-area {
+  margin: 20px;
+}
+
+.ar-experience-box {
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.ar-experience-number {
+  color: #668BC7;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 12px;
+}
+
+.ar-experience-title {
+  color: #231815;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 14px;
+  padding-top: 3px;
+}
