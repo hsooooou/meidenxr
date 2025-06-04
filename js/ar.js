@@ -97,14 +97,14 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
     {
       //n10-alr アクティブラーニング室
       patternUrl: 'pattern-testplay_3_n10-alr',
-      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n10-ar.html',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n10-alr.html',
       buttonId: 'button-n10-alr'
     },
     {
       //n11-cl 化学実験室
       patternUrl: 'pattern-testplay_2_n11-cl',
-      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html',
-      buttonId: 'button-n11-cl'
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n11-cl.html',
+      buttonId: 'button-n-11-cl'
     },
     {
       //テスト用マーカー hiro
