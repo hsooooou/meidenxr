@@ -83,6 +83,12 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
       buttonId: 'button-n02-idr'
     },
     {
+      //n06-ml メディアライブラリー
+      patternUrl: 'pattern-testplay_5_n06-ml.patt',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html',
+      buttonId: 'button-n02-idr'
+    },
+    {
       //テスト用マーカー hiro
       patternUrl: 'hiro', //マーカー画像のパターン
       link: 'https://hsooooou.github.io/meidenxr/', //遷移するURL
