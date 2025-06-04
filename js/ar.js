@@ -86,7 +86,25 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
       //n06-ml メディアライブラリー
       patternUrl: 'pattern-testplay_5_n06-ml.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html',
-      buttonId: 'button-n02-idr'
+      buttonId: 'button-n06-ml'
+    },
+    {
+      //n08-sc サテライト教室
+      patternUrl: 'pattern-testplay_1_n08-sc.patt',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-08-sc.html',
+      buttonId: 'button-n11-cl'
+    },
+    {
+      //n10-alr アクティブラーニング室
+      patternUrl: 'pattern-testplay_3_n10-alr',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n10-ar.html',
+      buttonId: 'button-n1--ar'
+    },
+    {
+      //n11-cl 化学実験室
+      patternUrl: 'pattern-testplay_2_n11-cl',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html',
+      buttonId: 'button-n06-ml'
     },
     {
       //テスト用マーカー hiro
