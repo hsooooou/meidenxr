@@ -77,6 +77,63 @@
 
 /*  */
 /*  */
+/* 表示非表示開閉エリア */
+input[type="checkbox"].ar-on-off {
+  opacity: 0;
+  display: none;
+}
+
+.open-explanation {
+  margin: 0 20px;
+  padding: 5px;
+  display: block;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 18px;
+  color: #231815;
+  background-color: #e3e3e3;
+  text-align: center;
+  border-radius: 100px;
+
+}
+
+エフェクト .open-explanation:active {
+  box-shadow: 0 0 0 0;
+}
+
+/* .open-explanation:hover {
+  background: -webkit-linear-gradient(bottom, #fff4e0 1%, orange 80%);
+  background: #b2b035;
+} */
+
+/*ラベルに表示するテキスト*/
+.open-explanation::after {
+  content: '体験の流れ';
+}
+
+.ar-on-off:checked~.open-explanation::after {
+  content: '閉じる';
+}
+
+.ar-experience-area {
+  height: 0;
+  opacity: 0;
+  display: none;
+  /* visibility: visible; */
+  /*内容を非表示、リンクを無効化*/
+  transition: all 1s;
+}
+
+/*「開く」をタップで表示*/
+.ar-on-off:checked~.ar-experience-area {
+  height: auto;
+  opacity: 1;
+  display: block;
+  /* visibility: visible; */
+  /*内容を表示、リンクを有効化*/
+}
+
+/*  */
+/*  */
 .ar-explanation-title {
   color: #231815;
   font-family: "Noto Sans JP", sans-serif;
@@ -92,6 +149,8 @@
 .ar-experience-box {
   padding: 20px;
   background-color: #ffffff;
+  border-radius: 20px;
+  margin-bottom: 20px; 
 }
 
 .ar-experience-number {
@@ -106,3 +165,35 @@
   font-size: 14px;
   padding-top: 3px;
 }
+
+.ar-explanation-btn {
+  color: #231815;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 18px;
+  margin: 10px 20px;
+  padding: 5px;
+  text-align: center;
+  background-color: #e6e243;
+  border-radius: 100px;
+}
+.ar-explanation-btn:hover {
+  color: #e3e3e3;
+  background-color: #231815;
+}
+
+/* ガイド内ボタン */
+.ar-explanation-btn-in {
+  color: #e3e3e3;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 12px;
+  margin: 10px 0px;
+  padding: 5px;
+  text-align: center;
+  background-color: #6d6562;
+  border-radius: 100px;
+}
+.ar-explanation-btn-in:hover {
+  color: #e3e3e3;
+  background-color: #231815;
+}
+
