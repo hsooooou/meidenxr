@@ -228,6 +228,26 @@ input[type="checkbox"].ar-on-off {
   background-color: #231815;
 }
 
+
+/*  */
+/* 到達時間表示 */
+.finish-time-text {
+  color: #668BC7;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 14px;
+  padding-top: 3px;
+  text-align: center;
+}
+#finish-time-counter {
+  color: #668BC7;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 18px;
+  padding-top: 3px;
+  text-align: center;
+}
+
+
+
 @media screen and (min-width: 698px) and (max-width: 1024px){
 
 }

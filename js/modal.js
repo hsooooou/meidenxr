@@ -14,6 +14,22 @@ span.onclick = function () {
 }
 
 
+// モーダル要素を取得
+var modalmap = document.getElementById("qrModal-map");
+// モーダルを開くボタンを取得
+var btnmap = document.getElementById("openModal-map");
+// モーダルを閉じるアイコン（×）を取得
+var spanmap = document.getElementById("closeModal-map");
+
+btnmap.onclick = function () {
+  modalmap.style.display = "block";
+}
+
+spanmap.onclick = function () {
+  modalmap.style.display = "none";
+}
+
+
 
 //　リンクコピー
 // $(function copyUrl() {

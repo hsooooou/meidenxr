@@ -301,10 +301,24 @@ ul {
 }
 
 
+.modal-content {
+  margin: 0 0;
+  justify-content: center;
+}
+img.ar-adventure-map {
+  width: 40vh;
+  height: auto;
+}
+
 @media (min-width: 568px) {
   .vr-info-textarea {
     padding: 0 3% 10% 6%;
     margin-bottom: 10vw;
+  }
+
+  img.ar-adventure-map {
+  width: 60vw;
+  height: auto;
   }
   
 }
@@ -340,5 +354,10 @@ ul {
 
   .form-input {
     width: 30vw;
+  }
+
+  img.ar-adventure-map {
+  height: 70vh;
+  width: auto;
   }
 }
