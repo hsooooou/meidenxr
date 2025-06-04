@@ -91,7 +91,7 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
     {
       //n08-sc サテライト教室
       patternUrl: 'pattern-testplay_1_n08-sc.patt',
-      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-08-sc.html',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n08-sc.html',
       buttonId: 'button-n08-sc'
     },
     {
