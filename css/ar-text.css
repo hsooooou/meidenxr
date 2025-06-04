@@ -191,9 +191,53 @@ input[type="checkbox"].ar-on-off {
   text-align: center;
   background-color: #6d6562;
   border-radius: 100px;
+
+}
+.ar-explanation-btn-in-pc {
+  color: #e3e3e3;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 12px;
+  margin: 10px 5px 0 5px;
+  padding: 5px;
+  text-align: center;
+  background-color: #6d6562;
+  border-radius: 100px;
+  display: none;
+}
+.ar-explanation-btn-in-sp {
+  color: #e3e3e3;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 12px;
+  margin: 10px 5px 0 5px;
+  padding: 5px;
+  text-align: center;
+  background-color: #6d6562;
+  border-radius: 100px;
+  display: block;
 }
 .ar-explanation-btn-in:hover {
   color: #e3e3e3;
   background-color: #231815;
 }
+.ar-explanation-btn-in-pc:hover {
+  color: #e3e3e3;
+  background-color: #231815;
+}
+.ar-explanation-btn-in-sp:hover {
+  color: #e3e3e3;
+  background-color: #231815;
+}
 
+@media screen and (min-width: 698px) and (max-width: 1024px){
+
+}
+
+@media screen and (min-width: 1025px) {
+.ar-explanation-btn-in-pc {
+  display: block;
+}
+
+.ar-explanation-btn-in-sp {
+  display:none;
+}
+}
