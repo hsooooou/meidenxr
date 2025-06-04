@@ -92,19 +92,19 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
       //n08-sc サテライト教室
       patternUrl: 'pattern-testplay_1_n08-sc.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-08-sc.html',
-      buttonId: 'button-n11-cl'
+      buttonId: 'button-n08-sc'
     },
     {
       //n10-alr アクティブラーニング室
       patternUrl: 'pattern-testplay_3_n10-alr',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n10-ar.html',
-      buttonId: 'button-n1--ar'
+      buttonId: 'button-n10-alr'
     },
     {
       //n11-cl 化学実験室
       patternUrl: 'pattern-testplay_2_n11-cl',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html',
-      buttonId: 'button-n06-ml'
+      buttonId: 'button-n11-cl'
     },
     {
       //テスト用マーカー hiro
@@ -180,6 +180,22 @@ window.addEventListener('DOMContentLoaded', () => {
     { //n02-idr 情報デザイン室
       patternUrl: 'pattern-club_information_design.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html'
+    },
+     { //n06-ml メディアライブラリー
+      patternUrl: 'pattern-testplay_5_n06-ml.patt',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html'
+    },
+     { //n08-sc サテライト教室
+      patternUrl: 'pattern-testplay_1_n08-sc.patt',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n08-sc.html'
+    },
+     { //n10-alr アクティブラーニング室
+      patternUrl: 'pattern-testplay_3_n10-alr.patt',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n10-alr.html'
+    },
+     { //n11-cl 化学実験室
+      patternUrl: 'pattern-testplay_2_n11-cl.patt',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n11-cl.html'
     },
 
     { // テスト用マーカー
