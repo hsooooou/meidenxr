@@ -181,19 +181,19 @@ window.addEventListener('DOMContentLoaded', () => {
       patternUrl: 'pattern-testplay_4_n02-idr.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html'
     },
-     { //n06-ml メディアライブラリー
+    { //n06-ml メディアライブラリー
       patternUrl: 'pattern-testplay_5_n06-ml.patt',
       link: 'https://hsooooou.github.io/meidenxr/construction.html'
     },
-     { //n08-sc サテライト教室
+    { //n08-sc サテライト教室
       patternUrl: 'pattern-testplay_1_n08-sc.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n08-sc.html'
     },
-     { //n10-alr アクティブラーニング室
+    { //n10-alr アクティブラーニング室
       patternUrl: 'pattern-testplay_3_n10-alr.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n10-alr.html'
     },
-     { //n11-cl 化学実験室
+    { //n11-cl 化学実験室
       patternUrl: 'pattern-testplay_2_n11-cl.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n11-cl.html'
     },
