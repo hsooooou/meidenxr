@@ -246,6 +246,27 @@ input[type="checkbox"].ar-on-off {
   text-align: center;
 }
 
+/*  */
+/* SNSシェアボタン */
+.ar-finish-share {
+  display: flex; 
+  margin: 10px 0 ;
+  gap: 10px;
+   vertical-align: middle;
+}
+.modal-text-btn {
+  padding: 0px 0 0px 0;
+  text-align: center;
+}
+.copy-hidden-ar-finish { /* リンクコピー隠れている部分 */
+  display: none;
+}
+#copyok-ar-finish {
+  padding: 10px 0 0 0;
+  font-size: 8px;
+  font-weight: 800;
+  color: #6d6562;
+}
 
 
 @media screen and (min-width: 698px) and (max-width: 1024px){

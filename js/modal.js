@@ -61,22 +61,38 @@ spanmap.onclick = function () {
 //   return
 // });
 
-$(function () {
-  const copybtn = document.getElementById('copybtn');
-  const copyok = document.getElementById('copyok');
-  const url = 'https://forms.gle/yU6vn54oNLNisK5S8';
+function copyUrl() {
+    const url = 'https://forms.gle/yU6vn54oNLNisK5S8';
+    const copyok = document.getElementById('copyok');
 
-  copybtn.addEventListener('click', () => {
+    if (!copyok) return;
+
     navigator.clipboard.writeText(url).then(() => {
-      // コピー成功時の処理
       copyok.classList.remove('copy-hidden');
 
-      // 4秒後に非表示にする
       setTimeout(() => {
         copyok.classList.add('copy-hidden');
       }, 4000);
     }).catch(err => {
       console.error('コピーに失敗しました', err);
     });
-  });
-});
+  }
+
+  function copyUrlarfinish() {
+    const url = 'https://hsooooou.github.io/meidenxr/ar-entrance.html';
+    const copyok = document.getElementById('copyok-ar-finish');
+
+    if (!copyok) return;
+
+    navigator.clipboard.writeText(url).then(() => {
+      copyok.classList.remove('copy-hidden-ar-finish');
+
+      setTimeout(() => {
+        copyok.classList.add('copy-hidden-ar-finish');
+      }, 4000);
+    }).catch(err => {
+      console.error('コピーに失敗しました', err);
+    });
+  }
+
+  
