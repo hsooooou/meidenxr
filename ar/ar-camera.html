@@ -88,26 +88,28 @@
 
     <!-- Markerを表示した際の処理を以下に記述する -->
     <!-- ARマーカーのファイル名をここで指定する -->
-    <a-marker type="pattern"
-      url="https://hsooooou.github.io/meiden_pamphlet.github.io/patt/club/pattern-club_information_design.patt">
+    <!-- <a-marker type="pattern"
+      url="https://hsooooou.github.io/meiden_pamphlet.github.io/patt/club/pattern-club_information_design.patt"> -->
       <!-- 表示したい画像を src= ～ で指定する -->
       <!-- 画像の大きさは width と height で設定可能 -->
       <!-- 画像を表示させる位置は position で設定可能 -->
       <!-- 画像を水平に表示させる場合は下記の rotation でOK -->
-      <a-image width="3" height="1.5" position="0.2 0.4 0.4" rotation="-90 0 0"
+      <!-- <a-image width="3" height="1.5" position="0.2 0.4 0.4" rotation="-90 0 0"
         src="https://hsooooou.github.io/meidenxr/img/ar/object_img/arimg_test.png">
-      </a-image>
+      </a-image> -->
 
       <!--position="x y z"
         ※ rotation="-90 0 0" のときの軸の意味（上から見た視点）：
           x → 左右移動（+x = 右、-x = 左）
           y → 高さ方向（+y = 上に浮く、-y = 地面に沈む）
           z → 前後移動（+z = 奥、-z = 手前）-->
-      <a-image class="ar-btn" id="button-n02-idr" geometry="primitive: plane; height: 0.5; width: 0.5"
+      <!-- <a-image class="ar-btn" id="button-n02-idr" geometry="primitive: plane; height: 0.5; width: 0.5"
         position="0.2 0.2 1.5" rotation="-90 0 0" material="shader: flat "
         src="https://hsooooou.github.io/meidenxr/img/ar/panorama.png">
       </a-image>
-    </a-marker>
+    </a-marker> -->
+
+    
 
     <a-marker type="pattern"
       url="https://hsooooou.github.io/meidenxr/img/ar/patt/pattern-testplay_1_n08-sc.patt">
@@ -137,6 +139,17 @@
         src="https://hsooooou.github.io/meidenxr/img/ar/object_img/arimg_test.png">
       </a-image>
       <a-image class="ar-btn" id="button-n10-alr" geometry="primitive: plane; height: 0.5; width: 0.5"
+        position="0.2 0.2 1.5" rotation="-90 0 0" material="shader: flat "
+        src="https://hsooooou.github.io/meidenxr/img/ar/panorama.png">
+      </a-image>
+    </a-marker>
+
+    <a-marker type="pattern"
+      url="https://hsooooou.github.io/meidenxr/img/ar/patt/pattern-testplay_4_n02-idr.patt">
+      <a-image width="3" height="1.5" position="0.2 0.4 0.4" rotation="-90 0 0"
+        src="https://hsooooou.github.io/meidenxr/img/ar/object_img/arimg_test.png">
+      </a-image>
+      <a-image class="ar-btn" id="button-n02-idr" geometry="primitive: plane; height: 0.5; width: 0.5"
         position="0.2 0.2 1.5" rotation="-90 0 0" material="shader: flat "
         src="https://hsooooou.github.io/meidenxr/img/ar/panorama.png">
       </a-image>

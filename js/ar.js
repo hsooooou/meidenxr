@@ -78,14 +78,14 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
   const markers = [
     {
       //n02-idr 情報デザイン室
-      patternUrl: 'pattern-club_information_design.patt',
+      patternUrl: 'pattern-testplay_4_n02-idr.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html',
       buttonId: 'button-n02-idr'
     },
     {
       //n06-ml メディアライブラリー
       patternUrl: 'pattern-testplay_5_n06-ml.patt',
-      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html',
+      link: 'https://hsooooou.github.io/meidenxr/construction.html',
       buttonId: 'button-n06-ml'
     },
     {
@@ -178,12 +178,12 @@ window.addEventListener('DOMContentLoaded', () => {
   // マーカーごとの設定
   const markers = [
     { //n02-idr 情報デザイン室
-      patternUrl: 'pattern-club_information_design.patt',
+      patternUrl: 'pattern-testplay_4_n02-idr.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html'
     },
      { //n06-ml メディアライブラリー
       patternUrl: 'pattern-testplay_5_n06-ml.patt',
-      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html'
+      link: 'https://hsooooou.github.io/meidenxr/construction.html'
     },
      { //n08-sc サテライト教室
       patternUrl: 'pattern-testplay_1_n08-sc.patt',
