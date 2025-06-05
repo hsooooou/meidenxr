@@ -53,7 +53,7 @@ function checkKeyword() { //正解のキーワードを”correctKeyword”に�
 
   if (input === correctKeyword) { //キーワードと一致するか確かめる
     window.location.href = "./ar-finish.html"; //一致した場合指定するページへ移動
-  } else {
+  } else { 
     result.innerHTML = "合言葉が違うよ！もう一度試してね。<br>ヒント/フランス語"; //エラーメッセージを表示する
     result.style.display = "block"; //エラーメッセージ要素を表示する
 
