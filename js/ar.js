@@ -47,14 +47,14 @@ $('.burger').click(function () {
 
 // 合言葉モーダル
 function checkKeyword() { //正解のキーワードを”correctKeyword”に設定
-  const correctKeyword = "とまと";  // 正解の合言葉をここに設定
+  const correctKeyword = "ランデブー";  // 正解の合言葉をここに設定
   const input = document.getElementById("keywordInput").value.trim(); //keywordInputの要素を取得 .valueで内容を取得 .trim()で不必要なスペースの消去
   const result = document.getElementById("keywordResult"); //id="keywordResult"を持つエラーメッセージを示す要素を取得
 
   if (input === correctKeyword) { //キーワードと一致するか確かめる
     window.location.href = "./ar-finish.html"; //一致した場合指定するページへ移動
   } else {
-    result.innerHTML = "合言葉が違うよ！<br>もう一度試してね。"; //エラーメッセージを表示する
+    result.innerHTML = "合言葉が違うよ！もう一度試してね。<br>ヒント/フランス語"; //エラーメッセージを表示する
     result.style.display = "block"; //エラーメッセージ要素を表示する
 
     setTimeout(() => {
