@@ -48,6 +48,26 @@
   line-height: 1.2;
 }
 
+/* ガイドライン */
+.ar-subtitle-black {
+   color: #231815;
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.2;
+}
+.guideline-border {
+  margin: 10px 0;
+  border: 1px solid #231815;
+}
+.guideline-maintext {
+  color: #231815;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 10px 0 0 0;
+  line-height: 1.8;
+}
+
 .ar-subtitle-copy {
   color: #668BC7;
   font-family: "Noto Sans JP", sans-serif;
