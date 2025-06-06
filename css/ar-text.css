@@ -256,7 +256,7 @@ input[type="checkbox"].ar-on-off {
 /* SNSシェアボタン */
 .ar-finish-share {
   display: flex;
-  margin: 10px 0;
+  margin: 15px 0 0 0;
   gap: 10px;
   vertical-align: middle;
 }
