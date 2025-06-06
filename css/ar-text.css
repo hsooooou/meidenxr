@@ -100,10 +100,9 @@ input[type="checkbox"].ar-on-off {
   box-shadow: 0 0 0 0;
 }
 
-/* .open-explanation:hover {
-  background: -webkit-linear-gradient(bottom, #fff4e0 1%, orange 80%);
-  background: #b2b035;
-} */
+.open-explanation:hover {
+  background-color: #e6e243;
+}
 
 /*ラベルに表示するテキスト*/
 .open-explanation::after {
@@ -150,7 +149,7 @@ input[type="checkbox"].ar-on-off {
   padding: 20px;
   background-color: #ffffff;
   border-radius: 20px;
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
 }
 
 .ar-experience-number {
@@ -176,6 +175,7 @@ input[type="checkbox"].ar-on-off {
   background-color: #e6e243;
   border-radius: 100px;
 }
+
 .ar-explanation-btn:hover {
   color: #e3e3e3;
   background-color: #231815;
@@ -193,6 +193,7 @@ input[type="checkbox"].ar-on-off {
   border-radius: 100px;
 
 }
+
 .ar-explanation-btn-in-pc {
   color: #e3e3e3;
   font-family: "Noto Sans JP", sans-serif;
@@ -204,6 +205,7 @@ input[type="checkbox"].ar-on-off {
   border-radius: 100px;
   display: none;
 }
+
 .ar-explanation-btn-in-sp {
   color: #e3e3e3;
   font-family: "Noto Sans JP", sans-serif;
@@ -215,14 +217,17 @@ input[type="checkbox"].ar-on-off {
   border-radius: 100px;
   display: block;
 }
+
 .ar-explanation-btn-in:hover {
   color: #e3e3e3;
   background-color: #231815;
 }
+
 .ar-explanation-btn-in-pc:hover {
   color: #e3e3e3;
   background-color: #231815;
 }
+
 .ar-explanation-btn-in-sp:hover {
   color: #e3e3e3;
   background-color: #231815;
@@ -238,6 +243,7 @@ input[type="checkbox"].ar-on-off {
   padding-top: 3px;
   text-align: center;
 }
+
 #finish-time-counter {
   color: #668BC7;
   font-family: "Noto Sans JP", sans-serif;
@@ -249,18 +255,22 @@ input[type="checkbox"].ar-on-off {
 /*  */
 /* SNSシェアボタン */
 .ar-finish-share {
-  display: flex; 
-  margin: 10px 0 ;
+  display: flex;
+  margin: 10px 0;
   gap: 10px;
-   vertical-align: middle;
+  vertical-align: middle;
 }
+
 .modal-text-btn {
   padding: 0px 0 0px 0;
   text-align: center;
 }
-.copy-hidden-ar-finish { /* リンクコピー隠れている部分 */
+
+.copy-hidden-ar-finish {
+  /* リンクコピー隠れている部分 */
   display: none;
 }
+
 #copyok-ar-finish {
   padding: 10px 0 0 0;
   font-size: 8px;
@@ -269,16 +279,14 @@ input[type="checkbox"].ar-on-off {
 }
 
 
-@media screen and (min-width: 698px) and (max-width: 1024px){
-
-}
+@media screen and (min-width: 698px) and (max-width: 1024px) {}
 
 @media screen and (min-width: 1025px) {
-.ar-explanation-btn-in-pc {
-  display: block;
-}
+  .ar-explanation-btn-in-pc {
+    display: block;
+  }
 
-.ar-explanation-btn-in-sp {
-  display:none;
-}
+  .ar-explanation-btn-in-sp {
+    display: none;
+  }
 }
