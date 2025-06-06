@@ -84,7 +84,7 @@ input[type="checkbox"].ar-on-off {
 }
 
 .open-explanation {
-  margin: 0 20px;
+  margin: 0 0px 20px 0;
   padding: 5px;
   display: block;
   font-family: "Noto Sans JP", sans-serif;
@@ -142,14 +142,14 @@ input[type="checkbox"].ar-on-off {
 }
 
 .ar-experience-area {
-  margin: 20px;
+  margin: 0px;
 }
 
 .ar-experience-box {
   padding: 20px;
   background-color: #ffffff;
   border-radius: 20px;
-  margin-bottom: 20px;
+  margin: 20px 0;
 }
 
 .ar-experience-number {
@@ -169,7 +169,7 @@ input[type="checkbox"].ar-on-off {
   color: #231815;
   font-family: "Noto Sans JP", sans-serif;
   font-size: 18px;
-  margin: 10px 20px;
+  margin: 10px 0px;
   padding: 5px;
   text-align: center;
   background-color: #e6e243;
