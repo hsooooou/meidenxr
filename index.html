@@ -21,7 +21,36 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
 
   <!-- Google tag (gtag.js) -->
-  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FBD5SLNCS6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+
+    // 同意モードのデフォルト設定:
+    // ユーザーが明示的に同意するまで、Cookieベースの測定は行いません。
+    // 'wait_for_update' は、同意状況の更新を待つ時間（ミリ秒）です。
+    // これにより、デフォルト設定後にユーザーの同意更新が行われるまで、
+    // ページビューイベントなどの送信を遅延させることができます。
+    gtag('consent', 'default', {
+      'analytics_storage': 'denied', // アナリティクス関連Cookieの保存を拒否
+      'functionality_storage': 'denied', // サイト機能関連Cookieの保存を拒否
+      'security_storage': 'granted', // セキュリティ関連Cookieの保存は常に許可
+      'wait_for_update': 500       // 同意状況の更新を最大500ms待つ
+    });
+
+    // ★★★ここにあった gtag('config', 'G-FBD5SLNCS6'); の行は削除します★★★
+
+    // テスト用のイベントは残しておきますが、本番公開時は削除してください。
+    // このイベントは同意モードのデフォルト設定に従って処理されます。
+    // analytics_storageが拒否の場合、データは送信されません。
+    gtag('event', 'test_page_load', {
+      'event_category': 'debug',
+      'event_label': 'Initial Page Load Test',
+      'debug_mode': true
+    });
+    console.log("初期ページロードテストイベントを送信しました。");
+
+  </script>
 
   <!-- Open Graph tags -->
 
