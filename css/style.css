@@ -256,19 +256,19 @@ a {
 }
 
 .footer-menu {
-  padding: 20px 0; 
+  padding: 20px 0 0 0; 
 }
 
 .footer-cate {
   padding-bottom: 20px;
 }
 
-#footer a {
+footer a {
   text-decoration: none;
   color: #231815;
   font-family: "Noto Sans JP", sans-serif;
   /* font-size: 20px; */
-  font-size: 16px;
+  /* font-size: 16px; */
   font-weight: 600;
 }
 
@@ -282,6 +282,19 @@ a {
 footer img {
   width: 50px;
   padding:0 0 20px 0;
+}
+
+.footer-policy-area {
+  margin: 0 60px 20px 60px;
+  
+  font-size: 12px;
+}
+.footer-policy-area a{
+  font-size: 12px;
+  color: #6d6562;
+}
+p.footer-policy {
+  font-family: "Noto Sans JP", sans-serif;
 }
 
 .footer-copy {
@@ -452,4 +465,180 @@ footer img {
   font-size: 12px;
   font-weight: 400;
   color: #231815;
+}
+
+
+/*  */
+/*  */
+/* --- Cookie ポップアップ（バナー & モーダル共通） --- */
+.cookie-popup {
+    position: fixed;
+    z-index: 1000; /* 他のコンテンツより手前に表示 */
+    background-color: #231815;
+    color: #fff;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+    padding: 15px 20px;
+    box-sizing: border-box;
+    display: none; /* 初期状態は非表示 */
+}
+
+/* バナー固有のスタイル */
+#cookie-banner {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    animation: slideUp 0.6s ease-out forwards;
+
+     transform: translateY(100%); /* 初期状態で画面外（下）に配置 */
+    transition: transform 0.6s ease-out, opacity 0.6s ease-out; /* アニメーションを追加 */
+    opacity: 0; /* 初期状態で透明 */
+}
+
+#cookie-banner p {
+    margin: 0 0 15px 0;
+    font-size: 1em;
+}
+
+#cookie-banner a {
+    color: #e6e243; 
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+/* --- ボタン共通スタイル --- */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.95em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 5px; /* ボタン間の余白 */
+}
+
+.btn.primary {
+    background-color: #e6e243; 
+    color: #231815;
+    border-radius: 100px;
+}
+.btn.primary:hover { background-color: #7bb534; transform: translateY(-1px); }
+
+.btn.secondary {
+    background-color: #e74c3c; /* レッド */
+    color: white;
+    border-radius: 100px;
+}
+.btn.secondary:hover { background-color: #c0392b; transform: translateY(-1px); }
+
+.btn.tertiary {
+    background-color: #3498db; /* ブルー */
+    color: white;
+    border-radius: 100px;
+}
+.btn.tertiary:hover { background-color: #2980b9; transform: translateY(-1px); }
+
+/* --- モーダル固有スタイル --- */
+.cookie-popup.modal {
+    position: fixed; /* 画面に固定 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* 半透明オーバーレイ */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001; /* バナーより上に表示 */
+}
+
+.modal-cookie-content { 
+    background-color: #fafafa;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    color: #333;
+    animation: fadeIn 0.4s ease-out forwards;
+    max-height: 90vh; /* ビューポートの高さの90%を最大とする */
+    overflow-y: auto; /* 高さがmax-heightを超えたらスクロールバーを表示 */
+    -webkit-overflow-scrolling: touch; /* iOSのスクロールを滑らかに */
+}
+
+.modal-cookie-content h3 { 
+    margin-top: 0;
+    font-size: 1.5em;
+    color: #2c3e50;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.cookie-category {
+    margin-bottom: 15px;
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    background-color: #f5f5f5;
+}
+
+.cookie-category h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+}
+
+.cookie-category h4 input[type="checkbox"] {
+    margin-right: 8px;
+    transform: scale(1.2);
+}
+
+.cookie-category h4 .tag {
+    font-size: 0.7em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-left: 8px;
+    background-color: #f39c12; /* オレンジ */
+    color: white;
+}
+
+.cookie-category p {
+    font-size: 0.85em;
+    color: #555;
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+.modal-buttons {
+    text-align: right; /* ボタンを右寄せ */
+    margin-top: 25px;
+}
+
+/* アニメーション */
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(100%); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* レスポンシブ調整 */
+@media (max-width: 768px) {
+    #cookie-banner .cookie-buttons {
+        flex-direction: column;
+    }
+    .modal-cookie-content { 
+        padding: 20px;
+    }
+    .modal-buttons {
+        text-align: center; /* モバイルではボタンを中央寄せ */
+    }
 }

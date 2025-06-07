@@ -26,9 +26,19 @@
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
 
-    gtag('config', 'G-FBD5SLNCS6');
+    // 同意モードのデフォルト設定: analytics_storage のみを 'denied' に設定
+    // ユーザーが明示的に同意するまで、Cookieベースの測定は行われません
+    gtag('consent', 'default', {
+      'analytics_storage': 'denied', // アナリティクス関連Cookieの保存を拒否
+      'functionality_storage': 'denied', // サイト機能関連Cookieの保存を拒否（必須はJSでgrantedにするためここはdeniedで良い）
+      'security_storage': 'granted', // セキュリティ関連Cookieの保存は許可（通常は常に必要）
+      'wait_for_update': 500       // 同意状況の更新を待つミリ秒（最大500ms）
+    });
+
+    // Google Analyticsのconfigコマンドは、同意モードのデフォルト設定後に実行
+    // ここにもあなたのGA測定IDを記入してください
+    gtag('config', 'G-FBD5SLNCS6'); 
   </script>
 
 </head>
@@ -99,58 +109,187 @@
         <ul class="ar-areabox">
           <p class="ar-subtitle-black">はじめに</p>
           <p class="guideline-border"></p>
-          <p class="guideline-maintext">MeidenXR(以下、当コンテンツ)は、XRを通して愛知工業大学名電高等学校(以下、名電高校)の魅力をARやVRなどを通して発信し、魅力を向上させることを目的として令和5年度課題研究にて企画されたコンテンツです。提供するWebサイトを安全かつ楽しく多くの方に触れていただくことを目的として本ガイドラインを公開しております。</p>
+          <p class="guideline-maintext">
+            MeidenXR(以下、当コンテンツ)は、XRを通して愛知工業大学名電高等学校(以下、名電高校)の魅力をARやVRなどを通して発信し、魅力を向上させることを目的として令和5年度課題研究にて企画されたコンテンツです。提供するWebサイトを安全かつ楽しく多くの方に触れていただくことを目的として本ガイドラインを公開しております。
+          </p>
           <p class="guideline-maintext">そのため、本ガイドラインの対象は、当コンテンツを利用されるすべての方としております。</p>
           <p class="guideline-maintext">
-            また、当コンテンツは名電高校から承諾を受けているコンテンツですが、名電高校内部からの直接的な管理は行われておらず独立した形での運営となっています。高校についてのお問い合わせは<a
+            また、当コンテンツは名電高校から承諾を受けているコンテンツですが、名電高校内部からの直接的な管理は行われていない独立した形での運営となっています。入試情報など高校についてのお問い合わせは<a
               href="https://www.meiden.ed.jp/">公式Webサイト</a>からご連絡ください。</p>
         </ul>
 
         <ul class="ar-areabox">
-          <p class="ar-subtitle-black">コンテンツの目的と特徴</p>
+          <p class="ar-subtitle-black">コンテンツの目的と使用する技術について</p>
           <p class="guideline-border"></p>
-          <p class="guideline-maintext">以下の行為は禁止されています。違反が確認された場合、法的措置を取る可能性があります。</p>
+          <p class="guideline-maintext">本コンテンツは、以下の目的のために制作されました。</p>
+          <ul class="ar-experience-box">
+            <p class="guideline-maintext">名電高校での学校生活、施設・設備など、多岐にわたる情報をXRで分かりやすく発信すること。</p>
+            <p class="guideline-maintext">Webブラウザから手軽に体験でき、誰でも名電高校の情報について楽しみながら閲覧できること。</p>
+            <p class="guideline-maintext">体験を通じて名電高校への興味関心を深めてもらうこと。</p>
+          </ul>
+          <ul class="ar-experience-box">
+            <p class="ar-experience-title">主な技術構成について</p>
+            <p class="guideline-maintext">・A-Frame / AR.js</p>
+            <p class="ar-maintext-sub">Webブラウザ上でAR（拡張現実）やVR（仮想現実）の体験を実現しています。</p>
+            <p class="guideline-maintext">・Webカメラ・モーションセンサー</p>
+            <p class="ar-maintext-sub"> デバイスのWebカメラや内蔵センサー（加速度センサー、ジャイロセンサーなど）を使って、皆さんの位置や動きに合わせたXR体験を可能にしています。</p>
+          </ul>
         </ul>
 
         <ul class="ar-areabox">
-          <p class="ar-subtitle-black">利用にあたってのお願い</p>
+          <p class="ar-subtitle-black">ご利用にあたってのお願い</p>
           <p class="guideline-border"></p>
-          <p class="guideline-maintext">以下の行為は禁止されています。違反が確認された場合、法的措置を取る可能性があります。</p>
+          <p class="guideline-maintext">基本的には許可なく自由にご利用いただけますが、内容や場合によって事前いご連絡をいただきたいです。</p>
+          <ul class="ar-experience-box">
+            <p class="ar-experience-title">許可なく自由にご利用いただけるケース</p>
+            <p class="ar-maintext-sub">以下の目的でのご利用は、私たちへの連絡なしに、自由に行っていただけます。</p>
+            <p class="guideline-maintext">・個人での体験・鑑賞</p>
+            <p class="ar-maintext-sub">名電高校やそれに関連するものによる案内や紹介により、ご自身のスマートフォン・PCなど、本コンテンツを楽しむ場合。</p>
+            <p class="guideline-maintext">・教育機関・図書館・公共施設等での教材利用</p>
+            <p class="ar-maintext-sub"> 学校の授業や図書館での学習支援など、非営利の教育目的で利用する場合。</p>
+            <p class="guideline-maintext">・SNS・ブログ等での紹介</p>
+            <p class="ar-maintext-sub">当コンテンツのスクリーンショットや録画した映像をご自身のSNSアカウントやブログで紹介する場合。</p>
+            <p class="ar-notetext">※クレジット（制作者名・団体名など）の記載は任意ですが、私たちも皆さんの紹介を拝見できると大変嬉しいです！</p>
+          </ul>
+          <ul class="ar-experience-box">
+            <p class="ar-experience-title">事前のご連絡・ご相談が必要なケース</p>
+            <p class="ar-maintext-sub">以下の目的でご利用を検討されている場合は、お手数ですが事前に私たちへご連絡・ご相談ください。</p>
+            <p class="guideline-maintext">・商用・営利目的での利用</p>
+            <p class="ar-maintext-sub">営利活動に関連して当コンテンツを利用、紹介される場合。</p>
+            <p class="guideline-maintext">・当コンテンツの改変・加工</p>
+            <p class="ar-maintext-sub"> 当コンテンツの一部を修正したり、他のコンテンツに組み込んだりして再利用する場合。</p>
+            <p class="guideline-maintext">・名電高校以外での法人・団体の公式サイトやアプリ等での掲載・組み込み</p>
+            <p class="ar-maintext-sub">企業や団体の公式ウェブサイト、または自社開発のアプリケーションに本コンテンツを掲載・組み込む場合。</p>
+            <p class="ar-notetext">※ご連絡先は、このガイドラインの末尾に記載しています。</p>
+          </ul>
         </ul>
 
         <ul class="ar-areabox">
           <p class="ar-subtitle-black">禁止事項</p>
           <p class="guideline-border"></p>
-          <p class="guideline-maintext">以下の行為は禁止されています。違反が確認された場合、法的措置を取る可能性があります。</p>
+          <p class="guideline-maintext">皆さんに安心して当コンテンツをご利用いただくため、以下の行為は固く禁止されています。</p>
+          <ul class="ar-experience-box">
+            <p class="guideline-maintext">・法令または公序良俗に違反する行為。</p>
+            <p class="guideline-maintext">・犯罪行為を誘発、助長するおそれのある行為。</p>
+            <p class="guideline-maintext">・第三者の知的財産権、プライバシー権、肖像権その他の権利を侵害する行為。</p>
+            <p class="guideline-maintext">・個人情報やプライバシーに関する情報を不適切に公開する行為。</p>
+            <p class="guideline-maintext">・特定の個人、団体、地域、人種、性別、信仰等を誹謗中傷、差別、または侮辱する行為。</p>
+            <p class="guideline-maintext">・わいせつな表現、または青少年保護育成条例に抵触する表現を含む行為。</p>
+            <p class="guideline-maintext">・過度に暴力的、残虐な表現を含む行為。</p>
+            <p class="guideline-maintext">・虚偽、誤解を招く情報、またはデマを流布する行為。</p>
+            <p class="guideline-maintext">・当コンテンツの目的から逸脱した、営利目的の広告、宣伝、勧誘を含む行為（当団体が事前に承諾した場合を除きます。）。</p>
+            <p class="guideline-maintext">・他の利用者に不快感や精神的苦痛を与える行為。</p>
+            <p class="guideline-maintext">・コンピューターウイルス等の有害なプログラムを含む行為。</p>
+            <p class="guideline-maintext">・当コンテンツを許可なく修正したり、他の場所で公開したり、販売したりすること。</p>
+            <p class="guideline-maintext">・当コンテンツのデータや情報を、AIの学習用として利用したり、第三者に提供したりすること。</p>
+            <p class="guideline-maintext">・当コンテンツをあたかもご自身が作ったかのように公開したり、当コンテンツの内容について誤解を招くような形で利用したりすること。</p>
+            <p class="guideline-maintext">・その他、当コンテンツ運営者または名電高校が不適切と判断する行為。</p>
+          </ul>
         </ul>
 
         <ul class="ar-areabox">
-          <p class="ar-subtitle-black">Webカメラの利用について</p>
+          <p class="ar-subtitle-black">Webカメラ・モーションセンサーの仕様について</p>
           <p class="guideline-border"></p>
-          <p class="guideline-maintext">MeidenXR(以下、当コンテンツ)は、提供するWebサイトを安全かつ楽しく多くの方に触れていただくことを目的としてこのガイドラインを公開しております。</p>
+          <p class="guideline-maintext">
+            当コンテンツでは、ARやVRなどを利用したコンテンツの利用時にWebカメラとモーションセンサーの利用を行っており、該当ページへのアクセス時に許可を求めることがあります。現時点でマイク(音声入力)は使用しておりません。
+          </p>
+          <ul class="ar-experience-box">
+            <p class="ar-experience-title">使用するセンサーについて</p>
+            <p class="guideline-maintext">Webカメラ</p>
+            <p class="ar-maintext-sub">スマートフォンやPCのカメラを利用して、ARマーカー(当コンテンツが認識する目印)を認識し、ARコンテンツを合成して表示するために使用します。</p>
+            <p class="guideline-maintext">モーションセンサー(動作と方向)</p>
+            <p class="ar-maintext-sub">
+              スマートフォンなどに内蔵されている加速度センサーやジャイロセンサーの情報を使って、利用者のデバイスの傾きや動きに合わせ、画面内の視点やARコンテンツの表示を調整します。</p>
+          </ul>
+          <ul class="ar-experience-box">
+            <p class="ar-experience-title">利用条件と安全性</p>
+            <p class="guideline-maintext">上記で示した機能は、利用者が該当ページにアクセスした際に、明示的に許可した場合のみ動作します。</p>
+            <p class="guideline-maintext">
+              Webカメラで取得される映像やモーションセンサーの情報は、すべて利用者の端末内でリアルタイムに処理されます。私たちがこれらの情報を保存したり、外部のサーバーに送信することは一切ありません。
+            </p>
+            <p class="guideline-maintext">
+              ただし、当コンテンツの利用中にスクリーンショットや動画を撮影した際に、他の人や個人が特定できる内容が映り込む場合があります。こうした映り込みによって発生するトラブルや損害について、私たちは責任を負いかねますので、画像などの共有についてはご自身の責任とご判断でご対応ください。
+            </p>
+          </ul>
         </ul>
 
         <ul class="ar-areabox">
-          <p class="ar-subtitle-black">スクリーンショット等の撮影データについて</p>
+          <p class="ar-subtitle-black">利用データとアクセス解析について</p>
           <p class="guideline-border"></p>
-          <p class="guideline-maintext">MeidenXR(以下、当コンテンツ)は、提供するWebサイトを安全に多くの方に触れていただくことを目的としてこのガイドラインを公開しております。</p>
+          <p class="guideline-maintext">当コンテンツでは、より良い体験を提供し、技術的な検証やサービスの向上を目指し、以下の仕組みを利用する場合があります。
+          </p>
+          <ul class="ar-experience-box">
+            <p class="ar-experience-title">Google アナリティクスによるデータ取得と利用について</p>
+            <p class="guideline-maintext">当コンテンツでは、Google
+              LLC（以下、Google）が提供するアクセス解析ツール「Googleアナリティクス」を利用し、当コンテンツへのアクセス状況を分析しています。
+              Googleアナリティクスでは、主に以下の情報が取得されますが、これらの情報は匿名化されており、単独で特定の個人を識別できる情報ではありません。</p>
+            <p class="ar-maintext-sub">・アクセス日時、閲覧したページ、滞在時間</p>
+            <p class="ar-maintext-sub">・利用デバイスの種類（スマートフォン、PCなど）、OS、ブラウザの種類</p>
+            <p class="ar-maintext-sub">・IPアドレス（Googleによって一部匿名化処理されます）</p>
+            <p class="ar-maintext-sub">・リファラー情報（どこから当コンテンツにアクセスしたか） これらの情報は、当コンテンツの利用状況の把握、改善、および効果測定にのみ利用されます。
+              取得されたデータは、Googleのプライバシーポリシーに基づき、Googleによって管理されます。</p>
+            <p class="guideline-maintext">関連するGoogleのポリシーやツール：</p>
+            <p class="ar-maintext-sub">・Googleのサービスを使用するサイトやアプリから収集した情報のGoogleによる使用</p>
+            <p class="ar-maintext"><a
+                href="https://policies.google.com/technologies/partner-sites?hl=ja">https://policies.google.com/technologies/partner-sites?hl=ja</a>
+            </p>
+            <p class="ar-maintext-sub">・Googleプライバシーポリシー</p>
+            <p class="ar-maintext"><a
+                href="https://policies.google.com/privacy?hl=ja">https://policies.google.com/privacy?hl=ja</a></p>
+            <p class="ar-maintext-sub">・Googleアナリティクス オプトアウト アドオン</p>
+            <p class="ar-maintext"><a
+                href="https://tools.google.com/dlpage/gaoptout?hl=ja">https://tools.google.com/dlpage/gaoptout?hl=ja</a>
+            </p>
+            <p class="ar-maintext-sub">　利用者は、このアドオンをインストールすることで、Googleアナリティクスによるご自身の情報収集を停止することができます。</p>
+          </ul>
+          <ul class="ar-experience-box">
+            <p class="ar-experience-title">Cookie（クッキー）の利用</p>
+            <p class="guideline-maintext">当コンテンツでは、ユーザーの操作を記憶したり、表示設定を保持したりするために、Cookieを使用する場合があります。
+              Cookieによって個人が特定されることはありません。</p>
+            <p class="ar-maintext-sub">私たちは、これらの情報から個人を特定できる情報を取得することはありません。また、広告目的で第三者にこれらの情報を提供することもありません。</p>
+          </ul>
         </ul>
 
-         <ul class="ar-areabox">
-          <p class="ar-subtitle-black">著作権・知的財産権</p>
+        <ul class="ar-areabox">
+          <p class="ar-subtitle-black">撮影・録画・SNS共有について</p>
           <p class="guideline-border"></p>
-          <p class="guideline-maintext">MeidenXR(以下、当コンテンツ)は、提供するWebサイトを安全に多くの方に触れていただくことを目的としてこのガイドラインを公開しております。</p>
+          <p class="guideline-maintext">
+            当コンテンツの体験中に、スクリーンショットを撮ったり、画面を録画することは大歓迎です。各SNSの共有機能によって送信される情報は、それぞれのサービスの利用規約やプライバシーポリシーに準拠します。
+          </p>
+          <ul class="ar-experience-box">
+            <p class="ar-maintext-sub">・X (旧Twitter) プライバシーポリシー</p>
+            <p class="ar-maintext"><a href="https://twitter.com/privacy">https://twitter.com/privacy</a></p>
+            <p class="ar-maintext-sub">・LINE プライバシーポリシー</p>
+            <p class="ar-maintext"><a href="https://line.me/ja/terms/policy/">https://line.me/ja/terms/policy/</a></p>
+          </ul>
+          <p class="guideline-maintext">
+            Webカメラの使用中や、他の利用者が映り込むような映像を撮影・共有する際は、必ずその方の肖像権やプライバシーに最大限配慮してください。許可を得るか、顔が特定できないように加工するなどご協力お願い致します。公開する前に、不特定多数に公開しても問題ない内容であるか、十分にご確認ください。
+          </p>
+        </ul>
+
+        <ul class="ar-areabox">
+          <p class="ar-subtitle-black">著作権と外部ライブラリについて</p>
+          <p class="guideline-border"></p>
+          <p class="guideline-maintext">当コンテンツ内の画像、映像、3Dモデル。文章、構成といったコンテンツ自体の著作権は原則として[製作者]または名電高校に帰属します。</p>
+          <p class="guideline-maintext">また、以下の外部ライブラリやサービスを利用しています。それぞれの利用規約やライセンスに準拠しています。</p>
+          <ul class="ar-experience-box">
+            <p class="ar-maintext-sub">・Google Fonts (フォント)</p>
+            <p class="ar-maintext-sub">・A-Frame / AR.js (WebXR技術)</p>
+            <p class="ar-maintext-sub">・X(旧Twitter)、LINE等の共有機能と関連ロゴ</p>
+            <p class="ar-maintext-sub">・各種ブラウザAPI、センサー関連情報 など</p>
+            <p class="guideline-maintext">一部の素材については、再配布や改変利用が制限されています。もし、再利用をご希望される場合は、事前に私たちまでご相談ください。</p>
+          </ul>
         </ul>
 
         <ul class="ar-areabox">
           <p class="ar-subtitle-black">免責事項</p>
           <p class="guideline-border"></p>
           <p class="guideline-maintext">当コンテンツの利用により発生したいかなる損害についても、一切の責任を負いません。ご利用は自己責任でお願いいたします。</p>
-          <p class="guideline-maintext">当コンテンツにて表示される情報は、名電高校内部から直接的な管理が行われていないことから施設の変更などが行われた際に、最新の情報と一致しない状況が発生することがあります。あらかじめご了承ください。</p>
-          <p class="guideline-maintext">コンテンツの仕様や内容は、予告なしに変更・停止を行う場合があります。本ガイドラインについても同様に予告なく変更する場合があります。本ガイドラインの変更によるいかなる損害についても、一切の責任を負いません。</p>
+          <p class="guideline-maintext">
+            当コンテンツにて表示される情報は、名電高校内部から直接的な管理が行われていないことから施設の変更などが行われた際に、最新の情報と一致しない状況が発生することがあります。あらかじめご了承ください。</p>
+          <p class="guideline-maintext">
+            コンテンツの仕様や内容は、予告なしに変更・停止を行う場合があります。本ガイドラインについても同様に予告なく変更する場合があります。本ガイドラインの変更によるいかなる損害についても、一切の責任を負いません。</p>
         </ul>
-
-        
 
 
         <ul class="ar-areabox">
@@ -160,6 +299,11 @@
           <p class="ar-maintext-sub">〇〇@〇〇.com</p>
         </ul>
 
+        <ul class="ar-areabox">
+          <p class="guideline-border"></p>
+          <p class="guideline-maintext"><a href="./terms-of-use.html">利用規約</a><br><a
+              href="./privacy-policy.html">プライバシーポリシー</a></p>
+        </ul>
       </div>
 
       <div class="rightbtn">
@@ -184,9 +328,54 @@
       <img class="footer-img" src="./img/meiden-logo.svg" alt="">
       <p class="footer-copy">&copy; 2024 MeidenXR </p>
     </footer>
+
+
+
+    <!-- クッキーポップアップ -->
+    <div id="cookie-banner" class="cookie-popup">
+      <div class="cookie-content">
+        <p>このサイトでは、サイトの利便性向上とアクセス解析のためCookieを使用しています。
+          <br> | <a href="./privacy-policy.html" target="_blank">プライバシーポリシー</a> | <a href="./guideline.html"
+            target="_blank">コンテンツガイドライン</a> | に合わせて体験前には<a href="./terms-of-use.html" target="_blank">利用規約</a>をご覧ください。
+        </p>
+        <div class="cookie-buttons">
+          <button id="accept-all" class="btn primary">すべて同意する</button>
+          <button id="reject-all" class="btn secondary">すべて拒否する</button>
+          <button id="open-settings" class="btn tertiary">設定</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="cookie-settings-modal" class="cookie-popup modal" style="display:none;">
+      <div class="modal-cookie-content">
+        <h3>Cookie設定</h3>
+        <p>当サイトで使用するCookieの種類を選択できます。詳細については | <a href="privacy-policy.html" target="_blank">プライバシーポリシー</a> | <a
+            href="guideline.html" target="_blank">コンテンツガイドライン</a> | をご確認ください。</p>
+
+        <div class="cookie-category">
+          <h4><input type="checkbox" id="essential-cookies" checked disabled> 必須Cookie <span
+              class="tag tag-required">常に有効</span></h4>
+          <p>このCookieは、サイトの基本的な機能（セキュリティなど）に必要不可欠であり、無効にすることはできません。</p>
+        </div>
+
+        <div class="cookie-category">
+          <h4><input type="checkbox" id="analytics-cookies"> アナリティクスCookie</h4>
+          <p>このCookieは、サイトの利用状況を分析し、改善するために使用されます。（Googleアナリティクスなど）</p>
+        </div>
+
+        <div class="modal-buttons">
+          <button id="save-settings" class="btn primary">設定を保存する</button>
+          <button id="close-settings" class="btn secondary">閉じる</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
+
+
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="./js/cookie.js"></script>
   <script src="./js/nav.js"></script>
   <script src="./js/modal.js"></script>
 

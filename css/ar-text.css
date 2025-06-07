@@ -8,6 +8,9 @@
   padding-bottom: 40px;
 }
 
+p {
+  word-break: break-all;
+}
 /*  */
 /*  */
 
@@ -79,14 +82,21 @@
   color: #231815;
   font-family: "Noto Sans JP", sans-serif;
   font-size: 14px;
-  padding: 10px 0 0 0;
+  padding: 5px 0 0 0;
+}
+.ar-maintext a{
+  color: #8073d4;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 12px;
+  padding: 0 0 0 0;
+  margin: 0 13px;
 }
 
 .ar-maintext-sub {
   color: #6d6562;
   font-weight: 600;
   font-size: 12px;
-  margin: 5px 0;
+  margin-top: 5px;
 }
 
 .ar-notetext {
