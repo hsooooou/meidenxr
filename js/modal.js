@@ -1,33 +1,43 @@
+document.addEventListener('DOMContentLoaded', () => {
 // モーダル要素を取得
-var modal = document.getElementById("qrModal");
-// モーダルを開くボタンを取得
-var btn = document.getElementById("openModal");
-// モーダルを閉じるアイコン（×）を取得
-var span = document.getElementById("closeModal");
+    var modal = document.getElementById("qrModal");
+    // モーダルを開くボタンを取得
+    var btn = document.getElementById("openModal");
+    // モーダルを閉じるアイコン（×）を取得
+    var span = document.getElementById("closeModal");
 
-btn.onclick = function () {
-  modal.style.display = "block";
-}
+    // 要素が存在するかチェック（推奨）
+    if (btn) {
+      btn.onclick = function () {
+        modal.style.display = "block";
+      }
+    }
+    if (span) {
+      span.onclick = function () {
+        modal.style.display = "none";
+      }
+    }
 
-span.onclick = function () {
-  modal.style.display = "none";
-}
 
+    // モーダル要素を取得
+    var modalmap = document.getElementById("qrModal-map");
+    // モーダルを開くボタンを取得
+    var btnmap = document.getElementById("openModal-map");
+    // モーダルを閉じるアイコン（×）を取得
+    var spanmap = document.getElementById("closeModal-map");
 
-// モーダル要素を取得
-var modalmap = document.getElementById("qrModal-map");
-// モーダルを開くボタンを取得
-var btnmap = document.getElementById("openModal-map");
-// モーダルを閉じるアイコン（×）を取得
-var spanmap = document.getElementById("closeModal-map");
+    // 要素が存在するかチェック（推奨）
+    if (btnmap) {
+      btnmap.onclick = function () {
+        modalmap.style.display = "block";
+      }
+    }
+    if (spanmap) {
+      spanmap.onclick = function () {
+        modalmap.style.display = "none";
+      }
+    }
 
-btnmap.onclick = function () {
-  modalmap.style.display = "block";
-}
-
-spanmap.onclick = function () {
-  modalmap.style.display = "none";
-}
 
 
 
@@ -61,38 +71,52 @@ spanmap.onclick = function () {
 //   return
 // });
 
-function copyUrl() {
-    const url = 'https://forms.gle/yU6vn54oNLNisK5S8';
-    const copyok = document.getElementById('copyok');
+   function copyUrl() {
+        const url = 'https://forms.gle/yU6vn54oNLNisK5S8';
+        const copyok = document.getElementById('copyok');
 
-    if (!copyok) return;
+        if (!copyok) {
+            console.warn('copyok要素が見つかりませんでした。');
+            return;
+        }
 
-    navigator.clipboard.writeText(url).then(() => {
-      copyok.classList.remove('copy-hidden');
+        navigator.clipboard.writeText(url).then(() => {
+          copyok.classList.remove('copy-hidden');
 
-      setTimeout(() => {
-        copyok.classList.add('copy-hidden');
-      }, 4000);
-    }).catch(err => {
-      console.error('コピーに失敗しました', err);
-    });
-  }
+          setTimeout(() => {
+            copyok.classList.add('copy-hidden');
+          }, 4000);
+        }).catch(err => {
+          console.error('コピーに失敗しました', err);
+        });
+      }
 
-  function copyUrlarfinish() {
-    const url = 'https://hsooooou.github.io/meidenxr/ar-entrance.html';
-    const copyok = document.getElementById('copyok-ar-finish');
+      function copyUrlarfinish() {
+        const url = 'https://hsooooou.github.io/meidenxr/ar-entrance.html';
+        const copyok = document.getElementById('copyok-ar-finish');
 
-    if (!copyok) return;
+        if (!copyok) {
+            console.warn('copyok-ar-finish要素が見つかりませんでした。');
+            return;
+        }
 
-    navigator.clipboard.writeText(url).then(() => {
-      copyok.classList.remove('copy-hidden-ar-finish');
+        navigator.clipboard.writeText(url).then(() => {
+          copyok.classList.remove('copy-hidden-ar-finish');
 
-      setTimeout(() => {
-        copyok.classList.add('copy-hidden-ar-finish');
-      }, 4000);
-    }).catch(err => {
-      console.error('コピーに失敗しました', err);
-    });
-  }
+          setTimeout(() => {
+            copyok.classList.add('copy-hidden-ar-finish');
+          }, 4000);
+        }).catch(err => {
+          console.error('コピーに失敗しました', err);
+        });
+      }
+      const copyBtn = document.getElementById('copybtn');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', copyUrl);
+    }
 
-  
+    const copyBtnArFinish = document.getElementById('copybtn-ar-finish'); // もしAR終了後のコピーボタンがあるなら
+    if (copyBtnArFinish) {
+        copyBtnArFinish.addEventListener('click', copyUrlarfinish);
+    }
+  });
