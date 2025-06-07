@@ -468,12 +468,14 @@ p.footer-policy {
 }
 
 
+
+
 /*  */
 /*  */
 /* --- Cookie ポップアップ（バナー & モーダル共通） --- */
 .cookie-popup {
     position: fixed;
-    z-index: 1000; /* 他のコンテンツより手前に表示 */
+    z-index: 9999; /* 他のコンテンツより手前に表示 */
     background-color: #231815;
     color: #fff;
     box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
@@ -552,7 +554,7 @@ p.footer-policy {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1001; /* バナーより上に表示 */
+    z-index: 10000; /* バナーより上に表示 */
 }
 
 .modal-cookie-content { 

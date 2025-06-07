@@ -25,9 +25,19 @@
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
 
-    gtag('config', 'G-FBD5SLNCS6');
+    // 同意モードのデフォルト設定: analytics_storage のみを 'denied' に設定
+    // ユーザーが明示的に同意するまで、Cookieベースの測定は行われません
+    gtag('consent', 'default', {
+      'analytics_storage': 'denied', // アナリティクス関連Cookieの保存を拒否
+      'functionality_storage': 'denied', // サイト機能関連Cookieの保存を拒否（必須はJSでgrantedにするためここはdeniedで良い）
+      'security_storage': 'granted', // セキュリティ関連Cookieの保存は許可（通常は常に必要）
+      'wait_for_update': 500       // 同意状況の更新を待つミリ秒（最大500ms）
+    });
+
+    // Google Analyticsのconfigコマンドは、同意モードのデフォルト設定後に実行
+
+    gtag('config', 'G-FBD5SLNCS6'); 
   </script>
 
   <!-- URL共有設定 -->
@@ -220,13 +230,57 @@
           <li class="footer-cate"><a class="footer-btn" href="https://www.meiden.ed.jp">公式サイト</a></li>
         </ul>
       </div>
+      <ul class="footer-policy-area">
+        <p class="footer-policy"><a href="./terms-of-use.html">利用規約</a> / <a href="./privacy-policy.html">プライバシーポリシー</a>
+          <br> / <a href="./guideline.html">コンテンツガイドライン</a></p>
+      </ul>
       <img class="footer-img" src="./img/meiden-logo.svg" alt="">
       <p class="footer-copy">&copy; 2024 MeidenXR </p>
     </footer>
+
+    <!-- クッキーポップアップ -->
+    <div id="cookie-banner" class="cookie-popup">
+      <div class="cookie-content">
+        <p>このサイトでは、サイトの利便性向上とアクセス解析のためCookieを使用しています。
+          <br> | <a href="./privacy-policy.html" target="_blank">プライバシーポリシー</a> | <a href="./guideline.html"
+            target="_blank">コンテンツガイドライン</a> | に合わせて体験前には<a href="./terms-of-use.html" target="_blank">利用規約</a>をご覧ください。
+        </p>
+        <div class="cookie-buttons">
+          <button id="accept-all" class="btn primary">すべて同意する</button>
+          <button id="reject-all" class="btn secondary">すべて拒否する</button>
+          <button id="open-settings" class="btn tertiary">設定</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="cookie-settings-modal" class="cookie-popup modal" style="display:none;">
+      <div class="modal-cookie-content">
+        <h3>Cookie設定</h3>
+        <p>当サイトで使用するCookieの種類を選択できます。詳細については | <a href="privacy-policy.html" target="_blank">プライバシーポリシー</a> | <a
+            href="guideline.html" target="_blank">コンテンツガイドライン</a> | をご確認ください。</p>
+
+        <div class="cookie-category">
+          <h4><input type="checkbox" id="essential-cookies" checked disabled> 必須Cookie <span
+              class="tag tag-required">常に有効</span></h4>
+          <p>このCookieは、サイトの基本的な機能（セキュリティなど）に必要不可欠であり、無効にすることはできません。</p>
+        </div>
+
+        <div class="cookie-category">
+          <h4><input type="checkbox" id="analytics-cookies"> アナリティクスCookie</h4>
+          <p>このCookieは、サイトの利用状況を分析し、改善するために使用されます。（Googleアナリティクスなど）</p>
+        </div>
+
+        <div class="modal-buttons">
+          <button id="save-settings" class="btn primary">設定を保存する</button>
+          <button id="close-settings" class="btn secondary">閉じる</button>
+        </div>
+      </div>
+    </div>
   </div>
 
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="./js/cookie.js"></script>
   <script src="./js/nav.js"></script>
 </body>
 
