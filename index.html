@@ -38,6 +38,14 @@
     // Google Analyticsのconfigコマンドは、同意モードのデフォルト設定後に実行
 
     gtag('config', 'G-FBD5SLNCS6'); 
+    
+     gtag('event', 'test_page_load', {
+      'event_category': 'debug',
+      'event_label': 'Initial Page Load Test',
+      'debug_mode': true // デバッグモードを有効にする（Tag Assistant Companionで見やすくなる）
+    });
+    console.log("初期ページロードテストイベントを送信しました。");
+
   </script>
 
   <!-- Open Graph tags -->
