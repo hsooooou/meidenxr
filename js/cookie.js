@@ -1,3 +1,5 @@
+// ./js/cookie.js
+
 document.addEventListener('DOMContentLoaded', () => {
     const banner = document.getElementById('cookie-banner');
     const modal = document.getElementById('cookie-settings-modal');
@@ -6,14 +8,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const rejectAllBtn = document.getElementById('reject-all');
     const openSettingsBtn = document.getElementById('open-settings');
     const saveSettingsBtn = document.getElementById('save-settings');
-    const closeSettingsBtn = document.getElementById('close-settings');
+    // ↓ ↓ ↓ ここ、document.getElementById が抜けていたので修正しました ↓ ↓ ↓
+    const closeSettingsBtn = document.getElementById('close-settings'); 
 
     const essentialCheckbox = document.getElementById('essential-cookies');
     const analyticsCheckbox = document.getElementById('analytics-cookies');
 
-    const CONSENT_COOKIE_NAME = 'user_cookie_preferences'; // 同意設定を保存するCookie名
-    // ★★★ あなたのGoogleアナリティクス測定IDをここに記入してください (例: 'G-XXXXXXXXXX') ★★★
+    const CONSENT_COOKIE_NAME = 'user_cookie_preferences';
     const GA_MEASUREMENT_ID = 'G-FBD5SLNCS6'; 
+
+    // ★★★追加: gtag('config')が既に呼び出されたかを追跡するフラグ★★★
+    let gtagConfigCalled = false; 
 
     // --- Cookie ヘルパー関数 ---
     const setCookie = (name, value, days) => {
@@ -42,6 +47,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 'security_storage': 'granted', // セキュリティ関連は常に許可
             });
             console.log('Google Tag consent updated:', preferences);
+
+            // ★★★変更点: analytics_storageがgrantedになったらgtag('config')を呼び出す★★★
+            // gtag('config')は一度だけ呼び出すようにする
+            if (preferences.analytics && !gtagConfigCalled) {
+                gtag('config', GA_MEASUREMENT_ID);
+                gtagConfigCalled = true; // フラグを立てて、二重呼び出しを防ぐ
+                console.log('gtag config called for analytics_storage: granted');
+            }
+            // ★★★変更点ここまで★★★
+
         } else {
             console.warn('gtag関数が見つかりません。Googleアナリティクスが正しく読み込まれているか確認してください。');
         }
@@ -67,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 同意設定の保存と適用 ---
     const saveAndApplyPreferences = (preferences) => {
         setCookie(CONSENT_COOKIE_NAME, JSON.stringify(preferences), 365);
-        updateGtagConsent(preferences);
+        updateGtagConsent(preferences); // 同意状況を更新
         banner.style.display = 'none';
         modal.style.display = 'none';
         setBodyPadding(false);
@@ -90,12 +105,18 @@ document.addEventListener('DOMContentLoaded', () => {
             banner.style.display = 'none';
             setBodyPadding(false);
         } else {
+            // Cookieがない場合はバナーを表示し、デフォルト設定を適用
             preferences = getDefaultPreferences();
             banner.style.display = 'block';
             setBodyPadding(true);
             console.log('Cookie設定が未検出です。バナーを表示し、デフォルト（すべて拒否）で初期化します。');
         }
+        
+        // ★★★変更点: 初期ロード時にgtag('config')は呼び出さない。
+        //           同意状況のアップデートのみ行う。
         updateGtagConsent(preferences);
+        // もし保存された同意がanalytics: granted であれば、
+        // 上記のupdateGtagConsent内でconfigが呼び出されるはず。
     };
 
     // --- イベントリスナー設定 ---
@@ -114,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentPrefs = savedPrefs ? JSON.parse(savedPrefs) : getDefaultPreferences();
         
         analyticsCheckbox.checked = currentPrefs.analytics;
-        essentialCheckbox.checked = true;
+        essentialCheckbox.checked = true; // 必須は常にチェック
 
         modal.style.display = 'flex';
         banner.style.display = 'none';
@@ -123,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     saveSettingsBtn.addEventListener('click', () => {
         const prefs = {
-            essential: true,
+            essential: true, // 必須は常にtrue
             analytics: analyticsCheckbox.checked,
         };
         saveAndApplyPreferences(prefs);
@@ -131,6 +152,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeSettingsBtn.addEventListener('click', () => {
         modal.style.display = 'none';
+        // モーダルを閉じる際に、バナーが非表示のままならpaddingを解除
+        if (banner.style.display === 'none') {
+            setBodyPadding(false);
+        }
     });
 
     // ページロード時に初期化を実行
