@@ -26,6 +26,8 @@
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
 
+    gtag('js', new Date());
+
     // 初期同意設定を定義
     // ユーザーの同意が不明な場合は'denied'として初期化
     // 後でcookie.jsがこれをユーザーの保存された設定に基づいて更新します

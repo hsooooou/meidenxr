@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // gtag('config')は一度だけ呼び出すようにする
             if (preferences.analytics && !gtagConfigCalled) {
                 gtag('config', GA_MEASUREMENT_ID);
+                console.log("gtag config call attempted.");
                 gtagConfigCalled = true; // フラグを立てて、二重呼び出しを防ぐ
                 console.log('gtag config called for analytics_storage: granted');
             }
