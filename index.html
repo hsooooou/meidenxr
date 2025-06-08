@@ -23,42 +23,21 @@
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-FBD5SLNCS6"></script>
   <script>
-    // 2. gtag 初期化
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
 
-    // 3. Consent Mode v2: デフォルトの同意状態
+    // 初期同意設定を定義
+    // ユーザーの同意が不明な場合は'denied'として初期化
+    // 後でcookie.jsがこれをユーザーの保存された設定に基づいて更新します
     gtag('consent', 'default', {
-      'ad_storage': 'denied',
-      'ad_user_data': 'denied',
       'analytics_storage': 'denied',
       'functionality_storage': 'denied',
       'security_storage': 'granted',
-      'wait_for_update': 500
+      'wait_for_update': 500 // cookie.jsが同意設定を更新するのを最大500ms待つ
     });
 
-    // 4. config呼び出しのフラグ
-    let gtagConfigCalled = false;
-
-    // 5. ユーザーの同意に基づいて consent と config を更新
-    function updateGtagConsent(preferences) {
-      gtag('consent', 'update', {
-        'ad_storage': preferences.analytics ? 'granted' : 'denied',
-        'ad_user_data': preferences.analytics ? 'granted' : 'denied',
-        'analytics_storage': preferences.analytics ? 'granted' : 'denied',
-        'functionality_storage': preferences.essential ? 'granted' : 'denied',
-        'security_storage': 'granted'
-      });
-
-      // consentがgrantedになった後に config を呼ぶ（1回だけ）
-      if (preferences.analytics && !gtagConfigCalled) {
-        gtag('config', 'G-FBD5SLNCS6', { debug_mode: true });
-
-        // 明示的な page_view イベント送信
-        gtag('event', 'page_view');
-        gtagConfigCalled = true;
-      }
-    }
+    // 注: gtag('config', 'G-FBD5SLNCS6') はここでは呼び出しません。
+    // これはcookie.js内で、ユーザーがアナリティクスCookieに同意した場合にのみ呼び出されます。
   </script>
 
   <!-- Open Graph tags -->
@@ -285,6 +264,7 @@
           </div>
         </div>
       </div>
+
 
 
 
