@@ -26,18 +26,14 @@
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
 
-    // 同意モードのデフォルト設定: analytics_storage のみを 'denied' に設定
-    // ユーザーが明示的に同意するまで、Cookieベースの測定は行われません
+    gtag('js', new Date());
+
     gtag('consent', 'default', {
-      'analytics_storage': 'denied', // アナリティクス関連Cookieの保存を拒否
-      'functionality_storage': 'denied', // サイト機能関連Cookieの保存を拒否（必須はJSでgrantedにするためここはdeniedで良い）
-      'security_storage': 'granted', // セキュリティ関連Cookieの保存は許可（通常は常に必要）
-      'wait_for_update': 500       // 同意状況の更新を待つミリ秒（最大500ms）
+      'analytics_storage': 'denied',
+      'functionality_storage': 'denied',
+      'security_storage': 'granted',
+      'wait_for_update': 500 // cookie.jsが同意設定を更新するのを最大500ms待つ
     });
-
-    // Google Analyticsのconfigコマンドは、同意モードのデフォルト設定後に実行
-
-    gtag('config', 'G-FBD5SLNCS6'); 
   </script>
 
   <!-- URL共有設定 -->

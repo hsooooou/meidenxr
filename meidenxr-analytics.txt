@@ -10,7 +10,7 @@ G-FBD5SLNCS6
     gtag('config', 'G-FBD5SLNCS6');
   </script>
 
-20250607 -
+20250607
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-FBD5SLNCS6"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -29,3 +29,21 @@ G-FBD5SLNCS6
     // ここにもあなたのGA測定IDを記入してください
     gtag('config', 'G-FBD5SLNCS6'); 
   </script>
+
+  20250608 - 
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FBD5SLNCS6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+
+  gtag('js', new Date()); // ★この行を追加または確認
+
+  gtag('consent', 'default', {
+    'analytics_storage': 'denied',
+    'functionality_storage': 'denied',
+    'security_storage': 'granted',
+    'wait_for_update': 500 // cookie.jsが同意設定を更新するのを最大500ms待つ
+  });
+
+  // gtag('config', 'G-FBD5SLNCS6') は引き続きcookie.js内で呼び出す
+</script>
