@@ -119,8 +119,8 @@ input[type="checkbox"].ar-on-off {
   display: block;
   font-family: "Noto Sans JP", sans-serif;
   font-size: 18px;
-  color: #231815;
-  background-color: #e3e3e3;
+  color: #fafafa;
+  background-color: #668BC7;
   text-align: center;
   border-radius: 100px;
 
@@ -130,13 +130,13 @@ input[type="checkbox"].ar-on-off {
   box-shadow: 0 0 0 0;
 }
 
-.open-explanation:hover {
+/* .open-explanation:hover {
   background-color: #e6e243;
-}
+} */
 
 /*ラベルに表示するテキスト*/
 .open-explanation::after {
-  content: '体験の流れ';
+  content: '体験の流れを見る';
 }
 
 .ar-on-off:checked~.open-explanation::after {

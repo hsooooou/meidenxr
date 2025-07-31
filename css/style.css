@@ -620,7 +620,17 @@ p.footer-policy {
 .modal-buttons {
     text-align: right; /* ボタンを右寄せ */
     margin-top: 25px;
+  }
+
+  /*　ビジュアル */
+.contents-visual-box{
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #d6d6d6;
+  pointer-events: none;
+  margin: 10px 0;
 }
+
 
 /* アニメーション */
 @keyframes slideUp {
