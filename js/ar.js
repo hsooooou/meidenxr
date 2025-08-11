@@ -78,31 +78,31 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
   const markers = [
     {
       //n02-idr 情報デザイン室
-      patternUrl: 'pattern-testplay_4_n02-idr.patt',
+      patternUrl: 'pattern-testplay_4_n02-idr',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html',
       buttonId: 'button-n02-idr'
     },
     {
       //n06-ml メディアライブラリー
-      patternUrl: 'pattern-testplay_5_n06-ml.patt',
+      patternUrl: 'pattern-testplay_5_n06-ml',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html',
       buttonId: 'button-n06-ml'
     },
     {
       //n08-sc サテライト教室
-      patternUrl: 'pattern-testplay_1_n08-sc.patt',
+      patternUrl: 'pattern-testplay_1_n08-sc',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n08-sc.html',
       buttonId: 'button-n08-sc'
     },
     {
       //n10-alr アクティブラーニング室
-      patternUrl: 'pattern-testplay_3_n10-alr.patt',
+      patternUrl: 'pattern-testplay_3_n10-alr',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n10-alr.html',
       buttonId: 'button-n10-alr'
     },
     {
       //n11-cl 化学実験室
-      patternUrl: 'pattern-testplay_2_n11-cl.patt',
+      patternUrl: 'pattern-testplay_2_n11-cl',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n11-cl.html',
       buttonId: 'button-n-11-cl'
     },
@@ -178,23 +178,23 @@ window.addEventListener('DOMContentLoaded', () => {
   // マーカーごとの設定
   const markers = [
     { //n02-idr 情報デザイン室
-      patternUrl: 'pattern-testplay_4_n02-idr.patt',
+      patternUrl: 'pattern-testplay_4_n02-idr',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html'
     },
     { //n06-ml メディアライブラリー
-      patternUrl: 'ppattern-testplay_5_n06-ml.patt',
+      patternUrl: 'ppattern-testplay_5_n06-ml',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html'
     },
     { //n08-sc サテライト教室
-      patternUrl: 'pattern-testplay_1_n08-sc.patt',
+      patternUrl: 'pattern-testplay_1_n08-sc',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n08-sc.html'
     },
     { //n10-alr アクティブラーニング室
-      patternUrl: 'pattern-testplay_3_n10-alr.patt',
+      patternUrl: 'pattern-testplay_3_n10-alr',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n10-alr.html'
     },
     { //n11-cl 化学実験室
-      patternUrl: 'pattern-testplay_2_n11-cl.patt',
+      patternUrl: 'pattern-testplay_2_n11-cl',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n11-cl.html'
     },
 
