@@ -85,7 +85,7 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
     {
       //n06-ml メディアライブラリー
       patternUrl: 'pattern-testplay_5_n06-ml.patt',
-      link: 'https://hsooooou.github.io/meidenxr/construction.html',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html',
       buttonId: 'button-n06-ml'
     },
     {
@@ -183,7 +183,7 @@ window.addEventListener('DOMContentLoaded', () => {
     },
     { //n06-ml メディアライブラリー
       patternUrl: 'pattern-testplay_5_n06-ml.patt',
-      link: 'https://hsooooou.github.io/meidenxr/construction.html'
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html'
     },
     { //n08-sc サテライト教室
       patternUrl: 'pattern-testplay_1_n08-sc.patt',
