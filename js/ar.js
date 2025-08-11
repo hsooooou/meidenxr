@@ -85,7 +85,7 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
     {
       //n06-ml メディアライブラリー
       patternUrl: 'pattern-testplay_5_n06-ml',
-      link: 'pattern-QR_meidenxr_arcamera#button-n06-ml.patt',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html',
       buttonId: 'button-n06-ml'
     },
     {
