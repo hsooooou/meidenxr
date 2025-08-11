@@ -78,9 +78,9 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
   const markers = [
     {
       //n02-idr 情報デザイン室
-      patternUrl: 'pattern-testplay_4_n02-idr',
-      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html',
-      buttonId: 'button-n02-idr'
+      // patternUrl: 'pattern-testplay_4_n02-idr',
+      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html',
+      // buttonId: 'button-n02-idr'
     },
     {
       //n06-ml メディアライブラリー
@@ -102,9 +102,9 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
     },
     {
       //n11-cl 化学実験室
-      patternUrl: 'pattern-testplay_2_n11-cl',
-      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n11-cl.html',
-      buttonId: 'button-n-11-cl'
+      // patternUrl: 'pattern-testplay_2_n11-cl',
+      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n11-cl.html',
+      // buttonId: 'button-n-11-cl'
     },
     {
       //テスト用マーカー hiro
@@ -178,8 +178,8 @@ window.addEventListener('DOMContentLoaded', () => {
   // マーカーごとの設定
   const markers = [
     { //n02-idr 情報デザイン室
-      patternUrl: 'pattern-testplay_4_n02-idr',
-      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html'
+      // patternUrl: 'pattern-testplay_4_n02-idr',
+      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html'
     },
     { //n06-ml メディアライブラリー
       patternUrl: 'ppattern-testplay_5_n06-ml',
@@ -194,8 +194,8 @@ window.addEventListener('DOMContentLoaded', () => {
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n10-alr.html'
     },
     { //n11-cl 化学実験室
-      patternUrl: 'pattern-testplay_2_n11-cl',
-      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n11-cl.html'
+      // patternUrl: 'pattern-testplay_2_n11-cl',
+      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n11-cl.html'
     },
 
     { // テスト用マーカー
