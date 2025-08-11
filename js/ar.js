@@ -84,25 +84,25 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
     },
     {
       //n06-ml メディアライブラリー
-      patternUrl: 'pattern-armarker_n06-ml-iconin',
+      patternUrl: 'pattern-testplay_5_n06-ml.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html',
       buttonId: 'button-n06-ml'
     },
     {
       //n08-sc サテライト教室
-      patternUrl: 'pattern-testplay_1_n08-sc',
+      patternUrl: 'pattern-testplay_1_n08-sc.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n08-sc.html',
       buttonId: 'button-n08-sc'
     },
     {
       //n10-alr アクティブラーニング室
-      patternUrl: 'pattern-QR_arimg_n10-alr',
+      patternUrl: 'pattern-testplay_3_n10-alr.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n10-alr.html',
       buttonId: 'button-n10-alr'
     },
     {
       //n11-cl 化学実験室
-      patternUrl: 'pattern-testplay_2_n11-cl',
+      patternUrl: 'pattern-testplay_2_n11-cl.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n11-cl.html',
       buttonId: 'button-n-11-cl'
     },
@@ -182,15 +182,15 @@ window.addEventListener('DOMContentLoaded', () => {
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html'
     },
     { //n06-ml メディアライブラリー
-      patternUrl: 'pattern-armarker_n06-ml-iconin',
+      patternUrl: 'ppattern-testplay_5_n06-ml.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html'
     },
     { //n08-sc サテライト教室
-      patternUrl: 'pattern-QR_arimg_n08-sc',
+      patternUrl: 'pattern-testplay_1_n08-sc.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n08-sc.html'
     },
     { //n10-alr アクティブラーニング室
-      patternUrl: 'pattern-QR_arimg_n10-alr',
+      patternUrl: 'pattern-testplay_3_n10-alr.patt',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n10-alr.html'
     },
     { //n11-cl 化学実験室
