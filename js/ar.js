@@ -218,7 +218,7 @@ window.addEventListener('DOMContentLoaded', () => {
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html'
     },
     { //n07-mr 音楽室
-      patternUrl: 'pattern-armarker_n07-mr-iconin',
+      patternUrl: 'pattern-armarker_n07-mr-iconin', 
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n07-mr.html'
     },
     { //n08-sc サテライト教室
