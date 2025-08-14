@@ -77,16 +77,34 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
   // ここにマーカーパターンを記入　IDの設定に注意
   const markers = [
     {
+      //n01-cr 普通教室
+      // patternUrl: 'pattern-testplay_4_n02-idr',
+      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n01-cr.html',
+      // buttonId: 'button-n01-cr'
+    },
+    {
       //n02-idr 情報デザイン室
       // patternUrl: 'pattern-testplay_4_n02-idr',
       // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html',
       // buttonId: 'button-n02-idr'
     },
     {
+      //n04-sta 売店
+      // patternUrl: 'pattern-testplay_4_n02-idr',
+      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n04-sta.html',
+      // buttonId: 'button-n04-sta'
+    },
+    {
       //n06-ml メディアライブラリー
       patternUrl: 'pattern-armarker_n06-ml-iconin', 
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html',
       buttonId: 'button-n06-ml'
+    },
+    {
+      //n07-mr 音楽室
+      // patternUrl: 'pattern-testplay_4_n02-idr',
+      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/n07-mr.html',
+      // buttonId: 'button-n07-mr'
     },
     {
       //n08-sc サテライト教室
@@ -105,6 +123,12 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
       // patternUrl: 'pattern-testplay_2_n11-cl',
       // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n11-cl.html',
       // buttonId: 'button-n-11-cl'
+    },
+    {
+      //n12-ar 美術室
+      // patternUrl: 'pattern-testplay_4_n02-idr',
+      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n12-ar.html',
+      // buttonId: 'button-n12-ar'
     },
     {
       //テスト用マーカー hiro
@@ -177,13 +201,25 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // マーカーごとの設定
   const markers = [
+    { //n01-cr 普通教室
+      // patternUrl: 'pattern-testplay_4_n02-idr',
+      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n01-cr.html'
+    },
     { //n02-idr 情報デザイン室
       // patternUrl: 'pattern-testplay_4_n02-idr',
       // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html'
     },
+    { //n04-sta 売店
+      // patternUrl: 'pattern-testplay_4_n02-idr',
+      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n04-sta.html'
+    },
     { //n06-ml メディアライブラリー
       patternUrl: 'pattern-armarker_n06-ml-iconin',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html'
+    },
+    { //n07-mr 音楽室
+      // patternUrl: 'pattern-testplay_4_n02-idr',
+      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n07-mr.html'
     },
     { //n08-sc サテライト教室
       patternUrl: 'pattern-armarker_n08-sc-iconin',
@@ -196,6 +232,10 @@ window.addEventListener('DOMContentLoaded', () => {
     { //n11-cl 化学実験室
       // patternUrl: 'pattern-testplay_2_n11-cl',
       // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n11-cl.html'
+    },
+    { //n12-ar 美術室
+      // patternUrl: 'pattern-testplay_4_n02-idr',
+      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n12-ar.html'
     },
 
     { // テスト用マーカー
