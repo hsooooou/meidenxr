@@ -103,7 +103,7 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
     {
       //n07-mr 音楽室
       patternUrl: 'pattern-armarker_n07-mr-iconin',
-      link: 'https://hsooooou.github.io/meidenxr/schoolmap/n07-mr.html',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n07-mr.html',
       buttonId: 'button-n07-mr'
     },
     {
