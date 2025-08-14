@@ -102,9 +102,9 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
     },
     {
       //n07-mr 音楽室
-      // patternUrl: 'pattern-testplay_4_n02-idr',
-      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/n07-mr.html',
-      // buttonId: 'button-n07-mr'
+      patternUrl: 'pattern-armarker_n07-mr-iconin',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/n07-mr.html',
+      buttonId: 'button-n07-mr'
     },
     {
       //n08-sc サテライト教室
@@ -218,8 +218,8 @@ window.addEventListener('DOMContentLoaded', () => {
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n06-ml.html'
     },
     { //n07-mr 音楽室
-      // patternUrl: 'pattern-testplay_4_n02-idr',
-      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n07-mr.html'
+      patternUrl: 'pattern-armarker_n07-mr-iconin',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n07-mr.html'
     },
     { //n08-sc サテライト教室
       patternUrl: 'pattern-armarker_n08-sc-iconin',
