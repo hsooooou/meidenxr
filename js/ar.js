@@ -78,9 +78,9 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
   const markers = [
     {
       //n01-cr 普通教室
-      // patternUrl: 'pattern-testplay_4_n02-idr',
-      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n01-cr.html',
-      // buttonId: 'button-n01-cr'
+      patternUrl: 'pattern-armarker_n01-cr-iconin',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n01-cr.html',
+      buttonId: 'button-n01-cr'
     },
     {
       //n02-idr 情報デザイン室
@@ -202,8 +202,8 @@ window.addEventListener('DOMContentLoaded', () => {
   // マーカーごとの設定
   const markers = [
     { //n01-cr 普通教室
-      // patternUrl: 'pattern-testplay_4_n02-idr',
-      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n01-cr.html'
+      patternUrl: 'pattern-armarker_n01-cr-iconin',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n01-cr.html'
     },
     { //n02-idr 情報デザイン室
       // patternUrl: 'pattern-testplay_4_n02-idr',
