@@ -126,9 +126,9 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
     },
     {
       //n12-ar 美術室
-      // patternUrl: 'pattern-testplay_4_n02-idr',
-      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n12-ar.html',
-      // buttonId: 'button-n12-ar'
+      patternUrl: 'pattern-armarker_n12-ar-iconin',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n12-ar.html',
+      buttonId: 'button-n12-ar'
     },
     {
       //テスト用マーカー hiro
@@ -234,8 +234,8 @@ window.addEventListener('DOMContentLoaded', () => {
       // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n11-cl.html'
     },
     { //n12-ar 美術室
-      // patternUrl: 'pattern-testplay_4_n02-idr',
-      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n12-ar.html'
+      patternUrl: 'pattern-armarker_n12-ar-iconin',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n12-ar.html'
     },
 
     { // テスト用マーカー
