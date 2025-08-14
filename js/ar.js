@@ -90,9 +90,9 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
     },
     {
       //n04-sta 売店
-      // patternUrl: 'pattern-testplay_4_n02-idr',
-      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n04-sta.html',
-      // buttonId: 'button-n04-sta'
+      patternUrl: 'pattern-armarker_n04-sta-iconin',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n04-sta.html',
+      buttonId: 'button-n04-sta'
     },
     {
       //n06-ml メディアライブラリー
@@ -210,8 +210,8 @@ window.addEventListener('DOMContentLoaded', () => {
       // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n02-idr.html'
     },
     { //n04-sta 売店
-      // patternUrl: 'pattern-testplay_4_n02-idr',
-      // link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n04-sta.html'
+      patternUrl: 'pattern-armarker_n04-sta-iconin',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n04-sta.html'
     },
     { //n06-ml メディアライブラリー
       patternUrl: 'pattern-armarker_n06-ml-iconin',
