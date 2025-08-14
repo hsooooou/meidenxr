@@ -51,8 +51,7 @@
   <meta name="twitter:description" content="MeidenXRの現地体験型コンテンツ「MeidenARアドベンチャー」のARページです。" />
   <meta name="twitter:image" content="https://hsooooou.github.io/meidenxr/img/ogp/ogp_meidenxr_ar_adventure.png" />
 
-  <meta name="description"
-    content="現地体験型コンテンツ「MeidenARアドベンチャー」のARページです。体験入学や学校説明会などの学校開放日に体験できます！">
+  <meta name="description" content="現地体験型コンテンツ「MeidenARアドベンチャー」のARページです。体験入学や学校説明会などの学校開放日に体験できます！">
 
   <!-- AR/VRの読み込み -->
   <script src="../js/pageshow-handler.js"></script>
@@ -77,8 +76,8 @@
 
   <!-- AR表示設定 -->
   <!-- <a-scene embedded arjs="debugUIEnabled:false;" renderer="preserveDrawingBuffer: true  alpha: false;"> -->
-  <a-scene  embedded arjs="patternRatio: 0.5; debugUIEnabled:false;" renderer="preserveDrawingBuffer: true;" raycaster="objects: .ar-btn"
-  loading-screen="dotsColor: #e6e243; backgroundoColor: #ebdd5e"
+  <a-scene embedded arjs="patternRatio: 0.5; debugUIEnabled:false;" renderer="preserveDrawingBuffer: true;"
+    raycaster="objects: .ar-btn" loading-screen="dotsColor: #e6e243; backgroundoColor: #ebdd5e"
     device-orientation-permission-ui="allowButtonText: 許可; denyButtonText: 拒否; cancelButtonText:キャンセル; deviceMotionMessage: このWebサイトでは、デバイスのモーションセンサーのアクセスを許可する必要があります。">
     <a-entity camera>
       <a-cursor fuse="false" material="color: white; opacity: 0.5" raycaster="objects: .ar-btn">
@@ -96,29 +95,47 @@
     <!-- ARマーカーのファイル名をここで指定する -->
     <!-- <a-marker type="pattern"
       url="https://hsooooou.github.io/meiden_pamphlet.github.io/patt/club/pattern-club_information_design.patt"> -->
-      <!-- 表示したい画像を src= ～ で指定する -->
-      <!-- 画像の大きさは width と height で設定可能 -->
-      <!-- 画像を表示させる位置は position で設定可能 -->
-      <!-- 画像を水平に表示させる場合は下記の rotation でOK -->
-      <!-- <a-image width="3" height="1.5" position="0.2 0.4 0.4" rotation="-90 0 0"
+    <!-- 表示したい画像を src= ～ で指定する -->
+    <!-- 画像の大きさは width と height で設定可能 -->
+    <!-- 画像を表示させる位置は position で設定可能 -->
+    <!-- 画像を水平に表示させる場合は下記の rotation でOK -->
+    <!-- <a-image width="3" height="1.5" position="0.2 0.4 0.4" rotation="-90 0 0"
         src="https://hsooooou.github.io/meidenxr/img/ar/object_img/arimg_test.png">
       </a-image> -->
 
-      <!--position="x y z"
+    <!--position="x y z"
         ※ rotation="-90 0 0" のときの軸の意味（上から見た視点）：
           x → 左右移動（+x = 右、-x = 左）
           y → 高さ方向（+y = 上に浮く、-y = 地面に沈む）
           z → 前後移動（+z = 奥、-z = 手前）-->
-      <!-- <a-image class="ar-btn" id="button-n02-idr" geometry="primitive: plane; height: 0.5; width: 0.5"
+    <!-- <a-image class="ar-btn" id="button-n02-idr" geometry="primitive: plane; height: 0.5; width: 0.5"
         position="0.2 0.2 1.5" rotation="-90 0 0" material="shader: flat "
         src="https://hsooooou.github.io/meidenxr/img/ar/panorama.png">
       </a-image>
     </a-marker> -->
 
-    
+    <!-- n01-cr 普通教室！ -->
+    <a-marker type="pattern" url="https://hsooooou.github.io/meidenxr/img/ar/patt/">
+      <a-image width="1.5" height="3" position="0 0.4 0" rotation="-90 0 0"
+        src="https://hsooooou.github.io/meidenxr/img/ar/object_img/">
+      </a-image>
+      <a-image class="ar-btn" id="button-n01-cr" geometry="primitive: plane; height: 0.5; width: 0.5" position="0 0.45 0"
+        rotation="-90 0 0" material="shader: flat " src="https://hsooooou.github.io/meidenxr/img/ar/panorama.png">
+      </a-image>
+    </a-marker>
+
+    <!-- n04-sta 売店！ -->
+    <a-marker type="pattern" url="https://hsooooou.github.io/meidenxr/img/ar/patt/">
+      <a-image width="1.5" height="3" position="0 0.4 0" rotation="-90 0 0"
+        src="https://hsooooou.github.io/meidenxr/img/ar/object_img/">
+      </a-image>
+      <a-image class="ar-btn" id="button-n04-sta" geometry="primitive: plane; height: 0.5; width: 0.5" position="0 0.45 0"
+        rotation="-90 0 0" material="shader: flat " src="https://hsooooou.github.io/meidenxr/img/ar/panorama.png">
+      </a-image>
+    </a-marker>
+
     <!-- n06-ml メディアライブラリー -->
-    <a-marker type="pattern"
-      url="https://hsooooou.github.io/meidenxr/img/ar/patt/pattern-armarker_n06-ml-iconin.patt">
+    <a-marker type="pattern" url="https://hsooooou.github.io/meidenxr/img/ar/patt/pattern-armarker_n06-ml-iconin.patt">
       <a-image width="1.5" height="3" position="0 0.4 0" rotation="-90 0 0"
         src="https://hsooooou.github.io/meidenxr/img/ar/object_img/arimg_n06-ml.png">
       </a-image>
@@ -128,9 +145,20 @@
       </a-image>
     </a-marker>
 
-    <!-- n08-sc サテライト教室 -->
+    <!-- n07-mr 音楽室！ -->
     <a-marker type="pattern"
-      url="https://hsooooou.github.io/meidenxr/img/ar/patt/pattern-armarker_n08-sc-iconin.patt">
+      url="https://hsooooou.github.io/meidenxr/img/ar/patt/">
+      <a-image width="1.5" height="3" position="0 0.4 0" rotation="-90 0 0"
+        src="https://hsooooou.github.io/meidenxr/img/ar/object_img/">
+      </a-image>
+      <a-image class="ar-btn" id="button-n07-mr" geometry="primitive: plane; height: 0.5; width: 0.5"
+        position="0 0.45 0" rotation="-90 0 0" material="shader: flat "
+        src="https://hsooooou.github.io/meidenxr/img/ar/panorama.png">
+      </a-image>
+    </a-marker>
+
+    <!-- n08-sc サテライト教室 -->
+    <a-marker type="pattern" url="https://hsooooou.github.io/meidenxr/img/ar/patt/pattern-armarker_n08-sc-iconin.patt">
       <a-image width="1.5" height="3" position="0 0.4 0" rotation="-90 0 0"
         src="https://hsooooou.github.io/meidenxr/img/ar/object_img/arimg_n08-sc.png">
       </a-image>
@@ -141,8 +169,7 @@
     </a-marker>
 
     <!-- n10-alr アクティブラーニング室 -->
-    <a-marker type="pattern"
-      url="https://hsooooou.github.io/meidenxr/img/ar/patt/pattern-armarker_n10-alr-iconin.patt">
+    <a-marker type="pattern" url="https://hsooooou.github.io/meidenxr/img/ar/patt/pattern-armarker_n10-alr-iconin.patt">
       <a-image width="1.5" height="3" position="0 0.4 0" rotation="-90 0 0"
         src="https://hsooooou.github.io/meidenxr/img/ar/object_img/arimg_n10-alr.png">
       </a-image>
@@ -152,8 +179,19 @@
       </a-image>
     </a-marker>
 
+    <!-- n12-ar 美術室 -->
+    <a-marker type="pattern"
+      url="https://hsooooou.github.io/meidenxr/img/ar/patt/">
+      <a-image width="1.5" height="3" position="0 0.4 0" rotation="-90 0 0"
+        src="https://hsooooou.github.io/meidenxr/img/ar/object_img/">
+      </a-image>
+      <a-image class="ar-btn" id="button-n12-ar" geometry="primitive: plane; height: 0.5; width: 0.5"
+        position="0 0.45 0" rotation="-90 0 0" material="shader: flat "
+        src="https://hsooooou.github.io/meidenxr/img/ar/panorama.png">
+      </a-image>
+    </a-marker>
 
-    
+
 
     <!-- テストプレイ -->
     <!-- テストマーカ- -->
@@ -294,7 +332,7 @@
         <p class="form-label-sub">全部カタカナで</p>
         <input id="keywordInput" type="text" placeholder="ここに入力" class="form-input">
         <button onclick="checkKeyword()" class="submit-btn">送信</button>
-        <p  id="keywordResult" class="copy-hidden"></p>
+        <p id="keywordResult" class="copy-hidden"></p>
       </div>
     </div>
   </div>
@@ -311,43 +349,43 @@
   </div>
 
   <!-- クッキーポップアップ -->
-    <div id="cookie-banner" class="cookie-popup">
-      <div class="cookie-content">
-        <p>このサイトでは、サイトの利便性向上とアクセス解析のためCookieを使用しています。
-          <br> | <a href="../privacy-policy.html" target="_blank">プライバシーポリシー</a> | <a href="../guideline.html"
-            target="_blank">コンテンツガイドライン</a> | に合わせて体験前には<a href="../terms-of-use.html" target="_blank">利用規約</a>をご覧ください。
-        </p>
-        <div class="cookie-buttons">
-          <button id="accept-all" class="btn primary">すべて同意する</button>
-          <button id="reject-all" class="btn secondary">すべて拒否する</button>
-          <button id="open-settings" class="btn tertiary">設定</button>
-        </div>
+  <div id="cookie-banner" class="cookie-popup">
+    <div class="cookie-content">
+      <p>このサイトでは、サイトの利便性向上とアクセス解析のためCookieを使用しています。
+        <br> | <a href="../privacy-policy.html" target="_blank">プライバシーポリシー</a> | <a href="../guideline.html"
+          target="_blank">コンテンツガイドライン</a> | に合わせて体験前には<a href="../terms-of-use.html" target="_blank">利用規約</a>をご覧ください。
+      </p>
+      <div class="cookie-buttons">
+        <button id="accept-all" class="btn primary">すべて同意する</button>
+        <button id="reject-all" class="btn secondary">すべて拒否する</button>
+        <button id="open-settings" class="btn tertiary">設定</button>
       </div>
     </div>
+  </div>
 
-    <div id="cookie-settings-modal" class="cookie-popup modal" style="display:none;">
-      <div class="modal-cookie-content">
-        <h3>Cookie設定</h3>
-        <p>当サイトで使用するCookieの種類を選択できます。詳細については | <a href="../privacy-policy.html" target="_blank">プライバシーポリシー</a> | <a
-            href="../guideline.html" target="_blank">コンテンツガイドライン</a> | をご確認ください。</p>
+  <div id="cookie-settings-modal" class="cookie-popup modal" style="display:none;">
+    <div class="modal-cookie-content">
+      <h3>Cookie設定</h3>
+      <p>当サイトで使用するCookieの種類を選択できます。詳細については | <a href="../privacy-policy.html" target="_blank">プライバシーポリシー</a> | <a
+          href="../guideline.html" target="_blank">コンテンツガイドライン</a> | をご確認ください。</p>
 
-        <div class="cookie-category">
-          <h4><input type="checkbox" id="essential-cookies" checked disabled> 必須Cookie <span
-              class="tag tag-required">常に有効</span></h4>
-          <p>このCookieは、サイトの基本的な機能（セキュリティなど）に必要不可欠であり、無効にすることはできません。</p>
-        </div>
+      <div class="cookie-category">
+        <h4><input type="checkbox" id="essential-cookies" checked disabled> 必須Cookie <span
+            class="tag tag-required">常に有効</span></h4>
+        <p>このCookieは、サイトの基本的な機能（セキュリティなど）に必要不可欠であり、無効にすることはできません。</p>
+      </div>
 
-        <div class="cookie-category">
-          <h4><input type="checkbox" id="analytics-cookies"> アナリティクスCookie</h4>
-          <p>このCookieは、サイトの利用状況を分析し、改善するために使用されます。（Googleアナリティクスなど）</p>
-        </div>
+      <div class="cookie-category">
+        <h4><input type="checkbox" id="analytics-cookies"> アナリティクスCookie</h4>
+        <p>このCookieは、サイトの利用状況を分析し、改善するために使用されます。（Googleアナリティクスなど）</p>
+      </div>
 
-        <div class="modal-buttons">
-          <button id="save-settings" class="btn primary">設定を保存する</button>
-          <button id="close-settings" class="btn secondary">閉じる</button>
-        </div>
+      <div class="modal-buttons">
+        <button id="save-settings" class="btn primary">設定を保存する</button>
+        <button id="close-settings" class="btn secondary">閉じる</button>
       </div>
     </div>
+  </div>
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="../js/cookie.js"></script>
