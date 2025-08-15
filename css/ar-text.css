@@ -272,6 +272,56 @@ input[type="checkbox"].ar-on-off {
   background-color: #231815;
 }
 
+/*  */
+/* AR実施スケジュール */
+.ar-schedule-box-1 {
+  padding: 10px 20px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  margin-top: 10px;
+   background-image: linear-gradient(150deg,#e96af7,#c5f8b8);
+}
+.ar-schedule-box-2 {
+  padding: 10px 20px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  margin-top: 10px;
+   background-image: linear-gradient(150deg,#df9b2f,#f8dfde);
+}
+.ar-schedule-event-title{
+  font-family: "Noto Sans JP", sans-serif;
+  color: #fafafa;
+  font-size: 12px;
+  font-weight: 600;
+}
+.ar-schedule-event-mounth{
+  font-family: "Noto Sans JP", sans-serif;
+  color: #fafafa;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+.ar-schedule-event-day{
+  font-family: "Noto Sans JP", sans-serif;
+  color: #fafafa;
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+.ar-schedule-tip-area{
+  display: flex;
+}
+.ar-schedule-tip{
+  background-color: #fafafa;
+  padding: 5px 10px;
+  margin: 5px 5px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  width: fit-content;
+  border-radius: 20px;
+  color: #668BC7;
+}
+
 
 /*  */
 /* 到達時間表示 */
@@ -318,7 +368,19 @@ input[type="checkbox"].ar-on-off {
 }
 
 
-@media screen and (min-width: 698px) and (max-width: 1024px) {}
+@media screen and (min-width: 698px) and (max-width: 1024px) {
+  .ar-schedule-box-area{
+  display:flex;
+  }
+  .ar-schedule-box-1 {
+    min-width: 70%;
+    margin-right:10px;
+  }
+  .ar-schedule-box-2 {
+    min-width: 30%;
+  }
+}
+}
 
 @media screen and (min-width: 1025px) {
   .ar-explanation-btn-in-pc {
