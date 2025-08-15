@@ -119,8 +119,9 @@
       <a-image width="1.5" height="3" position="0 0.4 0" rotation="-90 0 0"
         src="https://hsooooou.github.io/meidenxr/img/ar/object_img/arimg_n01-cr.png">
       </a-image>
-      <a-image class="ar-btn" id="button-n01-cr" geometry="primitive: plane; height: 0.5; width: 0.5" position="0 0.45 0"
-        rotation="-90 0 0" material="shader: flat " src="https://hsooooou.github.io/meidenxr/img/ar/panorama.png">
+      <a-image class="ar-btn" id="button-n01-cr" geometry="primitive: plane; height: 0.5; width: 0.5"
+        position="0 0.45 0" rotation="-90 0 0" material="shader: flat "
+        src="https://hsooooou.github.io/meidenxr/img/ar/panorama.png">
       </a-image>
     </a-marker>
 
@@ -129,8 +130,9 @@
       <a-image width="1.5" height="3" position="0 0.4 0" rotation="-90 0 0"
         src="https://hsooooou.github.io/meidenxr/img/ar/object_img/arimg_n04-sta.png">
       </a-image>
-      <a-image class="ar-btn" id="button-n04-sta" geometry="primitive: plane; height: 0.5; width: 0.5" position="0 0.45 0"
-        rotation="-90 0 0" material="shader: flat " src="https://hsooooou.github.io/meidenxr/img/ar/panorama.png">
+      <a-image class="ar-btn" id="button-n04-sta" geometry="primitive: plane; height: 0.5; width: 0.5"
+        position="0 0.45 0" rotation="-90 0 0" material="shader: flat "
+        src="https://hsooooou.github.io/meidenxr/img/ar/panorama.png">
       </a-image>
     </a-marker>
 
@@ -146,8 +148,7 @@
     </a-marker>
 
     <!-- n07-mr 音楽室 -->
-    <a-marker type="pattern"
-      url="https://hsooooou.github.io/meidenxr/img/ar/patt/pattern-armarker_n07-mr-iconin.patt">
+    <a-marker type="pattern" url="https://hsooooou.github.io/meidenxr/img/ar/patt/pattern-armarker_n07-mr-iconin.patt">
       <a-image width="1.5" height="3" position="0 0.4 0" rotation="-90 0 0"
         src="https://hsooooou.github.io/meidenxr/img/ar/object_img/arimg_n07-mr.png">
       </a-image>
@@ -180,8 +181,7 @@
     </a-marker>
 
     <!-- n12-ar 美術室！ -->
-    <a-marker type="pattern"
-      url="https://hsooooou.github.io/meidenxr/img/ar/patt/pattern-armarker_n12-ar-iconin.patt">
+    <a-marker type="pattern" url="https://hsooooou.github.io/meidenxr/img/ar/patt/pattern-armarker_n12-ar-iconin.patt">
       <a-image width="1.5" height="3" position="0 0.4 0" rotation="-90 0 0"
         src="https://hsooooou.github.io/meidenxr/img/ar/object_img/arimg_n12-ar.png">
       </a-image>
@@ -292,21 +292,51 @@
         <div class="vr-info-border"></div>
         <div class="vr-info-about">
           <p class="vr-text-number">Step.1</p>
-          <p class="vr-text-cate">学校に配置されたQRコードを探そう！</p>
-          <p class="vr-text-normal">学校の中に”黒い枠で囲われた特殊なQRコード”があるよ。このページで起動されているカメラで読み取ると、画像が現れるよ。</p>
-          <p class="vr-text-normal">下側の"地図"のボタンを押すとQRコードがある場所を確認できるよ！</p>
+          <p class="vr-text-cate">学校に配置された特殊なQRコードを探そう！</p>
+          <p class="vr-text-normal">
+            学校には黒い枠で囲われた"マーカー"が配置されています。このページから読み込むことで情報が飛び出し、閲覧することができます！イラストと一緒に描かれた番号が書いてあるものが目印！</p>
         </div>
         <div class="vr-info-border"></div>
         <div class="vr-info-about">
           <p class="vr-text-number">Step.2</p>
           <p class="vr-text-cate">表示された画像にあるキーワードを覚えよう！</p>
-          <p class="vr-text-normal">画像にはキーワードがそれぞれ1文字ずつあるよ。自分のスマホのメモなどに記録しておこう！</p>
+          <p class="vr-text-normal">画像にはキーワードがそれぞれ1文字ずつあります！自分のスマホのメモやスクリーンショットで記録しておこう！</p>
         </div>
         <div class="vr-info-border"></div>
         <div class="vr-info-about">
           <p class="vr-text-number">Step.3</p>
           <p class="vr-text-cate">キーワードを集めて回答を入力しよう</p>
-          <p class="vr-text-normal">集めたキーワードを並び替えると"とあるワード"になるよ。下側にある"鍵"のボタンを押すと入力できるよ！</p>
+          <p class="vr-text-normal">キーワードを集めて並べていくと、”とあるワード”になります！下にある鍵のアイコンを押すことで入力できます。合言葉を入力するとゴール到達です！</p>
+          <p class="vr-text-normal">到達後については移動後のページに記載しています。</p>
+        </div>
+        <div class="vr-info-border"></div>
+        <div class="vr-info-about">
+          <p class="vr-text-number">button</p>
+          <p class="vr-text-cate">ボタンについて</p>
+          <ul class="ar-btn-announce-box">
+            <li><img class="announce-btn-img" src="../img/ar/map.svg">
+            </li>
+            <li class="ar-btn-announce-text-area">
+              <p class="announce-btn-name">マップ</p>
+              <p class="vr-text-normal">特殊なQRコードが置いてある施設の場所を確認できる「探索MAP」が見れるよ！</p>
+            </li>
+          </ul>
+          <ul class="ar-btn-announce-box">
+            <li><img class="announce-btn-img" src="../img/ar/panorama.svg">
+            </li>
+            <li class="ar-btn-announce-text-area">
+              <p class="announce-btn-name">VR</p>
+              <p class="vr-text-normal">画面中央の丸をこのアイコンに合わせると色が変わります！その状態で画面をタップすると各施設に移動します！</p>
+            </li>
+          </ul>
+          <ul class="ar-btn-announce-box">
+            <li><img class="announce-btn-img" src="../img/ar/key.svg">
+            </li>
+            <li class="ar-btn-announce-text-area">
+              <p class="announce-btn-name">合言葉</p>
+              <p class="vr-text-normal">集めたキーワードを並べたらここをタップして入力！正解するとゴールページに移動します。</p>
+            </li>
+          </ul>
         </div>
         <a href="../ar-entrance.html" style="color: #231815;">
           <div class="vr-info-btn ">

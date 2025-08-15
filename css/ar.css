@@ -314,6 +314,26 @@ img.ar-adventure-map {
   height: auto;
 }
 
+
+/* ARボタン説明 */
+.ar-btn-announce-box{
+  display: flex;
+  margin-top: 20px;
+}
+.ar-btn-announce-text-area{
+  margin-left: 3vw;
+}
+.announce-btn-img {
+  height: 6vh; 
+  width: auto;
+}
+.announce-btn-name{
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  margin-top: .5vh;
+}
+
 @media (min-width: 568px) {
   .vr-info-textarea {
     padding: 0 3% 10% 6%;
