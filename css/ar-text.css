@@ -11,6 +11,7 @@
 p {
   word-break: break-all;
 }
+
 /*  */
 /*  */
 
@@ -21,6 +22,11 @@ p {
   font-size: 48px;
   line-height: 1.2;
   text-align: center;
+  background-image: linear-gradient(150deg, rgba(86, 113, 234, 1), rgba(225, 196, 243, 1));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+
 }
 
 .ar-title-sub {
@@ -53,16 +59,18 @@ p {
 
 /* ガイドライン */
 .ar-subtitle-black {
-   color: #231815;
+  color: #231815;
   font-family: "Noto Sans JP", sans-serif;
   font-weight: 600;
   font-size: 24px;
   line-height: 1.2;
 }
+
 .guideline-border {
   margin: 10px 0;
   border: 1px solid #231815;
 }
+
 .guideline-maintext {
   color: #231815;
   font-weight: 600;
@@ -84,7 +92,8 @@ p {
   font-size: 14px;
   padding: 5px 0 0 0;
 }
-.ar-maintext a{
+
+.ar-maintext a {
   color: #8073d4;
   font-family: "Noto Sans JP", sans-serif;
   font-size: 12px;
@@ -315,7 +324,7 @@ input[type="checkbox"].ar-on-off {
   .ar-explanation-btn-in-pc {
     display: block;
   }
-  
+
 
   .ar-explanation-btn-in-sp {
     display: none;
