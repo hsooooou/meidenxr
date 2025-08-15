@@ -631,6 +631,11 @@ p.footer-policy {
   margin: 10px 0 20px 0;
 }
 
+.contents-assets-box{
+  width: 100%;
+  pointer-events: none;
+  margin-bottom: 10px;
+}
 
 /* アニメーション */
 @keyframes slideUp {
