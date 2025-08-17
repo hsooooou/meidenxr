@@ -321,6 +321,12 @@ input[type="checkbox"].ar-on-off {
   border-radius: 20px;
   color: #668BC7;
 }
+.ar-schedule-tip p {
+  background-image: linear-gradient(150deg,#e68af0,#80a9db);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
 
 /*  */
