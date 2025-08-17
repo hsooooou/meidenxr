@@ -634,7 +634,7 @@ p.footer-policy {
 .contents-assets-box{
   width: 100%;
   pointer-events: none;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 }
 
 /* アニメーション */
