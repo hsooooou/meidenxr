@@ -135,7 +135,7 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
       //s01-openlab オープンラボ
       patternUrl: 'pattern-armarker_s01-openlab-iconin',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-s01-opl.html',
-      buttonId: 'button-s01-opl'
+      buttonId: 'button-s01-openlab'
     },
     {
       //s02-ctl コントロールラボ
