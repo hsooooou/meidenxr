@@ -138,6 +138,24 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
       buttonId: 'button-s01-opl'
     },
     {
+      //s02-ctl コントロールラボ
+      patternUrl: 'pattern-armarker_s02-ctl-iconin',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-s02-ctl.html',
+      buttonId: 'button-s02-ctl'
+    },
+    {
+      //s03-cml ケミカルラボ
+      patternUrl: 'pattern-armarker_s03-cml-iconin',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-s03-cml.html',
+      buttonId: 'button-s03-cml'
+    },
+    {
+      //s04-mtl オープンラボ
+      patternUrl: 'pattern-armarker_s04-mtl-iconin',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-s04-mtl.html',
+      buttonId: 'button-s04-mtl'
+    },
+    {
       //テスト用マーカー hiro
       patternUrl: 'hiro', //マーカー画像のパターン
       link: 'https://hsooooou.github.io/meidenxr/', //遷移するURL
@@ -248,6 +266,18 @@ window.addEventListener('DOMContentLoaded', () => {
     { //s01-opl オープンラボ
       patternUrl: 'pattern-armarker_s01-opl-iconin',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-s01-opl.html'
+    },
+    { //s02-ctl コントロールラボ
+      patternUrl: 'pattern-armarker_s02-ctl-iconin',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-s02-ctl.html'
+    },
+    { //s03-cml ケミカルラボ
+      patternUrl: 'pattern-armarker_s03-cml-iconin',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-s03-cml.html'
+    },
+    { //s04-mtl マルチラボ
+      patternUrl: 'pattern-armarker_s04-mtl-iconin',
+      link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-s04-mtl.html'
     },
 
     { // テスト用マーカー
