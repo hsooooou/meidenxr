@@ -132,8 +132,8 @@ window.addEventListener('DOMContentLoaded', () => { //全て読み込まれて�
     },
 
     {
-      //s01-opl オープンラボ
-      patternUrl: 'pattern-armarker_s01-opl-iconin',
+      //s01-openlab オープンラボ
+      patternUrl: 'pattern-armarker_s01-openlab-iconin',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-s01-opl.html',
       buttonId: 'button-s01-opl'
     },
@@ -263,8 +263,8 @@ window.addEventListener('DOMContentLoaded', () => {
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-n12-ar.html'
     },
 
-    { //s01-opl オープンラボ
-      patternUrl: 'pattern-armarker_s01-opl-iconin',
+    { //s01-openlab オープンラボ
+      patternUrl: 'pattern-armarker_s01-openlab-iconin',
       link: 'https://hsooooou.github.io/meidenxr/schoolmap/vr-s01-opl.html'
     },
     { //s02-ctl コントロールラボ
