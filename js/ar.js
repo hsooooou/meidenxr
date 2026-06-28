@@ -27,6 +27,11 @@ function updateButtonState() {
       : 'url(../img/vr/vr-btn-question_white.svg)', // falseの場合
     'border': isActive ? '2px solid #231815' : 'none' // isActiveがtrueの場合にボタンに枠線（2px solid #231815）を表示
   });
+
+  // .menu-btn-text の文字色を切り替え
+  $('.menu-btn-text').css({
+    'color': isActive ? '#231815' : '#fbfbfb'
+  });
 }
 
 
