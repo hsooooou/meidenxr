@@ -1145,12 +1145,10 @@ function stopClock() {
  * AR.js初期化とカメラ準備の監視
  */
 function initCameraHandling() {
-  console.log('[CAMERA] initialization started');
   showStatus('カメラを起動中...', false);
   shutterBtn.disabled = true;
 
   const onCameraReady = (v) => {
-    console.log(`[CAMERA] stream ready (${v ? v.videoWidth : 0}x${v ? v.videoHeight : 0})`);
     hideStatus();
     shutterBtn.disabled = false;
     startClock();
@@ -1870,13 +1868,10 @@ function setGridMode(mode) {
 }
 
 /**
- * ジャイロ・加速度センサーリスナーの開始（自動検知用 - 診断ログ付き）
+ * ジャイロ・加速度センサーリスナーの開始（自動検知用）
  * @param {boolean} isUserGesture ユーザー操作（タップ・クリック）のコールスタック内から呼ばれたか
  */
 function startOrientationListener(isUserGesture = false) {
-  const isIframe = window.self !== window.top;
-  const isSecure = window.isSecureContext;
-
   if (isOrientationListening) {
     return;
   }
@@ -1884,24 +1879,20 @@ function startOrientationListener(isUserGesture = false) {
   // iOS 13+ Safariのパーミッション要求対応（ユーザー操作時のみ実行）
   if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
     if (isUserGesture) {
-      console.log(`[LEVEL] requesting permission (inIframe: ${isIframe}, isSecureContext: ${isSecure})`);
       DeviceOrientationEvent.requestPermission()
         .then((permissionState) => {
-          console.log(`[LEVEL DEBUG] DeviceOrientation permission state: ${permissionState}`);
           if (permissionState === 'granted') {
             attachOrientationListeners();
-            console.log('[LEVEL] listener started (DeviceOrientation granted)');
             setupMotionFallback(true);
           }
         })
         .catch((err) => {
-          console.warn('[LEVEL DEBUG] DeviceOrientation permission error:', err);
+          console.warn('DeviceOrientation permission error:', err);
         });
     }
   } else if ('DeviceOrientationEvent' in window) {
     // Android Chrome / 一般ブラウザ（パーミッション不要）
     attachOrientationListeners();
-    console.log(`[LEVEL] listener started (standard browser/Android, inIframe: ${isIframe}, isSecureContext: ${isSecure})`);
     setupMotionFallback(isUserGesture);
   } else {
     setupMotionFallback(isUserGesture);
@@ -1916,14 +1907,13 @@ function attachOrientationListeners() {
   try {
     window.addEventListener('deviceorientation', handleDeviceOrientation, true);
     isOrientationListening = true;
-    console.log('[LEVEL DEBUG] orientation listener attached');
   } catch (err) {
-    console.warn('[LEVEL DEBUG] Failed to attach deviceorientation listener:', err);
+    console.warn('Failed to attach deviceorientation listener:', err);
   }
 }
 
 /**
- * devicemotion フォールバックの登録（診断ログ付き）
+ * devicemotion フォールバックの登録
  * deviceorientation から値が届かない端末や環境で重力加速度を用いて水平角を補完
  */
 function setupMotionFallback(isUserGesture = false) {
@@ -1934,14 +1924,12 @@ function setupMotionFallback(isUserGesture = false) {
     if (isUserGesture) {
       DeviceMotionEvent.requestPermission()
         .then((state) => {
-          console.log(`[LEVEL DEBUG] DeviceMotionEvent permission state: ${state}`);
           if (state === 'granted') {
             attachMotionListeners();
-            console.log('[LEVEL] motion listener started (granted)');
           }
         })
         .catch((err) => {
-          console.warn('[LEVEL DEBUG] DeviceMotionEvent permission error:', err);
+          console.warn('DeviceMotionEvent permission error:', err);
         });
     }
   } else if (typeof window !== 'undefined' && 'DeviceMotionEvent' in window) {
@@ -1957,9 +1945,8 @@ function attachMotionListeners() {
   try {
     window.addEventListener('devicemotion', handleDeviceMotion, true);
     isMotionListening = true;
-    console.log('[LEVEL DEBUG] devicemotion listener attached');
   } catch (err) {
-    console.warn('[LEVEL DEBUG] Failed to attach devicemotion listener:', err);
+    console.warn('Failed to attach devicemotion listener:', err);
   }
 }
 
@@ -1988,11 +1975,6 @@ function computeCameraRollAngle(beta, gamma, screenAngle) {
 
   return adjustedRoll;
 }
-
-// 診断ログ用のスロットルタイマー
-let lastOrientationLogTime = 0;
-let lastMotionLogTime = 0;
-let lastRollLogTime = 0;
 
 /**
  * 水平ガイドの描画更新（ロール角に基づく自動表示・ハイライト・フェードアウト共通処理）
@@ -2028,7 +2010,6 @@ function updateLevelGuideWithRoll(rawRoll) {
       isLevelGuideActive = true;
       isLevelAligned = false;
       levelAlignedStartTime = null;
-      console.log(`[LEVEL DEBUG] Level guide activated near horizontal (angle: ${smoothRollAngle.toFixed(1)}°)`);
     }
   } else {
     // 表示中：12°以上に大きく傾いたら邪魔にならないよう非表示に戻す
@@ -2036,7 +2017,6 @@ function updateLevelGuideWithRoll(rawRoll) {
       isLevelGuideActive = false;
       isLevelAligned = false;
       levelAlignedStartTime = null;
-      console.log(`[LEVEL DEBUG] Level guide deactivated by large tilt (angle: ${smoothRollAngle.toFixed(1)}°)`);
     }
   }
 
@@ -2052,7 +2032,6 @@ function updateLevelGuideWithRoll(rawRoll) {
       if (!isLevelAligned) {
         isLevelAligned = true;
         levelAlignedStartTime = Date.now();
-        console.log(`[LEVEL DEBUG] Level ALIGNED reached (angle: ${smoothRollAngle.toFixed(2)}°)`);
       } else if (levelAlignedStartTime && (Date.now() - levelAlignedStartTime >= STABLE_DURATION)) {
         // 水平が安定して約0.9秒継続したら自然にフェードアウト
         levelGuideOverlay.classList.remove('is-visible', 'is-aligned');
@@ -2060,7 +2039,6 @@ function updateLevelGuideWithRoll(rawRoll) {
         isLevelAligned = false;
         levelAlignedStartTime = null;
         isLevelDismissed = true; // 水平を維持している間は再表示を抑制
-        console.log('[LEVEL DEBUG] Level guide faded out after stability.');
       }
     } else {
       // 水平未成立（傾き調整中）
@@ -2073,12 +2051,6 @@ function updateLevelGuideWithRoll(rawRoll) {
     isLevelAligned = false;
     levelAlignedStartTime = null;
   }
-
-  const now = Date.now();
-  if (now - lastRollLogTime > 400) {
-    lastRollLogTime = now;
-    console.log(`[LEVEL DEBUG] roll raw=${rawRoll.toFixed(1)}°, smooth=${smoothRollAngle.toFixed(1)}°, active=${isLevelGuideActive}, is-visible=${levelGuideOverlay.classList.contains('is-visible')}, is-aligned=${levelGuideOverlay.classList.contains('is-aligned')}`);
-  }
 }
 
 /**
@@ -2087,16 +2059,6 @@ function updateLevelGuideWithRoll(rawRoll) {
 function handleDeviceOrientation(e) {
   const gamma = e.gamma; // 左右の傾き (-90 to 90)
   const beta = e.beta;   // 上下の傾き (-180 to 180)
-
-  if (!hasReceivedOrientationData && gamma !== null && beta !== null && gamma !== undefined && beta !== undefined) {
-    console.log(`[LEVEL] deviceorientation receiving (beta: ${beta.toFixed(1)}, gamma: ${gamma.toFixed(1)})`);
-  }
-
-  const now = Date.now();
-  if (now - lastOrientationLogTime > 400) {
-    lastOrientationLogTime = now;
-    console.log(`[LEVEL SENSOR] deviceorientation fired: beta=${beta !== null && beta !== undefined ? beta.toFixed(1) : 'null'}, gamma=${gamma !== null && gamma !== undefined ? gamma.toFixed(1) : 'null'}, alpha=${e.alpha !== null && e.alpha !== undefined ? e.alpha.toFixed(1) : 'null'}, absolute=${e.absolute}`);
-  }
 
   if (gamma === null || beta === null || gamma === undefined || beta === undefined) {
     return;
@@ -2119,11 +2081,6 @@ function handleDeviceOrientation(e) {
  */
 function handleDeviceMotion(e) {
   const acc = e.accelerationIncludingGravity;
-  const now = Date.now();
-  if (now - lastMotionLogTime > 500) {
-    lastMotionLogTime = now;
-    console.log(`[LEVEL SENSOR] devicemotion fired (hasOrientationData: ${hasReceivedOrientationData}): gx=${acc?.x !== null && acc?.x !== undefined ? acc.x.toFixed(2) : 'null'}, gy=${acc?.y !== null && acc?.y !== undefined ? acc.y.toFixed(2) : 'null'}, gz=${acc?.z !== null && acc?.z !== undefined ? acc.z.toFixed(2) : 'null'}`);
-  }
 
   // deviceorientation で既に有効なデータを受信できている場合はそちらを優先
   if (hasReceivedOrientationData) return;
