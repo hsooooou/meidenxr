@@ -360,6 +360,7 @@ let smoothRollAngle = 0;
 let isLevelGuideActive = false; // 傾き検知による自動表示アクティブフラグ
 let isLevelAligned = false;
 let levelAlignedStartTime = null;
+let isLevelDismissed = false; // 水平維持フェードアウト後の抑制フラグ
 
 // 文字デザイン（字体）定義（一元管理スキーマ・フォント補正値含む）
 const FONT_CONFIGS = [
@@ -2010,21 +2011,36 @@ function updateLevelGuideWithRoll(rawRoll) {
   const absAngle = Math.abs(smoothRollAngle);
 
   // しきい値設定
-  const SHOW_THRESHOLD = 12.0;       // 約12°以上の傾きで自動表示開始
-  const ALIGNED_THRESHOLD = 1.1;     // ±1.1°以内を水平と判定（手持ちスマホで実用的な高精度範囲）
-  const STABLE_DURATION = 900;       // 水平が約0.9秒安定して継続したら自然にフェードアウト (ms)
+  const LEVEL_GUIDE_SHOW_THRESHOLD = 8.0;   // 約8°以下に近づいたら表示開始（水平合わせアシスト）
+  const LEVEL_GUIDE_HIDE_THRESHOLD = 12.0;  // 12°以上に離れたらガイド非表示（大きく傾いている時は邪魔にならないよう非表示）
+  const ALIGNED_THRESHOLD = 1.1;            // ±1.1°以内を水平と判定（手持ちスマホで実用的な高精度範囲）
+  const STABLE_DURATION = 900;              // 水平が約0.9秒安定して継続したら自然にフェードアウト (ms)
 
-  // 1. 傾き検知による自動表示フラグの更新
-  if (absAngle >= SHOW_THRESHOLD) {
-    if (!isLevelGuideActive) {
+  // 1. 水平から離れた場合、フェードアウト抑制フラグを解除（再度水平に戻したときに表示できるようにする）
+  if (absAngle > LEVEL_GUIDE_SHOW_THRESHOLD) {
+    isLevelDismissed = false;
+  }
+
+  // 2. 表示開始・終了判定
+  if (!isLevelGuideActive) {
+    // 非表示中：8°以下に近づき、かつフェードアウト直後でなければ表示開始
+    if (!isLevelDismissed && absAngle <= LEVEL_GUIDE_SHOW_THRESHOLD) {
       isLevelGuideActive = true;
       isLevelAligned = false;
       levelAlignedStartTime = null;
-      console.log(`[LEVEL DEBUG] Level guide activated by tilt (angle: ${smoothRollAngle.toFixed(1)}°)`);
+      console.log(`[LEVEL DEBUG] Level guide activated near horizontal (angle: ${smoothRollAngle.toFixed(1)}°)`);
+    }
+  } else {
+    // 表示中：12°以上に大きく傾いたら邪魔にならないよう非表示に戻す
+    if (absAngle >= LEVEL_GUIDE_HIDE_THRESHOLD) {
+      isLevelGuideActive = false;
+      isLevelAligned = false;
+      levelAlignedStartTime = null;
+      console.log(`[LEVEL DEBUG] Level guide deactivated by large tilt (angle: ${smoothRollAngle.toFixed(1)}°)`);
     }
   }
 
-  // 2. ガイドのアクティブ状態に応じた表示・追従・ハイライト制御
+  // 3. ガイドのアクティブ状態に応じた表示・追従・ハイライト制御
   if (isLevelGuideActive) {
     levelGuideOverlay.classList.add('is-visible');
     levelRollBar.style.transform = `rotate(${smoothRollAngle.toFixed(2)}deg)`;
@@ -2043,6 +2059,7 @@ function updateLevelGuideWithRoll(rawRoll) {
         isLevelGuideActive = false;
         isLevelAligned = false;
         levelAlignedStartTime = null;
+        isLevelDismissed = true; // 水平を維持している間は再表示を抑制
         console.log('[LEVEL DEBUG] Level guide faded out after stability.');
       }
     } else {
