@@ -355,8 +355,6 @@ let countdownIntervalId = null;
 let currentGridMode = 'off'; // 'off' | 'rule-of-thirds'
 let isOrientationListening = false;
 let isMotionListening = false;
-let isPermissionRequested = false;
-let isPermissionDenied = false;
 let hasReceivedOrientationData = false;
 let smoothRollAngle = 0;
 let isLevelGuideActive = false; // 傾き検知による自動表示アクティブフラグ
@@ -1810,6 +1808,7 @@ function updateSegmentedIndicator(controlEl, indicatorEl, activeBtn) {
  * 撮影設定ボトムシートを開く
  */
 function openCaptureSettingsSheet() {
+  startOrientationListener(true);
   closeSubmenu();
   closeAdjustmentSheet();
   closeSpecialSheet();
@@ -1880,46 +1879,45 @@ function startOrientationListener(isUserGesture = false) {
   if (isOrientationListening) {
     return;
   }
-  if (isPermissionDenied) {
-    return;
-  }
 
   // iOS 13+ Safariのパーミッション要求対応（ユーザー操作時のみ実行）
   if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-    if (isUserGesture && !isPermissionRequested) {
-      isPermissionRequested = true;
+    if (isUserGesture) {
       console.log(`[LEVEL] requesting permission (inIframe: ${isIframe}, isSecureContext: ${isSecure})`);
       DeviceOrientationEvent.requestPermission()
         .then((permissionState) => {
           console.log(`[LEVEL DEBUG] DeviceOrientation permission state: ${permissionState}`);
           if (permissionState === 'granted') {
-            window.addEventListener('deviceorientation', handleDeviceOrientation, true);
-            isOrientationListening = true;
+            attachOrientationListeners();
             console.log('[LEVEL] listener started (DeviceOrientation granted)');
             setupMotionFallback(true);
-          } else {
-            isPermissionDenied = true;
-            isPermissionRequested = false;
           }
         })
         .catch((err) => {
           console.warn('[LEVEL DEBUG] DeviceOrientation permission error:', err);
-          isPermissionDenied = true;
-          isPermissionRequested = false;
         });
     }
   } else if ('DeviceOrientationEvent' in window) {
     // Android Chrome / 一般ブラウザ（パーミッション不要）
-    try {
-      window.addEventListener('deviceorientation', handleDeviceOrientation, true);
-      isOrientationListening = true;
-      console.log(`[LEVEL] listener started (standard browser/Android, inIframe: ${isIframe}, isSecureContext: ${isSecure})`);
-    } catch (err) {
-      console.warn('[LEVEL DEBUG] Failed to attach deviceorientation listener:', err);
-    }
+    attachOrientationListeners();
+    console.log(`[LEVEL] listener started (standard browser/Android, inIframe: ${isIframe}, isSecureContext: ${isSecure})`);
     setupMotionFallback(isUserGesture);
   } else {
     setupMotionFallback(isUserGesture);
+  }
+}
+
+/**
+ * 実際のorientationイベントリスナー登録
+ */
+function attachOrientationListeners() {
+  if (isOrientationListening) return;
+  try {
+    window.addEventListener('deviceorientation', handleDeviceOrientation, true);
+    isOrientationListening = true;
+    console.log('[LEVEL DEBUG] orientation listener attached');
+  } catch (err) {
+    console.warn('[LEVEL DEBUG] Failed to attach deviceorientation listener:', err);
   }
 }
 
@@ -1928,18 +1926,16 @@ function startOrientationListener(isUserGesture = false) {
  * deviceorientation から値が届かない端末や環境で重力加速度を用いて水平角を補完
  */
 function setupMotionFallback(isUserGesture = false) {
-  if (isMotionListening || isPermissionDenied) return;
+  if (isMotionListening) return;
 
   // iOS 13+ Safari DeviceMotionEvent permission
   if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-    if (isUserGesture && !isPermissionRequested) {
-      isPermissionRequested = true;
+    if (isUserGesture) {
       DeviceMotionEvent.requestPermission()
         .then((state) => {
           console.log(`[LEVEL DEBUG] DeviceMotionEvent permission state: ${state}`);
           if (state === 'granted') {
-            window.addEventListener('devicemotion', handleDeviceMotion, true);
-            isMotionListening = true;
+            attachMotionListeners();
             console.log('[LEVEL] motion listener started (granted)');
           }
         })
@@ -1948,13 +1944,21 @@ function setupMotionFallback(isUserGesture = false) {
         });
     }
   } else if (typeof window !== 'undefined' && 'DeviceMotionEvent' in window) {
-    try {
-      window.addEventListener('devicemotion', handleDeviceMotion, true);
-      isMotionListening = true;
-      console.log('[LEVEL] motion listener attached');
-    } catch (err) {
-      console.warn('[LEVEL DEBUG] Failed to attach devicemotion listener:', err);
-    }
+    attachMotionListeners();
+  }
+}
+
+/**
+ * 実際のmotionイベントリスナー登録
+ */
+function attachMotionListeners() {
+  if (isMotionListening) return;
+  try {
+    window.addEventListener('devicemotion', handleDeviceMotion, true);
+    isMotionListening = true;
+    console.log('[LEVEL DEBUG] devicemotion listener attached');
+  } catch (err) {
+    console.warn('[LEVEL DEBUG] Failed to attach devicemotion listener:', err);
   }
 }
 
@@ -2977,14 +2981,26 @@ function initOrResumeAudioContext() {
 }
 
 /**
- * 初回ユーザー操作時にAudioContextおよびDeviceOrientationを事前にアンロック・開始
+ * 初回ユーザー操作時にAudioContextをアンロック
  */
 function setupAudioUnlock() {
   const unlockEvents = ['touchstart', 'touchend', 'pointerdown', 'click'];
   const unlockHandler = () => {
     initOrResumeAudioContext();
+    unlockEvents.forEach(evt => window.removeEventListener(evt, unlockHandler, true));
+  };
+  unlockEvents.forEach(evt => window.addEventListener(evt, unlockHandler, { capture: true, once: true }));
+}
+
+/**
+ * 初回ユーザー操作時にDeviceOrientationパーミッション要求・リスナー開始を実行
+ * iOS 13+ Safariのジェスチャー要件を満たし、Android/PC等ではバックグラウンド監視を補強
+ */
+function setupOrientationUnlock() {
+  const unlockEvents = ['click', 'touchend', 'pointerdown'];
+  const unlockHandler = () => {
     startOrientationListener(true);
-    if (isOrientationListening || isPermissionDenied) {
+    if (isOrientationListening) {
       unlockEvents.forEach(evt => window.removeEventListener(evt, unlockHandler, true));
     }
   };
@@ -4538,6 +4554,7 @@ if (window.screen && window.screen.orientation) {
 // ページ読み込み時に初期比率適用 & カメラ監視開始 & ARオブジェクト操作初期化 & オーディオアンロック設定 & 自動水平検知リスナー開始
 window.addEventListener('DOMContentLoaded', () => {
   setupAudioUnlock();
+  setupOrientationUnlock();
   startOrientationListener();
   setAspectRatio('3:4');
   setTimerDuration(0); // タイマー初期値: OFF
