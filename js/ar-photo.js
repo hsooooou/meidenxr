@@ -1146,8 +1146,20 @@ function stopClock() {
  * AR.js初期化とカメラ準備の監視
  */
 function initCameraHandling() {
+  console.log('[CAMERA] initialization started');
   showStatus('カメラを起動中...', false);
   shutterBtn.disabled = true;
+
+  const onCameraReady = (v) => {
+    console.log(`[CAMERA] stream ready (${v ? v.videoWidth : 0}x${v ? v.videoHeight : 0})`);
+    hideStatus();
+    shutterBtn.disabled = false;
+    startClock();
+    syncArCanvasAndVideo();
+    applyAdjustmentsToPreview();
+    // カメラ準備完了と同時にセンサー監視を開始（パーミッション不要環境では即座に監視開始）
+    startOrientationListener(false);
+  };
 
   const checkVideo = () => {
     const v = getActiveVideo();
@@ -1159,20 +1171,13 @@ function initCameraHandling() {
       aCanvas.style.pointerEvents = 'none';
     }
     if (v && v.readyState >= 2 && v.videoWidth > 0) {
-      hideStatus();
-      shutterBtn.disabled = false;
-      startClock();
-      syncArCanvasAndVideo();
+      onCameraReady(v);
       return true;
     }
     if (v && !v.onloadedmetadata) {
       v.addEventListener('loadedmetadata', () => {
         v.style.pointerEvents = 'none';
-        hideStatus();
-        shutterBtn.disabled = false;
-        startClock();
-        syncArCanvasAndVideo();
-        applyAdjustmentsToPreview();
+        onCameraReady(v);
       }, { once: true });
     }
     return false;
@@ -1182,7 +1187,6 @@ function initCameraHandling() {
     const checkInterval = setInterval(() => {
       if (checkVideo()) {
         clearInterval(checkInterval);
-        applyAdjustmentsToPreview();
       }
     }, 200);
 
@@ -1806,7 +1810,6 @@ function updateSegmentedIndicator(controlEl, indicatorEl, activeBtn) {
  * 撮影設定ボトムシートを開く
  */
 function openCaptureSettingsSheet() {
-  startOrientationListener(true);
   closeSubmenu();
   closeAdjustmentSheet();
   closeSpecialSheet();
@@ -1885,29 +1888,32 @@ function startOrientationListener(isUserGesture = false) {
   if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
     if (isUserGesture && !isPermissionRequested) {
       isPermissionRequested = true;
-      console.log(`[LEVEL DEBUG] startOrientationListener requesting permission (inIframe: ${isIframe}, isSecureContext: ${isSecure})`);
+      console.log(`[LEVEL] requesting permission (inIframe: ${isIframe}, isSecureContext: ${isSecure})`);
       DeviceOrientationEvent.requestPermission()
         .then((permissionState) => {
           console.log(`[LEVEL DEBUG] DeviceOrientation permission state: ${permissionState}`);
           if (permissionState === 'granted') {
             window.addEventListener('deviceorientation', handleDeviceOrientation, true);
             isOrientationListening = true;
+            console.log('[LEVEL] listener started (DeviceOrientation granted)');
             setupMotionFallback(true);
           } else {
             isPermissionDenied = true;
+            isPermissionRequested = false;
           }
         })
         .catch((err) => {
           console.warn('[LEVEL DEBUG] DeviceOrientation permission error:', err);
           isPermissionDenied = true;
+          isPermissionRequested = false;
         });
     }
   } else if ('DeviceOrientationEvent' in window) {
     // Android Chrome / 一般ブラウザ（パーミッション不要）
     try {
-      console.log(`[LEVEL DEBUG] Attaching window.deviceorientation listener (standard browser/Android, inIframe: ${isIframe}, isSecureContext: ${isSecure})...`);
       window.addEventListener('deviceorientation', handleDeviceOrientation, true);
       isOrientationListening = true;
+      console.log(`[LEVEL] listener started (standard browser/Android, inIframe: ${isIframe}, isSecureContext: ${isSecure})`);
     } catch (err) {
       console.warn('[LEVEL DEBUG] Failed to attach deviceorientation listener:', err);
     }
@@ -1928,13 +1934,13 @@ function setupMotionFallback(isUserGesture = false) {
   if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
     if (isUserGesture && !isPermissionRequested) {
       isPermissionRequested = true;
-      console.log('[LEVEL DEBUG] Requesting DeviceMotionEvent.requestPermission()...');
       DeviceMotionEvent.requestPermission()
         .then((state) => {
           console.log(`[LEVEL DEBUG] DeviceMotionEvent permission state: ${state}`);
           if (state === 'granted') {
             window.addEventListener('devicemotion', handleDeviceMotion, true);
             isMotionListening = true;
+            console.log('[LEVEL] motion listener started (granted)');
           }
         })
         .catch((err) => {
@@ -1945,6 +1951,7 @@ function setupMotionFallback(isUserGesture = false) {
     try {
       window.addEventListener('devicemotion', handleDeviceMotion, true);
       isMotionListening = true;
+      console.log('[LEVEL] motion listener attached');
     } catch (err) {
       console.warn('[LEVEL DEBUG] Failed to attach devicemotion listener:', err);
     }
@@ -2059,6 +2066,10 @@ function updateLevelGuideWithRoll(rawRoll) {
 function handleDeviceOrientation(e) {
   const gamma = e.gamma; // 左右の傾き (-90 to 90)
   const beta = e.beta;   // 上下の傾き (-180 to 180)
+
+  if (!hasReceivedOrientationData && gamma !== null && beta !== null && gamma !== undefined && beta !== undefined) {
+    console.log(`[LEVEL] deviceorientation receiving (beta: ${beta.toFixed(1)}, gamma: ${gamma.toFixed(1)})`);
+  }
 
   const now = Date.now();
   if (now - lastOrientationLogTime > 400) {
