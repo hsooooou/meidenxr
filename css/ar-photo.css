@@ -1,0 +1,2465 @@
+/* =========================================================
+   基本リセット & フルスクリーン強制設定（AR.js / A-Frameの干渉防止）
+   ========================================================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+html, body, body.a-body {
+  width: 100vw !important;
+  height: 100dvh !important;
+  min-width: 100vw !important;
+  min-height: 100dvh !important;
+  max-width: 100vw !important;
+  max-height: 100dvh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  touch-action: none;
+  background-color: #F9F9F9 !important;
+  color: #1A1A1A;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow: hidden !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+}
+
+/* =========================================================
+   1. レイヤー最背面（z-index: 0）：フルスクリーンカメラ映像
+      pointer-events: none で操作イベントを一切遮らない
+   ========================================================= */
+#arjs-video,
+#camera-feed,
+.camera-feed,
+video {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  display: block !important;
+  border: none !important;
+  max-width: none !important;
+  max-height: none !important;
+  transform-origin: center center;
+}
+
+/* フロントカメラ時のミラー反転（ズーム倍率と組み合わせ可能） */
+#arjs-video.mirrored,
+#camera-feed.mirrored,
+.camera-feed.mirrored,
+video.mirrored {
+  transform: scaleX(-1);
+}
+
+/* =========================================================
+   2. レイヤー第2層（z-index: 1）：A-Frame ARシーン & WebGL Canvas
+      透明背景でカメラ映像の上に3Dオブジェクトのみを描画
+   ========================================================= */
+#ar-scene,
+a-scene {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  background: transparent !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+.a-canvas {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  background: transparent !important;
+  display: block !important;
+  border: none !important;
+  max-width: none !important;
+  max-height: none !important;
+  transform-origin: center center;
+}
+
+/* 不要なAR.js / A-FrameデフォルトUIを完全に非表示・無効化 */
+.a-enter-vr,
+.a-enter-ar,
+.a-loader-title,
+.a-orientation-modal,
+.arjs-loader,
+.a-modal,
+.a-dialog,
+.a-enter-vr-button,
+.a-canvas ~ div,
+.a-canvas ~ a {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+}
+
+/* =========================================================
+   カメラUIコンテナ（全画面フルスクリーン・オーバーレイ親要素）
+   ========================================================= */
+.camera-container {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  overflow: hidden !important;
+  background-color: transparent !important;
+  z-index: 10 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: none !important;
+}
+
+/* =========================================================
+   3. レイヤー第3層（z-index: 15）：撮影フレーム ＆ #F9F9F9ホワイトマスク
+   ========================================================= */
+.frame-overlay-container {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  z-index: 15 !important;
+  pointer-events: none !important;
+  transition: padding 0.25s ease;
+}
+
+/* 撮影フレーム本体（アスペクト比固定 & 周囲不透明ホワイトマスク #F9F9F9 & コンテナクエリ） */
+.capture-frame {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  box-shadow: 0 0 0 9999px #F9F9F9;
+  pointer-events: none;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: aspect-ratio 0.25s ease, width 0.25s ease, height 0.25s ease;
+  container-type: size;
+}
+
+/* 四隅のコーナーマーカー装飾 */
+.capture-frame::before,
+.capture-frame::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: rgba(26, 26, 26, 0.8);
+  border-style: solid;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.capture-frame::before {
+  top: -1px;
+  left: -1px;
+  border-width: 2px 0 0 2px;
+  border-top-left-radius: 6px;
+}
+
+.capture-frame::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 2px 2px 0;
+  border-bottom-right-radius: 6px;
+}
+
+/* =========================================================
+   リアルタイム・特殊加工プレビューCanvas（撮影結果と完全一致の画像処理レイヤー）
+   ========================================================= */
+.special-preview-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  pointer-events: none;
+  object-fit: fill;
+}
+
+/* =========================================================
+   リアルタイム・ビネット効果オーバーレイ（Typography Canvasより下層）
+   ========================================================= */
+.vignette-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at center, transparent 35%, rgba(0, 0, 0, 0.88) 100%);
+  transition: opacity 0.05s ease;
+}
+
+/* =========================================================
+   撮影ガイドオーバーレイ（構図グリッド・水平ガイド、Typography Canvasより下層）
+   ========================================================= */
+.camera-guide-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 15;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* =========================================================
+   4. レイヤー第4層（z-index: 20）：日時タイポグラフィCanvas（画面表示＆撮影共通レイヤー）
+   ========================================================= */
+.typography-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* =========================================================
+   縦向き（Portrait）レイアウト設定
+   ========================================================= */
+@media (orientation: portrait) {
+  .frame-overlay-container {
+    padding-top: calc(20px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(115px + env(safe-area-inset-bottom, 0px));
+    padding-left: calc(16px + env(safe-area-inset-left, 0px));
+    padding-right: calc(16px + env(safe-area-inset-right, 0px));
+  }
+
+  .capture-frame.ratio-3-4 {
+    aspect-ratio: 3 / 4;
+    height: 100%;
+    width: auto;
+  }
+
+  .capture-frame.ratio-9-16 {
+    aspect-ratio: 9 / 16;
+    height: 100%;
+    width: auto;
+  }
+
+  .capture-frame.ratio-1-1 {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    height: auto;
+  }
+
+  @media (max-aspect-ratio: 3/4) {
+    .capture-frame.ratio-3-4 {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  @media (max-aspect-ratio: 9/16) {
+    .capture-frame.ratio-9-16 {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  @media (min-aspect-ratio: 1/1) {
+    .capture-frame.ratio-1-1 {
+      height: 100%;
+      width: auto;
+    }
+  }
+
+  /* 下部コントロールバー（縦向き：5ボタン構成） */
+  .controls-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 110px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+    z-index: 50 !important;
+    background-color: #F9F9F9;
+    pointer-events: auto !important;
+  }
+
+  .control-slot {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 0 2px;
+  }
+
+  .control-slot.slot-center {
+    flex: 1.25;
+  }
+
+  /* サブメニューパネル（縦向き：上方向へ展開） */
+  .submenu-panel {
+    position: absolute;
+    bottom: calc(100% + 14px);
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    min-width: 165px;
+    background-color: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 18px;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.14);
+    padding: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 3px;
+    z-index: 70 !important;
+    pointer-events: auto !important;
+  }
+
+  .submenu-panel.is-open {
+    display: flex !important;
+  }
+
+  .submenu-panel::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 7px 7px 0 7px;
+    border-style: solid;
+    border-color: #FFFFFF transparent transparent transparent;
+  }
+
+  .review-btn-group {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 28px;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+/* =========================================================
+   横向き（Landscape）レイアウト設定
+   ========================================================= */
+@media (orientation: landscape) {
+  .frame-overlay-container {
+    padding-top: calc(16px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    padding-left: calc(24px + env(safe-area-inset-left, 0px));
+    padding-right: calc(115px + env(safe-area-inset-right, 0px));
+  }
+
+  .capture-frame.ratio-3-4 {
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    height: auto;
+  }
+
+  .capture-frame.ratio-9-16 {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    height: auto;
+  }
+
+  .capture-frame.ratio-1-1 {
+    aspect-ratio: 1 / 1;
+    height: 100%;
+    width: auto;
+  }
+
+  @media (min-aspect-ratio: 4/3) {
+    .capture-frame.ratio-3-4 {
+      height: 100%;
+      width: auto;
+    }
+  }
+
+  @media (min-aspect-ratio: 16/9) {
+    .capture-frame.ratio-9-16 {
+      height: 100%;
+      width: auto;
+    }
+  }
+
+  /* コントロールバー（横向き時：右側の縦型配置・5ボタン） */
+  .controls-bar {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    bottom: auto;
+    left: auto;
+    transform: translateY(-50%);
+    width: 110px;
+    height: auto;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 0;
+    padding-top: calc(12px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    padding-right: env(safe-area-inset-right, 10px);
+    z-index: 50 !important;
+    background-color: transparent;
+    pointer-events: auto !important;
+  }
+
+  .control-slot {
+    flex: 0 0 auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .control-slot.slot-center {
+    flex: 0 0 auto;
+  }
+
+  /* サブメニューパネル（横向き：左方向へ展開・画面内に確実に収まり内部スクロール可能） */
+  .submenu-panel {
+    position: absolute;
+    right: calc(100% + 14px);
+    top: 50%;
+    transform: translateY(-50%);
+    min-width: 165px;
+    max-width: 260px;
+    max-height: calc(100vh - 28px);
+    max-height: calc(100dvh - 28px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.22) transparent;
+    background-color: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 18px;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.14);
+    padding: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 3px;
+    z-index: 70 !important;
+    pointer-events: auto !important;
+  }
+
+  .submenu-panel::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .submenu-panel::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .submenu-panel::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+
+  .submenu-panel.is-open {
+    display: flex !important;
+  }
+
+  .submenu-panel::after {
+    content: "";
+    position: absolute;
+    top: var(--arrow-top, 50%);
+    left: 100%;
+    transform: translateY(-50%);
+    border-width: 7px 0 7px 7px;
+    border-style: solid;
+    border-color: transparent transparent transparent #FFFFFF;
+    pointer-events: none;
+  }
+
+  .review-btn-group {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 0 8px;
+  }
+}
+
+/* =========================================================
+   5. レイヤー最前面（z-index: 50〜70）：操作UI & サブメニュー
+   ========================================================= */
+
+/* Google Material Symbols アイコン標準設定 */
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* サブメニューアイテム共通デザイン（[ アイコン ] 文字） */
+.submenu-item {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #1A1A1A;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  text-align: left;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+
+.submenu-item:hover {
+  background-color: #F3F4F6;
+}
+
+.submenu-item:active {
+  background-color: #E5E7EB;
+  transform: scale(0.98);
+}
+
+.submenu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  width: 22px;
+  height: 22px;
+  color: #1A1A1A;
+  flex-shrink: 0;
+}
+
+.submenu-label {
+  flex: 1;
+}
+
+.submenu-close-item {
+  color: #71717A;
+  font-size: 13px;
+}
+
+.submenu-close-item .submenu-icon {
+  color: #71717A;
+  font-size: 18px;
+}
+
+.submenu-close-item:hover {
+  background-color: #F4F4F5;
+  color: #18181B;
+}
+
+.submenu-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #8E8E93;
+  padding: 4px 10px 2px 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+}
+
+.submenu-divider {
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.06);
+  margin: 4px 6px;
+}
+
+/* 調整メニュー内の比率ボタングループ */
+.submenu-ratio-group {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  padding: 2px 4px;
+}
+
+.submenu-ratio-group .ratio-opt-btn {
+  flex: 1;
+  height: 36px;
+  padding: 0 6px;
+  border-radius: 8px;
+  background: #F3F4F6;
+  border: 1px solid transparent;
+  color: #555555;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.submenu-ratio-group .ratio-opt-btn:hover {
+  background: #E5E7EB;
+  color: #1A1A1A;
+}
+
+.submenu-ratio-group .ratio-opt-btn.active {
+  background: #1A1A1A;
+  color: #FFFFFF;
+  border-color: #1A1A1A;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* 調整メニュー内のタイマーボタングループ */
+.submenu-timer-group {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  padding: 2px 4px;
+}
+
+.submenu-timer-group .timer-opt-btn {
+  flex: 1;
+  height: 36px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: #F3F4F6;
+  border: 1px solid transparent;
+  color: #555555;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.submenu-timer-group .timer-opt-btn:hover {
+  background: #E5E7EB;
+  color: #1A1A1A;
+}
+
+.submenu-timer-group .timer-opt-btn.active {
+  background: #1A1A1A;
+  color: #FFFFFF;
+  border-color: #1A1A1A;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* タイマーカウントダウン表示オーバーレイ（中央に大きな数字） */
+.countdown-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 23;
+  pointer-events: none;
+  user-select: none;
+}
+
+.countdown-overlay.hidden {
+  display: none !important;
+}
+
+.countdown-number {
+  font-size: 110px;
+  font-weight: 800;
+  color: #FFFFFF;
+  text-shadow: 0 4px 28px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.7);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+  line-height: 1;
+  display: inline-block;
+  transform: scale(1);
+  transition: transform 0.15s ease-out, opacity 0.15s ease-out;
+}
+
+.countdown-number.pulse {
+  animation: countdownPop 0.95s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes countdownPop {
+  0% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+  15% {
+    transform: scale(1.0);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(0.95);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.85);
+    opacity: 0.2;
+  }
+}
+
+/* ズーム倍率HUD表示（中央付近・ピンチ操作中のみ一時表示、ミニマルデザイン） */
+.zoom-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 22;
+  pointer-events: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.2s ease-out;
+}
+
+.zoom-indicator.hidden {
+  display: none !important;
+  opacity: 0;
+}
+
+.zoom-indicator-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #FFFFFF;
+  background-color: rgba(26, 26, 26, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 6px 14px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  line-height: 1.1;
+  transition: font-size 0.12s ease, padding 0.12s ease, color 0.15s ease, border-color 0.15s ease;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* 1.0× / 2.0× / 3.0× のマイルストーン倍率（大型表示） */
+.zoom-indicator-text.is-milestone {
+  font-size: 28px;
+  font-weight: 800;
+  padding: 8px 20px;
+  border-radius: 28px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* 1.0×到達時（基準値）の特別カラー（大型 + 明るい黄色系アクセント） */
+.zoom-indicator-text.is-base-zoom {
+  color: #FFD84D !important;
+  border-color: rgba(255, 216, 77, 0.4);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.4), 0 0 12px rgba(255, 216, 77, 0.25);
+}
+
+/* メインメニューボタンのアクティブ（展開中）状態 */
+.main-menu-btn.is-active,
+.main-menu-btn.active {
+  background-color: #1A1A1A !important;
+  color: #FFFFFF !important;
+  border-color: #1A1A1A !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+  transform: scale(1.04);
+}
+
+/* 撮影写真プレビュー画像（フレーム内に収める） */
+.photo-preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  z-index: 25 !important;
+  pointer-events: auto !important;
+}
+
+/* シャッター時フラッシュ演出（画面全体を覆う純白の瞬間演出） */
+.flash {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  background-color: #FFFFFF;
+  opacity: 0;
+  pointer-events: none !important;
+  transition: opacity 0.15s ease-out;
+  z-index: 95 !important;
+}
+
+.flash.active {
+  opacity: 1;
+}
+
+/* シャッターボタン */
+.shutter-btn {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  border: 3.5px solid #1A1A1A;
+  padding: 4px;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease, background-color 0.15s ease;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  pointer-events: auto !important;
+  z-index: 60 !important;
+}
+
+.shutter-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #1A1A1A;
+  display: block;
+  transition: background-color 0.1s ease, transform 0.1s ease;
+  pointer-events: none;
+}
+
+.shutter-btn:active {
+  transform: scale(0.93);
+}
+
+.shutter-btn:active .shutter-inner {
+  background-color: #444444;
+  transform: scale(0.9);
+}
+
+.shutter-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* メインメニュー用アイコンボタン（カメラ切替 / リセット / 調整 / 使い方） */
+.icon-btn {
+  width: clamp(48px, 12.5vw, 54px);
+  height: clamp(48px, 12.5vw, 54px);
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  border: 1px solid #E0E0E0;
+  color: #1A1A1A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  transition: background-color 0.18s ease, transform 0.1s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  pointer-events: auto !important;
+  z-index: 60 !important;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (min-width: 600px), (orientation: landscape) {
+  .icon-btn {
+    width: 54px;
+    height: 54px;
+  }
+}
+
+.icon-btn .material-symbols-outlined {
+  font-size: 26px;
+  line-height: 1;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover {
+  background-color: #F7F7F7;
+  border-color: #D5D5D5;
+}
+
+.icon-btn:active {
+  transform: scale(0.92);
+}
+
+.icon-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* 撮影後プレビュー用アイコンボタン（撮り直し / 保存） */
+.review-icon-btn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  transition: transform 0.1s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  pointer-events: auto !important;
+  z-index: 60 !important;
+}
+
+.review-icon-btn:active {
+  transform: scale(0.92);
+}
+
+.review-icon-btn.retake {
+  background-color: #5B6472;
+  color: #FFFFFF;
+  box-shadow: 0 3px 12px rgba(91, 100, 114, 0.25);
+}
+
+.review-icon-btn.retake:hover {
+  background-color: #4D5562;
+}
+
+.review-icon-btn.share {
+  background-color: #2563EB;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28);
+}
+
+.review-icon-btn.share:hover {
+  background-color: #1D4ED8;
+}
+
+.review-icon-btn.save {
+  background-color: #242424;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(36, 36, 36, 0.25);
+}
+
+.review-icon-btn.save:hover {
+  background-color: #141414;
+}
+
+.btn {
+  padding: 12px 26px;
+  border-radius: 28px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  pointer-events: auto !important;
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+.btn.retry-btn {
+  background-color: #1A1A1A;
+  color: #FFFFFF;
+  margin-top: 12px;
+}
+
+.btn.retry-btn:hover {
+  background-color: #333333;
+}
+
+/* モーダル / ステータスメッセージ (z-index: 100) */
+.status-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #FFFFFF;
+  border: 1px solid #E0E0E0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 24px 28px;
+  border-radius: 16px;
+  text-align: center;
+  max-width: 85%;
+  z-index: 100 !important;
+  pointer-events: auto !important;
+}
+
+.status-message p {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #222222;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* =========================================================
+   6. 編集パネル背面ガラス化専用スタイル（調整 → 加工 / 文字）
+   ========================================================= */
+.editor-sheet-backdrop,
+.adjustment-sheet {
+  /* 背面ガラス効果（透明度・blurを一元管理：約64%白背景で背後のカメラ・AR・文字をよりクリアに透過） */
+  background-color: rgba(255, 255, 255, 0.64);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid rgba(255, 255, 255, 0.7);
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  box-shadow: 0 -10px 36px rgba(0, 0, 0, 0.16), inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
+
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 18px calc(14px + env(safe-area-inset-bottom, 0px)) 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 65 !important;
+  transform: translateY(110%);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  user-select: none;
+}
+
+.adjustment-sheet.is-open {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.adjustment-sheet.is-dragging {
+  transition: none !important;
+}
+
+/* ドラッグハンドルバー */
+.sheet-drag-handle-container {
+  width: 100%;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  touch-action: none;
+}
+
+.sheet-drag-handle-container:active {
+  cursor: grabbing;
+}
+
+.sheet-drag-bar {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background-color: #D1D5DB;
+  transition: background-color 0.15s ease;
+}
+
+.sheet-drag-handle-container:hover .sheet-drag-bar {
+  background-color: #9CA3AF;
+}
+
+/* パネルヘッダー（項目名・現在値・閉じるボタン） */
+.sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  height: 28px;
+}
+
+/* 特殊加工パネル専用スタイル */
+.special-empty-container {
+  height: 72px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.special-empty-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.special-empty-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.special-empty-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1A1A1A;
+  letter-spacing: -0.01em;
+}
+
+.special-empty-subtitle {
+  font-size: 11px;
+  color: #6B7280;
+  font-weight: 500;
+}
+
+.special-active-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: 72px;
+}
+
+/* 特殊加工オーバーレイ（カメラフレーム内、Typographyより下層） */
+.special-fx-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 12;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.noise-overlay-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+.sheet-title-group {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.sheet-item-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1A1A1A;
+  letter-spacing: -0.01em;
+}
+
+.sheet-item-val {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2563EB;
+  font-variant-numeric: tabular-nums;
+}
+
+.sheet-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sheet-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #F3F4F6;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4B5563;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sheet-action-btn:hover {
+  background: #E5E7EB;
+  color: #1A1A1A;
+}
+
+.sheet-action-btn:active {
+  transform: rotate(-180deg) scale(0.92);
+}
+
+.sheet-action-btn .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.sheet-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #F3F4F6;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4B5563;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.sheet-close-btn:hover {
+  background: #E5E7EB;
+  color: #1A1A1A;
+}
+
+.sheet-close-btn:active {
+  transform: scale(0.94);
+}
+
+.sheet-close-btn .material-symbols-outlined {
+  font-size: 18px;
+}
+
+/* スライダー領域（位置・サイズ完全固定） */
+.sheet-slider-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 44px;
+  padding: 0 4px;
+}
+
+.slider-bound-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #9CA3AF;
+  width: 16px;
+  text-align: center;
+  user-select: none;
+}
+
+.slider-track-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/* 中央基準マーク（0 / 50） */
+.slider-center-mark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 12px;
+  border-radius: 1.5px;
+  background-color: #9CA3AF;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.slider-center-num {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 600;
+  color: #9CA3AF;
+  user-select: none;
+  pointer-events: none;
+  letter-spacing: -0.02em;
+}
+
+/* カスタムレンジスライダー */
+.custom-range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #E5E7EB;
+  outline: none;
+  margin: 0;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+
+.custom-range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #1A1A1A;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.custom-range-slider::-webkit-slider-thumb:active {
+  transform: scale(1.15);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.custom-range-slider::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #1A1A1A;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+  cursor: pointer;
+}
+
+/* 項目選択バー（横スクロール） */
+.sheet-tabs-scroll {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 2px 2px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.sheet-tabs-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.sheet-tab-btn {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: #F3F4F6;
+  border: 1px solid transparent;
+  color: #4B5563;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.sheet-tab-btn:hover {
+  background: #E5E7EB;
+  color: #1A1A1A;
+}
+
+.sheet-tab-btn.active {
+  background: #1A1A1A;
+  color: #FFFFFF;
+  border-color: #1A1A1A;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+/* 「文字なし」専用タブボタン（未選択時はニュートラル、選択時は落ち着いたスレートグレーで差別化） */
+.sheet-tab-btn.sheet-tab-btn-none {
+  background: #F3F4F6;
+  color: #4B5563;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.sheet-tab-btn.sheet-tab-btn-none:hover {
+  background: #E5E7EB;
+  color: #1A1A1A;
+}
+
+.sheet-tab-btn.sheet-tab-btn-none.is-none-active {
+  background: #374151; /* 落ち着いたダークスレートグレー（エラー色ではなくOFF状態を品良く表現） */
+  color: #F9FAFB;
+  border-color: #374151;
+  box-shadow: 0 2px 8px rgba(55, 65, 81, 0.28);
+}
+
+.sheet-tab-btn .sheet-tab-icon {
+  font-size: 18px;
+}
+
+/* =========================================================
+   7. 文字編集パネル（字体選択カード横スクロール）
+   ========================================================= */
+.font-cards-scroll {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 2px 2px 4px 2px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  height: 72px;
+  align-items: center;
+}
+
+.font-cards-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.font-card {
+  flex-shrink: 0;
+  min-width: 76px;
+  height: 64px;
+  padding: 6px 12px;
+  border-radius: 14px;
+  background: #F3F4F6;
+  border: 1.5px solid transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  transition: all 0.15s ease;
+  color: #1A1A1A;
+}
+
+.font-card:hover {
+  background: #E5E7EB;
+}
+
+.font-card:active {
+  transform: scale(0.96);
+}
+
+.font-card.active {
+  background: #1A1A1A;
+  color: #FFFFFF;
+  border-color: #1A1A1A;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+}
+
+.font-card-preview,
+.font-card-preview-canvas {
+  height: 28px;
+  width: 56px;
+  flex: 0 0 auto;
+  display: block;
+}
+
+.font-card-name {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.75;
+  margin-top: 3px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.font-card.active .font-card-name {
+  opacity: 0.95;
+}
+
+/* 文字サイズスライダー領域（固定高さ72pxで字体・色と完全に揃える） */
+.typography-size-container {
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 4px;
+}
+
+.typography-size-container.hidden {
+  display: none !important;
+}
+
+/* 文字色カラーチップ（横スクロール） */
+.color-chips-scroll {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 4px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  height: 72px;
+  align-items: center;
+}
+
+.color-chips-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.color-chips-scroll.hidden {
+  display: none !important;
+}
+
+.color-chip-btn {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2.5px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.color-chip-btn:hover {
+  transform: scale(1.06);
+}
+
+.color-chip-btn:active {
+  transform: scale(0.94);
+}
+
+.color-chip-btn.active {
+  transform: scale(1.08);
+  box-shadow: 0 0 0 2.5px #1A1A1A, 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+/* 白チップ用（白背景上でも見やすいように薄い外枠） */
+.color-chip-btn.color-chip-white {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.color-chip-btn.color-chip-white.active {
+  box-shadow: 0 0 0 2.5px #1A1A1A, 0 4px 14px rgba(0, 0, 0, 0.28);
+}
+
+.color-chip-btn .color-chip-check {
+  font-size: 22px;
+  font-weight: 700;
+  display: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+.color-chip-btn.active .color-chip-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 文字配置アンカー（横スクロール 1列9個 3グループ） */
+.anchors-scroll {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 4px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  height: 72px;
+}
+
+.anchors-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.anchors-scroll.hidden {
+  display: none !important;
+}
+
+.anchor-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.anchor-group-divider {
+  width: 1px;
+  height: 36px;
+  background-color: rgba(0, 0, 0, 0.12);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+.anchor-btn {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1.5px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  padding: 0;
+  color: #2D3748;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+}
+
+.anchor-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.18);
+  transform: translateY(-1px);
+}
+
+.anchor-btn:active {
+  transform: scale(0.94);
+}
+
+.anchor-btn.active {
+  background: #1A1A1A;
+  color: #FFFFFF;
+  border-color: #1A1A1A;
+  box-shadow: 0 0 0 2.5px #1A1A1A, 0 4px 12px rgba(0, 0, 0, 0.22);
+  transform: translateY(-1px);
+}
+
+.anchor-proxy-svg {
+  flex-shrink: 0;
+  display: block;
+}
+
+/* PC / 横向き（Landscape）レイアウト対応 */
+@media (orientation: landscape) {
+  .adjustment-sheet {
+    left: 50%;
+    right: auto;
+    width: 520px;
+    max-width: calc(100vw - 140px);
+    border-radius: 22px;
+    bottom: 14px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transform: translateX(-50%) translateY(120%);
+    padding: 10px 20px calc(12px + env(safe-area-inset-bottom, 0px)) 20px;
+  }
+
+  .adjustment-sheet.is-open {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* =========================================================
+   使い方オーバーレイ（全画面表示・内部スクロール・下中央固定×ボタン）
+   ========================================================= */
+.usage-overlay {
+  position: fixed;
+  inset: 0 !important;
+  width: 100vw;
+  height: 100dvh;
+  z-index: 85 !important;
+  background-color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden !important;
+  pointer-events: auto !important;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  touch-action: pan-y;
+}
+
+.usage-overlay.hidden {
+  display: none !important;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none !important;
+}
+
+/* 上部固定ヘッダー予約領域（将来の固定ヘッダー組み込み用スペース） */
+.usage-top-space {
+  width: 100%;
+  flex: 0 0 auto;
+  min-height: calc(72px + env(safe-area-inset-top, 0px));
+  padding-top: env(safe-area-inset-top, 0px);
+  background: transparent;
+  pointer-events: none;
+}
+
+/* スクロールコンテンツ本体（内部完結スクロール） */
+.usage-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y !important;
+  overscroll-behavior: contain;
+  padding: 8px 24px calc(96px + env(safe-area-inset-bottom, 0px)) 24px;
+  color: #231815;
+  box-sizing: border-box;
+  pointer-events: auto !important;
+}
+
+/* 使い方メインタイトル部 */
+.usage-heading-wrap {
+  margin-bottom: 24px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #231815;
+}
+
+.usage-main-title {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 26px;
+  font-weight: 900;
+  color: #231815;
+  margin: 0 0 2px 0;
+  line-height: 1.2;
+}
+
+.usage-main-sub {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #8E8E93;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+/* セクションモジュール */
+.usage-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.usage-title {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  color: #a654f3;
+  line-height: 28px;
+  margin: 0 0 3px 0;
+  letter-spacing: -0.01em;
+}
+
+.usage-kana {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #5d5d68;
+  margin: 0 0 10px 0;
+  letter-spacing: 0.02em;
+}
+
+.usage-text {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #34343a;
+  line-height: 1.72;
+  margin: 0;
+}
+
+.usage-divider {
+  height: 1px;
+  background-color: rgba(35, 24, 21, 0.12);
+  margin: 24px 0;
+  border: none;
+}
+
+/* 本文内インラインアイコン（文章の一部として自然に配置） */
+.usage-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: -0.16em;
+  font-size: 1.18em;
+  line-height: 1;
+  margin: 0 0.18em;
+  color: inherit;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+.usage-icon.is-primary {
+  color: #a654f3;
+}
+
+/* HTML/CSSによる図解コンポーネント基盤 */
+.usage-diagram {
+  margin: 14px 0 6px 0;
+  padding: 14px 16px;
+  background-color: #F8F9FA;
+  border: 1px solid rgba(35, 24, 21, 0.08);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  user-select: none;
+}
+
+.usage-diagram-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.usage-diagram-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.usage-diagram-button .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.usage-diagram-shutter {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  border: 2.5px solid #1A1A1A;
+  padding: 2.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.usage-diagram-shutter-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #1A1A1A;
+}
+
+.usage-diagram-selected {
+  background-color: #1A1A1A !important;
+  color: #FFFFFF !important;
+  border-color: #1A1A1A !important;
+}
+
+.usage-diagram-arrow {
+  font-size: 18px;
+  color: #a654f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.usage-diagram-plus {
+  font-size: 15px;
+  font-weight: 800;
+  color: #8E8E93;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.usage-diagram-highlight {
+  outline: 2px solid #a654f3;
+  outline-offset: 2px;
+}
+
+/* サブ見出し・補足・強調テキスト用ユーティリティクラス */
+.usage-subtitle {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 14px 0 6px 0;
+  color: #231815;
+}
+
+.usage-text-sm {
+  font-size: 13px;
+  font-weight: 500;
+  color: #34343a;
+  line-height: 1.68;
+  margin: 0;
+}
+
+.usage-text-note {
+  font-size: 11px;
+  color: #8E8E93;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.usage-text-accent {
+  font-size: 13px;
+  font-weight: 700;
+  color: #a654f3;
+  margin: 6px 0 0 0;
+}
+
+/* 9点アンカー配置図解（カメラUIと同一の矩形＋ドットアイコン言語） */
+.usage-grid9-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.usage-grid9 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 10px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+}
+
+.usage-grid9-item {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background-color: #F8F9FA;
+  border: 1.5px solid #E5E7EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5d5d68;
+  transition: border-color 0.15s, color 0.15s, background-color 0.15s;
+}
+
+.usage-grid9-item.is-active {
+  background-color: rgba(166, 84, 243, 0.08);
+  border-color: #a654f3;
+  color: #a654f3;
+}
+
+.usage-anchor-svg {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+/* 比率ボックス図解 */
+.usage-ratio-boxes {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 16px;
+}
+
+.usage-ratio-box-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.usage-ratio-rect {
+  border: 2px solid #231815;
+  background: rgba(166, 84, 243, 0.08);
+  border-radius: 4px;
+}
+
+.usage-ratio-rect.r-3-4 {
+  width: 36px;
+  height: 48px;
+}
+
+.usage-ratio-rect.r-9-16 {
+  width: 30px;
+  height: 53px;
+}
+
+.usage-ratio-rect.r-1-1 {
+  width: 40px;
+  height: 40px;
+}
+
+.usage-ratio-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #231815;
+}
+
+/* タグ・バッジリスト */
+.usage-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.usage-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background-color: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #34343a;
+}
+
+.usage-tag-icon {
+  font-size: 15px;
+  margin-right: 4px;
+  color: #a654f3;
+}
+
+/* カラーパレット図解 */
+.usage-color-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  padding: 4px;
+}
+
+.usage-color-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0,0,0,0.15);
+  box-sizing: border-box;
+}
+
+/* 特殊加工カード一覧 */
+.usage-special-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+.usage-special-card {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 10px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.usage-special-card-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: #231815;
+  margin-bottom: 4px;
+}
+
+.usage-special-card-desc {
+  font-size: 11px;
+  color: #5d5d68;
+  line-height: 1.45;
+}
+
+/* リセット説明リスト（左揃え・縦並び・横配置アイコン＆テキスト） */
+.usage-reset-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-top: 14px;
+}
+
+.usage-reset-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 14px;
+  background-color: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.usage-reset-icon-wrap {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a654f3;
+  margin-top: 1px;
+}
+
+.usage-reset-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.usage-reset-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.usage-reset-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #231815;
+  line-height: 1.4;
+}
+
+.usage-reset-desc {
+  font-size: 12px;
+  font-weight: 500;
+  color: #5d5d68;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+/* 画面下側中央に固定配置された円形背景付き「×」閉じるボタン（ダーク背景＋白アイコン、ドロップシャドウなし） */
+.usage-close-btn {
+  position: fixed;
+  left: 50%;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #231815;
+  border: none;
+  border-radius: 50%;
+  color: #FFFFFF;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  z-index: 90 !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.12s ease, background-color 0.15s ease;
+  pointer-events: auto !important;
+}
+
+.usage-close-btn .material-symbols-outlined {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1;
+  color: #FFFFFF;
+}
+
+.usage-close-btn:hover {
+  background-color: #a654f3;
+  box-shadow: none !important;
+}
+
+.usage-close-btn:active {
+  transform: translateX(-50%) scale(0.92);
+}
+
+/* =========================================================
+   構図グリッド（3×3三分割ライン）
+   ========================================================= */
+.camera-grid-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.camera-grid-overlay.hidden {
+  display: none !important;
+}
+
+.grid-line {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.grid-line-v1 {
+  left: 33.333%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+.grid-line-v2 {
+  left: 66.666%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+.grid-line-h1 {
+  top: 33.333%;
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
+.grid-line-h2 {
+  top: 66.666%;
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
+/* =========================================================
+   水平ガイド（控えめな中央クロスヘア＋傾斜ライン＋水平成立ハイライト）
+   ========================================================= */
+.level-guide-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s ease;
+  z-index: 15;
+}
+
+.level-guide-overlay.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.level-indicator-container {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* 固定の水平基準バー（左右2本の短いバー） */
+.level-fixed-left,
+.level-fixed-right {
+  position: absolute;
+  top: 50%;
+  width: 24px;
+  height: 2.5px;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.85);
+  border-radius: 2px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.level-fixed-left {
+  left: 10px;
+}
+
+.level-fixed-right {
+  right: 10px;
+}
+
+/* 中央の小さなレティクル */
+.level-center-reticle {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.85);
+  pointer-events: none;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* 端末の傾きで回転するメイン水平ライン */
+.level-roll-bar {
+  position: absolute;
+  width: 104px;
+  height: 2.5px;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.85);
+  border-radius: 2px;
+  transform-origin: center center;
+  transform: rotate(0deg);
+  pointer-events: none;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* 水平成立時（aligned）: 黄色アクセント #FFD84D に発光 */
+.level-guide-overlay.is-aligned .level-fixed-left,
+.level-guide-overlay.is-aligned .level-fixed-right,
+.level-guide-overlay.is-aligned .level-center-reticle,
+.level-guide-overlay.is-aligned .level-roll-bar {
+  background-color: #FFD84D;
+  box-shadow: 0 0 10px rgba(255, 216, 77, 0.95), 0 0 3px rgba(0, 0, 0, 0.9);
+}
+
+.level-guide-overlay.is-aligned .level-center-reticle {
+  transform: scale(1.35);
+}
+
+/* =========================================================
+   撮影設定ボトムシート（タイマー / グリッド）
+   ========================================================= */
+.capture-settings-sheet {
+  /* adjustment-sheetの基本スタイル（ガラス背景・左右パディング等）を継承 */
+}
+
+.capture-settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 0 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.settings-row {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.settings-label-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #1A1A1A;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.settings-icon {
+  font-size: 18px;
+  color: #4B5563;
+}
+
+.settings-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1A1A1A;
+}
+
+/* 連結型セグメントコントロール（既存UI準拠：全幅100%・均等幅・スライドアクティブインジケーター） */
+.segmented-control {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  background: #F3F4F6;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 14px;
+  padding: 3px;
+  box-sizing: border-box;
+  user-select: none;
+  overflow: hidden;
+}
+
+.segmented-indicator {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  background: #1A1A1A;
+  border-radius: 11px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  transition: transform 0.24s cubic-bezier(0.2, 0.9, 0.3, 1), width 0.24s cubic-bezier(0.2, 0.9, 0.3, 1);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.segmented-btn {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  height: 34px;
+  padding: 0 8px;
+  border: none;
+  background: transparent;
+  color: #4B5563;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+  text-align: center;
+}
+
+.segmented-btn:hover {
+  color: #1A1A1A;
+}
+
+.segmented-btn.active {
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+

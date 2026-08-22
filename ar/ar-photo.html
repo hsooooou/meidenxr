@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head prefix="og: https://ogp.me/ns#">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,viewport-fit=cover">
+  <title>AR - フォト | MeidenXR</title>
+
+  <!-- css -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/ar.css">
+
+  <link rel="icon" type="image/x-icon" href="https://hsooooou.github.io/meidenxr/favicon.ico">
+  <link rel="apple-touch-icon" href="https://hsooooou.github.io/meidenxr/favicon-apple.ico" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://hsooooou.github.io/meidenxr/android-touch-icon.png" sizes="192x192">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FBD5SLNCS6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+
+    gtag('js', new Date());
+
+    gtag('consent', 'default', {
+      'analytics_storage': 'denied',
+      'functionality_storage': 'denied',
+      'security_storage': 'granted',
+      'wait_for_update': 500 // cookie.jsが同意設定を更新するのを最大500ms待つ
+    });
+  </script>
+
+  <!-- URL共有設定 -->
+  <meta property="og:title" content="AR - カメラ | MeidenXR" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://hsooooou.github.io/meidenxr/ar/ar-camera.html" />
+  <meta property="og:image" content="https://hsooooou.github.io/meidenxr/img/ogp/ogp_meidenxr_ar_adventure2026.png" />
+  <meta property="og:description" content="現地体験型コンテンツ「MeidenARアドベンチャー」のARページです。" />
+  <meta property="og:site_name" content="愛知工業大学名電高校学校" />
+
+  <!-- X（旧Twitter） Card tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <!-- <meta name="twitter:site" content="@自身のアカウント" /> -->
+  <meta name="twitter:title" content="AR - カメラ | MeidenXR" />
+  <meta name="twitter:description" content="MeidenXRの現地体験型コンテンツ「MeidenARアドベンチャー」のARページです。" />
+  <meta name="twitter:image" content="https://hsooooou.github.io/meidenxr/img/ogp/ogp_meidenxr_ar_adventure2026.png" />
+
+  <meta name="description" content="現地体験型コンテンツ「MeidenARアドベンチャー」のARページです。体験入学や学校説明会などの学校開放日に体験できます！">
+  <!-- A-Frame 1.7.1 & AR.js 3.4.0 -->
+  <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.0/aframe/build/aframe-ar.js"></script>
+  <!-- Google Material Symbols Outlined & Distinct Typography Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&family=Noto+Sans+JP:wght@400;500;700;900&family=Bebas+Neue&family=Cinzel:wght@700;800&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Hachi+Maru+Pop&family=Klee+One:wght@400;600&family=Montserrat:wght@700;800&family=Playfair+Display:wght@700;800&family=Righteous&family=Shippori+Mincho:wght@700;800&family=Space+Mono:wght@700&family=Yomogi&family=Zen+Kurenaido&family=Zen+Maru+Gothic:wght@700&family=Zen+Old+Mincho:wght@700&display=swap" />
+  <link rel="stylesheet" href="../css/ar-photo.css">
+</head>
+
+<body class="body" style="margin : 0px; overflow: hidden;">
+
+
+  <!-- ここから -->
+  <div id="camera-container" class="camera-container">
+    <!-- ============================================================
+      AR MARKER SETTINGS & EDITING GUIDE
+
+      【ARマーカー設定の基本ルール】
+      ・1つの <a-marker> タグが1つのARマーカーに対応します。
+      ・カスタムマーカーを使用する場合は type="pattern" を指定し、
+        url 属性に作成した .patt ファイルのパスを指定します。
+      ・<a-marker> タグの中に、表示したいAR素材（<a-image> や <a-entity> 等）を配置します。
+      ・画像AR（PNG透過画像等）と 3D AR（OBJモデル等）の両方が使用可能です。
+
+      【Webサイトフォルダへの取り込み想定構成】
+      assets/
+      ├── markers/
+      │   ├── hiro.patt
+      │   ├── kanji.patt
+      │   └── custom-marker.patt
+      │
+      ├── ar/
+      │   ├── frame01.png
+      │   └── frame02.png
+      │
+      └── models/
+          ├── object01.obj
+          ├── object01.mtl
+          └── ...
+    ============================================================ -->
+
+    <!--
+    ============================================================
+    AR MARKER TEMPLATE : IMAGE （画像AR用コピペテンプレート）
+    ============================================================
+
+    【変更する場所】
+    ① url
+       .pattファイルの場所（例: ./assets/markers/CHANGE-MARKER.patt）
+    ② src
+       表示するPNGなどの画像（例: ./assets/ar/CHANGE-IMAGE.png）
+    ③ width / height
+       AR画像のサイズ（幅と高さの比率は元画像に合わせて調整）
+    ④ position
+       AR画像の位置（X Y Z）
+    ⑤ rotation
+       AR画像の角度（マーカー水平配置の基本は "-90 0 0"）
+
+    【コピペ用コード】
+    <a-marker
+      type="pattern"
+      url="./assets/markers/CHANGE-MARKER.patt"
+    >
+      <a-image
+        src="./assets/ar/CHANGE-IMAGE.png"
+        width="1.5"
+        height="3"
+        position="0 0.4 0"
+        rotation="-90 0 0"
+      ></a-image>
+    </a-marker>
+    ============================================================
+    -->
+
+    <!--
+    ============================================================
+    AR MARKER TEMPLATE : 3D MODEL （3Dモデル用コピペテンプレート）
+    ============================================================
+
+    【変更する場所】
+    ① url
+       .pattファイルの場所（例: ./assets/markers/CHANGE-MARKER.patt）
+    ② obj-model
+       .objファイルと必要な.mtlファイル
+    ③ position
+       3Dモデルの位置（X Y Z）
+    ④ rotation
+       3Dモデルの角度（X Y Z）
+    ⑤ scale
+       3Dモデルの大きさ（モデルによって原寸が異なるため調整）
+
+    【コピペ用コード】
+    <a-marker
+      type="pattern"
+      url="./assets/markers/CHANGE-MARKER.patt"
+    >
+      <a-entity
+        obj-model="obj: url(./assets/models/CHANGE-MODEL.obj);
+                   mtl: url(./assets/models/CHANGE-MODEL.mtl)"
+        position="0 0 0"
+        rotation="0 0 0"
+        scale="0.1 0.1 0.1"
+      ></a-entity>
+    </a-marker>
+    ============================================================
+    -->
+
+    <!--
+    ============================================================
+    POSITION / ROTATION / SCALE GUIDE （座標・角度・大きさの説明）
+    ============================================================
+
+    position="X Y Z"
+      X: + → 右 / - → 左
+      Y: + → 上 / - → 下
+      Z: + → 手前 / - → 奥
+
+    rotation="X Y Z"
+      X: 前後方向の傾き（-90でマーカー面に水平配置）
+      Y: 左右方向の回転
+      Z: 画面上での回転
+
+    scale="X Y Z"
+      X: 横方向の倍率
+      Y: 縦方向の倍率
+      Z: 奥行き方向の倍率
+      ※ 等倍でサイズ変更する場合: scale="0.1 0.1 0.1"
+    ============================================================
+    -->
+
+    <!-- AR.js A-Frame シーン（Webcamをソースとしてマーカーを認識） -->
+    <a-scene id="ar-scene" embedded
+      arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; sourceWidth: 1920; sourceHeight: 1080;"
+      renderer="preserveDrawingBuffer: true; logarithmicDepthBuffer: true; alpha: true; antialias: true;"
+      vr-mode-ui="enabled: false">
+
+      <!-- ============================================================
+        MARKER SAMPLE : HIRO
+        ※ このブロックは動作確認用サンプルとして残しています。
+           最終素材に置き換える場合は、このブロックをコピーして
+           .patt / .png / .obj 等のパスを変更してください。
+      ============================================================ -->
+      <a-marker preset="hiro" id="hiro-marker">
+        <a-box id="ar-cube" position="0 0.5 0" rotation="0 45 0"
+          material="color: #4CC3D9; opacity: 0.9; roughness: 0.2; metalness: 0.1;">
+        </a-box>
+      </a-marker>
+
+      <!-- ============================================================
+        MARKER SAMPLE : KANJI
+        ※ このブロックは動作確認用サンプルとして残しています。
+           最終素材に置き換える場合は、このブロックをコピーして
+           .patt / .png / .obj 等のパスを変更してください。
+      ============================================================ -->
+      <a-marker preset="kanji" id="kanji-marker">
+        <a-sphere id="ar-sphere" radius="0.5" position="0 0.5 0" rotation="0 45 0"
+          material="color: #EF2D5E; opacity: 0.9; roughness: 0.2; metalness: 0.1;">
+        </a-sphere>
+      </a-marker>
+
+      <a-marker type="pattern"
+        url="https://hsooooou.github.io/meidenxr/img/ar/patt/pattern-armarker_n01-cr-iconin.patt">
+        <a-image width="8" height="10" position="0 0.4 0" rotation="-90 0 0"
+          src="https://hsooooou.github.io/meidenxr/img/ar/photo-frame/mxr_ar-photoframe_001-main.png">
+        </a-image>
+      </a-marker>
+
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <!-- リアルタイム・特殊加工用 SVG フィルタ定義（色収差・モザイク） -->
+    <svg id="svg-filters-def" style="position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none;"
+      aria-hidden="true">
+      <defs>
+        <!-- 色収差（RGB分離・色ずれ）フィルタ -->
+        <filter id="svg-chromatic-aberration" x="-10%" y="-10%" width="120%" height="120%">
+          <feColorMatrix type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" in="SourceGraphic"
+            result="red" />
+          <feOffset id="fe-chroma-red" in="red" dx="-5" dy="0" result="red-shifted" />
+          <feColorMatrix type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" in="SourceGraphic"
+            result="green" />
+          <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" in="SourceGraphic"
+            result="blue" />
+          <feOffset id="fe-chroma-blue" in="blue" dx="5" dy="0" result="blue-shifted" />
+          <feBlend mode="screen" in="red-shifted" in2="green" result="rg" />
+          <feBlend mode="screen" in="rg" in2="blue-shifted" result="rgb" />
+        </filter>
+
+        <!-- モザイク（規則的グリッド型モザイク）フィルタ -->
+        <filter id="svg-mosaic-filter" x="0%" y="0%" width="100%" height="100%">
+          <feFlood id="fe-mosaic-flood" x="2" y="2" height="1" width="1" />
+          <feComposite id="fe-mosaic-comp" width="4" height="4" />
+          <feTile result="tile" />
+          <feComposite in="SourceGraphic" in2="tile" operator="in" result="sampled" />
+          <feMorphology id="fe-mosaic-morph" operator="dilate" radius="2" in="sampled" />
+        </filter>
+      </defs>
+    </svg>
+
+    <!-- 撮影範囲ガイドフレーム ＆ 周囲ホワイトマスク -->
+    <div class="frame-overlay-container">
+      <div id="capture-frame" class="capture-frame ratio-3-4">
+        <!-- リアルタイム・特殊加工プレビューCanvas（特殊加工有効時に撮影結果と完全一致の画像処理を描画） -->
+        <canvas id="special-preview-canvas" class="special-preview-canvas hidden" aria-hidden="true"></canvas>
+
+        <!-- リアルタイム・ビネット効果レイヤー（Typography Canvasより下層） -->
+        <div id="vignette-overlay" class="vignette-overlay" aria-hidden="true"></div>
+
+        <!-- リアルタイム・特殊加工オーバーレイ（色収差・ノイズ・モザイク等、Typography Canvasより下層） -->
+        <div id="special-fx-overlay" class="special-fx-overlay" aria-hidden="true">
+          <canvas id="noise-overlay-canvas" class="noise-overlay-canvas"></canvas>
+        </div>
+
+        <!-- 撮影ガイドオーバーレイ（構図グリッド・水平ガイド、撮影画像には含めない） -->
+        <div id="camera-guide-overlay" class="camera-guide-overlay" aria-hidden="true">
+          <!-- 3×3三分割グリッド -->
+          <div id="camera-grid-overlay" class="camera-grid-overlay hidden">
+            <div class="grid-line grid-line-v1"></div>
+            <div class="grid-line grid-line-v2"></div>
+            <div class="grid-line grid-line-h1"></div>
+            <div class="grid-line grid-line-h2"></div>
+          </div>
+          <!-- 水平ガイド（中央固定基準＆傾斜ライン） -->
+          <div id="level-guide-overlay" class="level-guide-overlay">
+            <div class="level-indicator-container">
+              <div class="level-fixed-left"></div>
+              <div class="level-fixed-right"></div>
+              <div class="level-center-reticle"></div>
+              <div class="level-roll-bar" id="level-roll-bar"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 画面表示＆撮影共通のタイポグラフィCanvasレイヤー（1本のレンダリング経路） -->
+        <canvas id="typography-canvas" class="typography-canvas" aria-hidden="true"></canvas>
+
+        <!-- タイマーカウントダウン表示レイヤー（中央に大きな数字） -->
+        <div id="countdown-overlay" class="countdown-overlay hidden" aria-live="assertive" aria-atomic="true">
+          <span id="countdown-number" class="countdown-number">3</span>
+        </div>
+
+        <!-- ズーム倍率HUD表示（ピンチ操作中に一時表示、撮影画像には含めない） -->
+        <div id="zoom-indicator" class="zoom-indicator hidden" aria-hidden="true">
+          <span id="zoom-indicator-text" class="zoom-indicator-text">1.0×</span>
+        </div>
+
+        <!-- 撮影後の写真プレビュー（焼き込み済み画像を表示） -->
+        <img id="photo-preview" class="photo-preview hidden" alt="撮影した写真">
+      </div>
+    </div>
+
+    <!-- シャッター時のフラッシュ演出 -->
+    <div id="flash-effect" class="flash"></div>
+
+    <!-- コントロールバー（撮影前：5ボタン構成） -->
+    <div id="capture-controls" class="controls-bar">
+      <!-- 1. カメラ切替 -->
+      <div class="control-slot">
+        <button type="button" id="switch-camera-btn" class="icon-btn" title="カメラ切り替え" aria-label="カメラ切り替え">
+          <span class="material-symbols-outlined">flip_camera_ios</span>
+        </button>
+      </div>
+
+      <!-- 2. リセット（サブメニュー展開） -->
+      <div class="control-slot slot-with-popup">
+        <button type="button" id="reset-ar-btn" class="icon-btn main-menu-btn" title="リセット" aria-label="リセットメニュー"
+          aria-haspopup="true" aria-expanded="false">
+          <span class="material-symbols-outlined">restart_alt</span>
+        </button>
+        <!-- リセット サブメニュー -->
+        <div id="reset-submenu" class="submenu-panel hidden" role="menu" aria-label="リセットオプション">
+          <button type="button" class="submenu-item" id="reset-ar-item" role="menuitem">
+            <span class="material-symbols-outlined submenu-icon">view_in_ar</span>
+            <span class="submenu-label">ARリセット</span>
+          </button>
+          <button type="button" class="submenu-item" id="reset-adjust-item" role="menuitem">
+            <span class="material-symbols-outlined submenu-icon">auto_fix_high</span>
+            <span class="submenu-label">加工リセット</span>
+          </button>
+          <button type="button" class="submenu-item" id="reset-special-item" role="menuitem">
+            <span class="material-symbols-outlined submenu-icon">magic_button</span>
+            <span class="submenu-label">特殊加工リセット</span>
+          </button>
+          <button type="button" class="submenu-item" id="reset-text-item" role="menuitem">
+            <span class="material-symbols-outlined submenu-icon">text_fields</span>
+            <span class="submenu-label">文字リセット</span>
+          </button>
+          <div class="submenu-divider"></div>
+          <button type="button" class="submenu-item submenu-close-item" id="close-reset-submenu-btn" role="menuitem"
+            aria-label="閉じる">
+            <span class="material-symbols-outlined submenu-icon">close</span>
+            <span class="submenu-label">閉じる</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. 撮影（シャッターボタン：位置・サイズ・デザイン完全維持） -->
+      <div class="control-slot slot-center">
+        <button type="button" id="shutter-btn" class="shutter-btn" title="撮影" aria-label="写真を撮影">
+          <span class="shutter-inner"></span>
+        </button>
+      </div>
+
+      <!-- 4. 調整（サブメニュー展開） -->
+      <div class="control-slot slot-with-popup">
+        <button type="button" id="adjust-btn" class="icon-btn main-menu-btn" title="調整" aria-label="調整メニュー"
+          aria-haspopup="true" aria-expanded="false">
+          <span class="material-symbols-outlined">tune</span>
+        </button>
+        <!-- 調整 サブメニュー -->
+        <div id="adjust-submenu" class="submenu-panel hidden" role="menu" aria-label="調整オプション">
+          <!-- 1. 比率選択グループ（直接選択） -->
+          <div class="submenu-section-title">
+            <span class="material-symbols-outlined"
+              style="font-size: 14px; vertical-align: middle; margin-right: 4px;">aspect_ratio</span>比率
+          </div>
+          <div class="submenu-ratio-group" role="group" aria-label="比率選択">
+            <button type="button" class="ratio-opt-btn active" data-ratio="3:4" title="3:4" aria-label="3:4">
+              <span>3:4</span>
+            </button>
+            <button type="button" class="ratio-opt-btn" data-ratio="9:16" title="9:16" aria-label="9:16">
+              <span>9:16</span>
+            </button>
+            <button type="button" class="ratio-opt-btn" data-ratio="1:1" title="1:1" aria-label="1:1">
+              <span>1:1</span>
+            </button>
+          </div>
+          <div class="submenu-divider"></div>
+          <!-- 2. 撮影設定 -->
+          <button type="button" class="submenu-item" id="adjust-capture-settings-item" role="menuitem">
+            <span class="material-symbols-outlined submenu-icon">tune</span>
+            <span class="submenu-label">撮影設定</span>
+          </button>
+          <!-- 3. 加工 -->
+          <button type="button" class="submenu-item" id="adjust-camera-item" role="menuitem">
+            <span class="material-symbols-outlined submenu-icon">auto_fix_high</span>
+            <span class="submenu-label">加工</span>
+          </button>
+          <!-- 4. 特殊加工 -->
+          <button type="button" class="submenu-item" id="adjust-special-item" role="menuitem">
+            <span class="material-symbols-outlined submenu-icon">magic_button</span>
+            <span class="submenu-label">特殊加工</span>
+          </button>
+          <!-- 5. 文字 -->
+          <button type="button" class="submenu-item" id="adjust-text-item" role="menuitem">
+            <span class="material-symbols-outlined submenu-icon">text_fields</span>
+            <span class="submenu-label">文字</span>
+          </button>
+          <div class="submenu-divider"></div>
+          <button type="button" class="submenu-item submenu-close-item" id="close-adjust-submenu-btn" role="menuitem"
+            aria-label="閉じる">
+            <span class="material-symbols-outlined submenu-icon">close</span>
+            <span class="submenu-label">閉じる</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 5. 使い方（単体アイコン） -->
+      <div class="control-slot">
+        <button type="button" id="help-btn" class="icon-btn" title="使い方" aria-label="使い方">
+          <span class="material-symbols-outlined">question_mark</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 6. 加工パネル（ボトムシート型UI） -->
+    <div id="adjustment-sheet" class="adjustment-sheet" role="region" aria-label="画像加工設定">
+      <!-- ドラッグハンドル（タップで閉じる） -->
+      <div class="sheet-drag-handle-container" id="sheet-drag-handle-btn" role="button" aria-label="加工パネルを閉じる"
+        title="閉じる">
+        <div class="sheet-drag-bar"></div>
+      </div>
+
+      <!-- パネルヘッダー（項目名・現在値・個別リセットボタン・閉じるボタン） -->
+      <div class="sheet-header">
+        <div class="sheet-title-group">
+          <span class="sheet-item-name" id="sheet-current-item-name">露出</span>
+          <span class="sheet-item-val" id="sheet-current-item-val">0</span>
+        </div>
+        <div class="sheet-header-actions">
+          <button type="button" id="btn-reset-adjustment" class="sheet-action-btn" aria-label="加工をリセット" title="加工をリセット">
+            <span class="material-symbols-outlined">restart_alt</span>
+          </button>
+          <button type="button" id="close-adjustment-sheet-btn" class="sheet-close-btn" aria-label="加工パネルを閉じる"
+            title="閉じる">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- スライダー領域（X/Y位置・サイズ完全固定） -->
+      <div class="sheet-slider-container">
+        <span class="slider-bound-label slider-bound-minus" id="slider-bound-min-label">−</span>
+        <div class="slider-track-wrapper">
+          <input type="range" id="adjustment-slider" class="custom-range-slider" min="-1" max="1" step="0.01" value="0"
+            aria-label="調整値スライダー">
+          <div class="slider-center-mark" id="slider-center-mark" title="中央基準 (0)"></div>
+        </div>
+        <span class="slider-bound-label slider-bound-plus" id="slider-bound-max-label">＋</span>
+      </div>
+
+      <!-- 項目選択バー（横スクロール対応・10項目） -->
+      <div class="sheet-tabs-scroll" role="tablist" aria-label="加工項目一覧">
+        <button type="button" class="sheet-tab-btn active" data-adjust="exposure" role="tab" aria-selected="true">
+          <span class="material-symbols-outlined sheet-tab-icon">exposure</span>
+          <span class="sheet-tab-label">露出</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" data-adjust="contrast" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">contrast</span>
+          <span class="sheet-tab-label">コントラスト</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" data-adjust="saturation" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">palette</span>
+          <span class="sheet-tab-label">彩度</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" data-adjust="highlights" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">brightness_high</span>
+          <span class="sheet-tab-label">ハイライト</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" data-adjust="shadows" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">brightness_low</span>
+          <span class="sheet-tab-label">シャドウ</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" data-adjust="temperature" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">thermostat</span>
+          <span class="sheet-tab-label">色温度</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" data-adjust="tint" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">color_lens</span>
+          <span class="sheet-tab-label">色合い</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" data-adjust="sharpness" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">details</span>
+          <span class="sheet-tab-label">シャープ</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" data-adjust="fade" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">blur_on</span>
+          <span class="sheet-tab-label">フェード</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" data-adjust="vignette" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">vignette</span>
+          <span class="sheet-tab-label">ビネット</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 7. 特殊加工パネル（ボトムシート型UI） -->
+    <div id="special-adjustment-sheet" class="adjustment-sheet special-sheet" role="region" aria-label="特殊加工設定">
+      <!-- ドラッグハンドル（タップで閉じる） -->
+      <div class="sheet-drag-handle-container" id="special-sheet-drag-handle-btn" role="button" aria-label="特殊加工パネルを閉じる"
+        title="閉じる">
+        <div class="sheet-drag-bar"></div>
+      </div>
+
+      <!-- 未選択時の案内表示（開いた直後・リセット後） -->
+      <div class="special-empty-container" id="special-empty-container">
+        <div class="special-empty-header-row">
+          <div class="special-empty-text-group">
+            <span class="special-empty-title">特殊加工を選ぼう</span>
+            <span class="special-empty-subtitle">組み合わせて使うこともできます</span>
+          </div>
+          <div class="sheet-header-actions">
+            <button type="button" id="btn-reset-special-empty" class="sheet-action-btn" aria-label="特殊加工をリセット"
+              title="特殊加工をリセット">
+              <span class="material-symbols-outlined">restart_alt</span>
+            </button>
+            <button type="button" id="close-special-empty-btn" class="sheet-close-btn" aria-label="特殊加工パネルを閉じる"
+              title="閉じる">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 選択時の調整エリア（項目名・現在値・スライダー） -->
+      <div class="special-active-container hidden" id="special-active-container">
+        <div class="sheet-header">
+          <div class="sheet-title-group">
+            <span class="sheet-item-name" id="special-current-item-name">モザイク</span>
+            <span class="sheet-item-val" id="special-current-item-val">50</span>
+          </div>
+          <div class="sheet-header-actions">
+            <button type="button" id="btn-reset-special-fx" class="sheet-action-btn" aria-label="特殊加工をリセット"
+              title="特殊加工をリセット">
+              <span class="material-symbols-outlined">restart_alt</span>
+            </button>
+            <button type="button" id="close-special-sheet-btn" class="sheet-close-btn" aria-label="特殊加工パネルを閉じる"
+              title="閉じる">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- スライダー領域（0〜100、位置・サイズ固定） -->
+        <div class="sheet-slider-container">
+          <span class="slider-bound-label">0</span>
+          <div class="slider-track-wrapper">
+            <input type="range" id="special-adjustment-slider" class="custom-range-slider" min="0" max="100" step="1"
+              value="0" aria-label="特殊加工値スライダー">
+            <div class="slider-center-mark special-slider-center-mark" title="中央基準 (50)">
+              <span class="slider-center-num">50</span>
+            </div>
+          </div>
+          <span class="slider-bound-label">100</span>
+        </div>
+      </div>
+
+      <!-- 項目選択バー（横スクロール対応・6項目） -->
+      <div class="sheet-tabs-scroll" id="special-tabs-container" role="tablist" aria-label="特殊加工項目一覧">
+        <button type="button" class="sheet-tab-btn" data-special="threshold" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">contrast</span>
+          <span class="sheet-tab-label">二階調</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" data-special="mosaic" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">grid_view</span>
+          <span class="sheet-tab-label">モザイク</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" data-special="blur" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">blur_on</span>
+          <span class="sheet-tab-label">ブラー</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" data-special="chromaticAberration" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">colorize</span>
+          <span class="sheet-tab-label">色収差</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" data-special="posterize" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">palette</span>
+          <span class="sheet-tab-label">ポスタライズ</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" data-special="noise" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">grain</span>
+          <span class="sheet-tab-label">ノイズ</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 8. 文字編集パネル（ボトムシート型UI） -->
+    <div id="typography-sheet" class="adjustment-sheet typography-sheet" role="region" aria-label="文字デザイン設定">
+      <!-- ドラッグハンドル（タップで閉じる） -->
+      <div class="sheet-drag-handle-container" id="typography-drag-handle-btn" role="button" aria-label="文字パネルを閉じる"
+        title="閉じる">
+        <div class="sheet-drag-bar"></div>
+      </div>
+
+      <!-- パネルヘッダー（項目名・現在値・個別リセットボタン・閉じるボタン） -->
+      <div class="sheet-header">
+        <div class="sheet-title-group">
+          <span class="sheet-item-name" id="typography-header-title">字体</span>
+          <span class="sheet-item-val" id="typography-current-font-name">Default</span>
+        </div>
+        <div class="sheet-header-actions">
+          <button type="button" id="btn-reset-typography" class="sheet-action-btn" aria-label="文字をリセット" title="文字をリセット">
+            <span class="material-symbols-outlined">restart_alt</span>
+          </button>
+          <button type="button" id="close-typography-sheet-btn" class="sheet-close-btn" aria-label="文字パネルを閉じる"
+            title="閉じる">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 1. 字体カード選択エリア（横スクロール） -->
+      <div class="font-cards-scroll" id="font-cards-container" role="listbox" aria-label="字体一覧">
+        <!-- JSでFONT_CONFIGSから生成 -->
+      </div>
+
+      <!-- 2. 文字サイズスライダーエリア -->
+      <div class="sheet-slider-container typography-size-container hidden" id="typography-size-container">
+        <span class="slider-bound-label">小</span>
+        <div class="slider-track-wrapper">
+          <div class="slider-center-mark"></div>
+          <input type="range" id="typography-size-slider" class="custom-range-slider" min="50" max="150" step="1"
+            value="100" aria-label="文字サイズ調整" />
+        </div>
+        <span class="slider-bound-label">大</span>
+      </div>
+
+      <!-- 3. 文字色カラーチップ選択エリア（横スクロール） -->
+      <div class="color-chips-scroll typography-color-container hidden" id="typography-color-container" role="listbox"
+        aria-label="文字色一覧">
+        <!-- JSでCOLOR_CONFIGSから生成 -->
+      </div>
+
+      <!-- 4. 文字配置アンカー選択エリア（横スクロール 1列9個 3グループ） -->
+      <div class="anchors-scroll typography-anchor-container hidden" id="typography-anchor-container" role="listbox"
+        aria-label="文字配置一覧">
+        <!-- JSでANCHOR_CONFIGSから生成 -->
+      </div>
+
+      <!-- 下部タブバー（文字なし / 字体 / 大きさ / 色 / 配置） -->
+      <div class="sheet-tabs-scroll typography-subtabs" role="tablist" aria-label="文字設定項目一覧">
+        <button type="button" class="sheet-tab-btn sheet-tab-btn-none" id="type-tab-none" role="tab"
+          aria-selected="false" aria-label="文字なし" title="文字なし">
+          <span class="material-symbols-outlined sheet-tab-icon">visibility_off</span>
+          <span class="sheet-tab-label">文字なし</span>
+        </button>
+        <button type="button" class="sheet-tab-btn active" id="type-tab-font" role="tab" aria-selected="true">
+          <span class="material-symbols-outlined sheet-tab-icon">font_download</span>
+          <span class="sheet-tab-label">字体</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" id="type-tab-size" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">format_size</span>
+          <span class="sheet-tab-label">大きさ</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" id="type-tab-color" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">palette</span>
+          <span class="sheet-tab-label">色</span>
+        </button>
+        <button type="button" class="sheet-tab-btn" id="type-tab-align" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined sheet-tab-icon">grid_view</span>
+          <span class="sheet-tab-label">配置</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 8. 撮影設定パネル（ボトムシート型UI） -->
+    <div id="capture-settings-sheet" class="adjustment-sheet capture-settings-sheet" role="region" aria-label="撮影設定">
+      <!-- ドラッグハンドル（タップで閉じる） -->
+      <div class="sheet-drag-handle-container" id="capture-settings-drag-handle-btn" role="button"
+        aria-label="撮影設定パネルを閉じる" title="閉じる">
+        <div class="sheet-drag-bar"></div>
+      </div>
+
+      <!-- パネルヘッダー -->
+      <div class="sheet-header">
+        <div class="sheet-title-group">
+          <span class="sheet-item-name">撮影設定</span>
+        </div>
+        <div class="sheet-header-actions">
+          <button type="button" id="close-capture-settings-sheet-btn" class="sheet-close-btn" aria-label="撮影設定パネルを閉じる"
+            title="閉じる">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 撮影設定項目リスト -->
+      <div class="capture-settings-content">
+        <!-- タイマー設定（連結セグメントコントロール） -->
+        <div class="settings-row">
+          <div class="settings-label-group">
+            <span class="material-symbols-outlined settings-icon">timer</span>
+            <span class="settings-title">タイマー</span>
+          </div>
+          <div class="segmented-control timer-segmented-control" role="group" aria-label="タイマー選択">
+            <div class="segmented-indicator" id="timer-segmented-indicator"></div>
+            <button type="button" class="segmented-btn timer-opt-btn active" data-timer="0" data-index="0">OFF</button>
+            <button type="button" class="segmented-btn timer-opt-btn" data-timer="3" data-index="1">3s</button>
+            <button type="button" class="segmented-btn timer-opt-btn" data-timer="5" data-index="2">5s</button>
+            <button type="button" class="segmented-btn timer-opt-btn" data-timer="10" data-index="3">10s</button>
+          </div>
+        </div>
+
+        <!-- グリッド設定（連結セグメントコントロール） -->
+        <div class="settings-row">
+          <div class="settings-label-group">
+            <span class="material-symbols-outlined settings-icon">grid_on</span>
+            <span class="settings-title">グリッド</span>
+          </div>
+          <div class="segmented-control grid-segmented-control" role="group" aria-label="グリッド選択">
+            <div class="segmented-indicator" id="grid-segmented-indicator"></div>
+            <button type="button" class="segmented-btn grid-opt-btn active" data-grid="off" data-index="0">OFF</button>
+            <button type="button" class="segmented-btn grid-opt-btn" data-grid="rule-of-thirds"
+              data-index="1">3×3</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 使い方全画面オーバーレイ（完全独立UI基盤） -->
+    <div id="usage-overlay" class="usage-overlay hidden" aria-hidden="true" role="dialog" aria-modal="true"
+      aria-labelledby="usage-main-title">
+      <!-- 上部固定ヘッダー配置用スペース（将来の固定ヘッダー予約領域） -->
+       <div class="">
+    <div class="vr-info-area">
+      <header class="header">
+          <div class="header-logo">
+            <a href="../index.html"><img src="../img/meidenxr-sp.png" alt="logo"></a>
+          </div>
+
+          <nav>
+            <ul class="list-nav-header">
+            </ul>
+            <div class="burger"></div>
+            <div class="menu">
+              <div>
+                <li class="menu-menu">MENU</li>
+                <li class="menu-list"><a href="../index.html">ホーム</a></li>
+                <li class="menu-list"><a href="../use.html">使い方</a></li>
+                <li class="menu-list"><a href="../schoolmap.html">学校マップ</a></li>
+                <li class="menu-list"><a href="../ar-entrance.html">AR体験</a></li>
+                <li class="menu-list"><a href="../lp.html">コンテンツについて</a></li>
+                <!-- <li class="menu-list"><a href="https://www.meiden.ed.jp">公式サイト</a></li> -->
+              </div>
+            </div>
+          </nav>
+        </header>
+      </div>
+      </div>
+      <!-- 使い方スクロール領域（内部完結スクロール） -->
+      <main class="usage-content" id="usage-content">
+
+        <div class="usage-heading-wrap">
+          <h1 class="usage-main-title" id="usage-main-title">使い方</h1>
+          <p class="usage-main-sub">HOW TO USE</p>
+        </div>
+
+        <!-- INTRO: AR Photo Cameraとは -->
+        <section class="usage-section">
+          <h2 class="usage-title">AR Photo Cameraとは</h2>
+          <p class="usage-kana">About AR Photo Camera</p>
+          <p class="usage-text">
+            カメラ映像に3D ARオブジェクト、リアルタイム画像加工・特殊エフェクト、美しい日時タイポグラフィを重ね合わせて撮影できるWebカメラアプリです。
+          </p>
+        </section>
+
+        <div class="usage-divider"></div>
+
+        <!-- CAMERA: カメラを使う -->
+        <section class="usage-section">
+          <h2 class="usage-title">カメラを使う</h2>
+          <p class="usage-kana">Camera Controls</p>
+          <p class="usage-text">
+            カメラ映像を全画面でリアルタイムに確認できます。<span class="usage-icon material-symbols-outlined is-primary">flip_camera_ios</span>
+            ボタンをタップすると、背面カメラと前面（自撮り）カメラを瞬時に切り替えられます。
+          </p>
+          <div class="usage-diagram">
+            <div class="usage-diagram-row">
+              <div class="usage-diagram-button">
+                <span class="usage-icon material-symbols-outlined is-primary">flip_camera_ios</span>
+                <span>カメラ切替</span>
+              </div>
+              <span class="usage-diagram-arrow material-symbols-outlined">sync_alt</span>
+              <div class="usage-tag">背面 ⇄ 前面（自撮り）</div>
+            </div>
+          </div>
+        </section>
+
+        <div class="usage-divider"></div>
+
+        <!-- AR: ARオブジェクトを操作する -->
+        <section class="usage-section">
+          <h2 class="usage-title">ARオブジェクトを操作する</h2>
+          <p class="usage-kana">AR 3D Objects & Markers</p>
+          <p class="usage-text">
+            カメラにマーカーをかざすと、空間上に3Dオブジェクトが出現します。指やマウスで直感的に操作可能です。
+          </p>
+          <div class="usage-tag-list">
+            <div class="usage-tag"><span class="usage-tag-icon material-symbols-outlined">qr_code_2</span>Hiroマーカー：キューブ
+            </div>
+            <div class="usage-tag"><span class="usage-tag-icon material-symbols-outlined">qr_code_2</span>Kanjiマーカー：球体
+            </div>
+          </div>
+          <p class="usage-text-sm">
+            ・<strong>回転</strong>：1本指ドラッグ / マウス左ボタンドラッグ<br>
+            ・<strong>拡大・縮小</strong>：2本指ピンチ操作 / マウスホイール（0.25倍〜4.5倍）<br>
+            ・複数マーカーを同時に画面に映した場合は、操作位置に近いオブジェクトを個別に操作できます。
+          </p>
+          <div class="usage-diagram">
+            <div class="usage-diagram-row">
+              <div class="usage-diagram-button">
+                <span class="usage-icon material-symbols-outlined">swipe</span>
+                <span>ドラッグで回転</span>
+              </div>
+              <div class="usage-diagram-button">
+                <span class="usage-icon material-symbols-outlined">open_in_full</span>
+                <span>ピンチ・ホイールで拡大縮小</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="usage-divider"></div>
+
+        <!-- RATIO: 撮影比率を変更する -->
+        <section class="usage-section">
+          <h2 class="usage-title">撮影比率を変更する</h2>
+          <p class="usage-kana">Aspect Ratio</p>
+          <p class="usage-text">
+            画面下の <span class="usage-icon material-symbols-outlined is-primary">tune</span>（調整）から、用途に応じた3種類の撮影比率を選択できます。
+          </p>
+          <div class="usage-diagram">
+            <div class="usage-ratio-boxes">
+              <div class="usage-ratio-box-item">
+                <div class="usage-ratio-rect r-3-4"></div>
+                <span class="usage-ratio-label">3:4 (標準)</span>
+              </div>
+              <div class="usage-ratio-box-item">
+                <div class="usage-ratio-rect r-9-16"></div>
+                <span class="usage-ratio-label">9:16 (縦長)</span>
+              </div>
+              <div class="usage-ratio-box-item">
+                <div class="usage-ratio-rect r-1-1"></div>
+                <span class="usage-ratio-label">1:1 (正方形)</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="usage-divider"></div>
+
+        <!-- TIMER: タイマーを使う -->
+        <section class="usage-section">
+          <h2 class="usage-title">タイマーを使う</h2>
+          <p class="usage-kana">Self Timer</p>
+          <p class="usage-text">
+            <span
+              class="usage-icon material-symbols-outlined is-primary">tune</span>（調整）メニューからセルフタイマーを設定できます。設定後にシャッターを押すと、画面中央にカウントダウンが表示されます。
+          </p>
+          <div class="usage-diagram">
+            <div class="usage-diagram-row">
+              <div class="usage-tag">OFF</div>
+              <div class="usage-tag">3s（3秒）</div>
+              <div class="usage-tag">5s（5秒）</div>
+              <div class="usage-tag">10s（10秒）</div>
+            </div>
+            <div class="usage-diagram-row">
+              <div class="usage-diagram-shutter">
+                <div class="usage-diagram-shutter-inner"></div>
+              </div>
+              <span class="usage-diagram-arrow material-symbols-outlined">arrow_forward</span>
+              <div class="usage-diagram-button usage-diagram-selected">
+                <span class="usage-icon material-symbols-outlined">timer</span>
+                <span>カウントダウン</span>
+              </div>
+              <span class="usage-diagram-arrow material-symbols-outlined">arrow_forward</span>
+              <div class="usage-diagram-button">
+                <span class="usage-icon material-symbols-outlined">photo_camera</span>
+                <span>自動撮影</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="usage-divider"></div>
+
+        <!-- ADJUST: 加工を調整する -->
+        <section class="usage-section">
+          <h2 class="usage-title">加工を調整する</h2>
+          <p class="usage-kana">Photo Adjustments (10 Items)</p>
+          <p class="usage-text">
+            <span
+              class="usage-icon material-symbols-outlined is-primary">tune</span>（調整）→「加工」を開くと、10項目の画質補正をスライダーで直感的に調整できます。
+          </p>
+          <div class="usage-tag-list">
+            <span class="usage-tag"><span class="usage-tag-icon material-symbols-outlined">exposure</span>露出</span>
+            <span class="usage-tag"><span class="usage-tag-icon material-symbols-outlined">contrast</span>コントラスト</span>
+            <span class="usage-tag"><span class="usage-tag-icon material-symbols-outlined">palette</span>彩度</span>
+            <span class="usage-tag"><span
+                class="usage-tag-icon material-symbols-outlined">brightness_high</span>ハイライト</span>
+            <span class="usage-tag"><span
+                class="usage-tag-icon material-symbols-outlined">brightness_low</span>シャドウ</span>
+            <span class="usage-tag"><span class="usage-tag-icon material-symbols-outlined">thermostat</span>色温度</span>
+            <span class="usage-tag"><span class="usage-tag-icon material-symbols-outlined">color_lens</span>色合い</span>
+            <span class="usage-tag"><span class="usage-tag-icon material-symbols-outlined">details</span>シャープ</span>
+            <span class="usage-tag"><span class="usage-tag-icon material-symbols-outlined">blur_on</span>フェード</span>
+            <span class="usage-tag"><span class="usage-tag-icon material-symbols-outlined">vignette</span>ビネット</span>
+          </div>
+        </section>
+
+        <div class="usage-divider"></div>
+
+        <!-- SPECIAL: 特殊加工を使う -->
+        <section class="usage-section">
+          <h2 class="usage-title">特殊加工を使う</h2>
+          <p class="usage-kana">Special Effects (6 Types)</p>
+          <p class="usage-text">
+            <span class="usage-icon material-symbols-outlined is-primary">tune</span>（調整）→「特殊加工」から、個性的な6種類のエフェクトを適用できます。
+          </p>
+          <p class="usage-text-sm">
+            特殊加工を選択すると、0〜100のスライダーで強度を調整できます。最初に選択した特殊加工は50から始まり、2つ目以降を初めて選択した加工は0から始まります。一度設定した値は、再度選択しても保持されます。
+          </p>
+          <p class="usage-text-accent">
+            ★ 複数の特殊加工を組み合わせて同時使用できます（0で実質OFF）。
+          </p>
+          <div class="usage-special-grid">
+            <div class="usage-special-card">
+              <div class="usage-special-card-head"><span
+                  class="usage-icon material-symbols-outlined is-primary">contrast</span>二階調</div>
+              <div class="usage-special-card-desc">明暗の境界値で白と黒の2階調に単純化するモノトーン表現</div>
+            </div>
+            <div class="usage-special-card">
+              <div class="usage-special-card-head"><span
+                  class="usage-icon material-symbols-outlined is-primary">grid_view</span>モザイク</div>
+              <div class="usage-special-card-desc">規則的なグリッドの正方形セルで画像を粗く見せるモザイク表現。強度を上げるほどセルが大きくなります</div>
+            </div>
+            <div class="usage-special-card">
+              <div class="usage-special-card-head"><span
+                  class="usage-icon material-symbols-outlined is-primary">blur_on</span>ブラー</div>
+              <div class="usage-special-card-desc">ふんわりと全体をぼかすソフトフォーカス</div>
+            </div>
+            <div class="usage-special-card">
+              <div class="usage-special-card-head"><span
+                  class="usage-icon material-symbols-outlined is-primary">colorize</span>色収差</div>
+              <div class="usage-special-card-desc">赤と青の光をずらしたRGBカラーフリンジ</div>
+            </div>
+            <div class="usage-special-card">
+              <div class="usage-special-card-head"><span
+                  class="usage-icon material-symbols-outlined is-primary">palette</span>ポスタライズ</div>
+              <div class="usage-special-card-desc">色階調を減らしたレトロなポスター調表現</div>
+            </div>
+            <div class="usage-special-card">
+              <div class="usage-special-card-head"><span
+                  class="usage-icon material-symbols-outlined is-primary">grain</span>ノイズ</div>
+              <div class="usage-special-card-desc">フィルム粒子のようなビンテージ風グレイン</div>
+            </div>
+          </div>
+        </section>
+
+        <div class="usage-divider"></div>
+
+        <!-- TYPOGRAPHY: 日時文字を調整する -->
+        <section class="usage-section">
+          <h2 class="usage-title">日時文字を調整する</h2>
+          <p class="usage-kana">Typography (Font, Size, Color, Alignment)</p>
+          <p class="usage-text">
+            <span
+              class="usage-icon material-symbols-outlined is-primary">tune</span>（調整）→「文字」から、撮影写真に焼き込む日時スタンプを細かくデザインできます。
+          </p>
+
+          <h3 class="usage-subtitle">1. 字体（15種類）</h3>
+          <p class="usage-text-sm">
+            Default / Sans / Condensed / Modern / Display / Mono / Serif / Elegant / Hand / Round / Mincho / Classic /
+            Youth / Youth Hand / Klee から選べます。
+          </p>
+
+          <h3 class="usage-subtitle">2. 大きさ</h3>
+          <p class="usage-text-sm">
+            スライダーで50%〜150%（基準100%）のサイズを滑らかに調整可能です。
+          </p>
+
+          <h3 class="usage-subtitle">3. 色（9色）</h3>
+          <div class="usage-diagram">
+            <div class="usage-color-palette">
+              <div class="usage-color-dot" style="background: #FFFFFF;" title="White"></div>
+              <div class="usage-color-dot" style="background: #111111;" title="Black"></div>
+              <div class="usage-color-dot" style="background: #E5484D;" title="Red"></div>
+              <div class="usage-color-dot" style="background: #F59E0B;" title="Orange"></div>
+              <div class="usage-color-dot" style="background: #EAB308;" title="Yellow"></div>
+              <div class="usage-color-dot" style="background: #22C55E;" title="Green"></div>
+              <div class="usage-color-dot" style="background: #3B82F6;" title="Blue"></div>
+              <div class="usage-color-dot" style="background: #8B5CF6;" title="Purple"></div>
+              <div class="usage-color-dot" style="background: #EC4899;" title="Pink"></div>
+            </div>
+          </div>
+
+          <h3 class="usage-subtitle">4. 配置（9点アンカー）</h3>
+          <p class="usage-text-sm">
+            撮影フレーム内の上段・中段・下段 × 左・中央・右の9箇所から配置場所を選択できます。
+          </p>
+          <div class="usage-diagram">
+            <div class="usage-grid9-wrapper">
+              <div class="usage-grid9">
+                <!-- 上段 (Top) -->
+                <div class="usage-grid9-item" title="上左">
+                  <svg viewBox="0 0 28 28" class="usage-anchor-svg" fill="none">
+                    <rect x="3.5" y="3.5" width="21" height="21" rx="4" stroke="currentColor" stroke-width="1.8"
+                      opacity="0.75" />
+                    <circle cx="8" cy="8" r="3.2" fill="currentColor" />
+                  </svg>
+                </div>
+                <div class="usage-grid9-item" title="上中央">
+                  <svg viewBox="0 0 28 28" class="usage-anchor-svg" fill="none">
+                    <rect x="3.5" y="3.5" width="21" height="21" rx="4" stroke="currentColor" stroke-width="1.8"
+                      opacity="0.75" />
+                    <circle cx="14" cy="8" r="3.2" fill="currentColor" />
+                  </svg>
+                </div>
+                <div class="usage-grid9-item" title="上右">
+                  <svg viewBox="0 0 28 28" class="usage-anchor-svg" fill="none">
+                    <rect x="3.5" y="3.5" width="21" height="21" rx="4" stroke="currentColor" stroke-width="1.8"
+                      opacity="0.75" />
+                    <circle cx="20" cy="8" r="3.2" fill="currentColor" />
+                  </svg>
+                </div>
+                <!-- 中段 (Center) -->
+                <div class="usage-grid9-item" title="中央左">
+                  <svg viewBox="0 0 28 28" class="usage-anchor-svg" fill="none">
+                    <rect x="3.5" y="3.5" width="21" height="21" rx="4" stroke="currentColor" stroke-width="1.8"
+                      opacity="0.75" />
+                    <circle cx="8" cy="14" r="3.2" fill="currentColor" />
+                  </svg>
+                </div>
+                <div class="usage-grid9-item" title="中央">
+                  <svg viewBox="0 0 28 28" class="usage-anchor-svg" fill="none">
+                    <rect x="3.5" y="3.5" width="21" height="21" rx="4" stroke="currentColor" stroke-width="1.8"
+                      opacity="0.75" />
+                    <circle cx="14" cy="14" r="3.2" fill="currentColor" />
+                  </svg>
+                </div>
+                <div class="usage-grid9-item" title="中央右">
+                  <svg viewBox="0 0 28 28" class="usage-anchor-svg" fill="none">
+                    <rect x="3.5" y="3.5" width="21" height="21" rx="4" stroke="currentColor" stroke-width="1.8"
+                      opacity="0.75" />
+                    <circle cx="20" cy="14" r="3.2" fill="currentColor" />
+                  </svg>
+                </div>
+                <!-- 下段 (Bottom) -->
+                <div class="usage-grid9-item" title="下左">
+                  <svg viewBox="0 0 28 28" class="usage-anchor-svg" fill="none">
+                    <rect x="3.5" y="3.5" width="21" height="21" rx="4" stroke="currentColor" stroke-width="1.8"
+                      opacity="0.75" />
+                    <circle cx="8" cy="20" r="3.2" fill="currentColor" />
+                  </svg>
+                </div>
+                <div class="usage-grid9-item" title="下中央">
+                  <svg viewBox="0 0 28 28" class="usage-anchor-svg" fill="none">
+                    <rect x="3.5" y="3.5" width="21" height="21" rx="4" stroke="currentColor" stroke-width="1.8"
+                      opacity="0.75" />
+                    <circle cx="14" cy="20" r="3.2" fill="currentColor" />
+                  </svg>
+                </div>
+                <div class="usage-grid9-item is-active" title="下右（初期値）">
+                  <svg viewBox="0 0 28 28" class="usage-anchor-svg" fill="none">
+                    <rect x="3.5" y="3.5" width="21" height="21" rx="4" stroke="currentColor" stroke-width="1.8"
+                      opacity="0.75" />
+                    <circle cx="20" cy="20" r="3.2" fill="currentColor" />
+                  </svg>
+                </div>
+              </div>
+              <span class="usage-text-note">※初期値は「下右」です</span>
+            </div>
+          </div>
+        </section>
+
+        <div class="usage-divider"></div>
+
+        <!-- SHOOT: 撮影する -->
+        <section class="usage-section">
+          <h2 class="usage-title">撮影する</h2>
+          <p class="usage-kana">Take a Photo</p>
+          <p class="usage-text">
+            画面下中央の白いシャッターボタンを押します。シャッター音とホワイトフラッシュ演出とともに、カメラ映像、ARオブジェクト、各種加工エフェクト、日時文字が1枚の写真に合成されて撮影されます。
+          </p>
+          <div class="usage-diagram">
+            <div class="usage-diagram-row">
+              <div class="usage-tag">カメラ映像</div>
+              <span class="usage-diagram-plus">+</span>
+              <div class="usage-tag">AR</div>
+              <span class="usage-diagram-plus">+</span>
+              <div class="usage-tag">加工・文字</div>
+              <span class="usage-diagram-arrow material-symbols-outlined">arrow_forward</span>
+              <div class="usage-diagram-button usage-diagram-selected">
+                <span class="usage-icon material-symbols-outlined">photo_camera</span>
+                <span>写真を合成して撮影</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="usage-divider"></div>
+
+        <!-- REVIEW: 撮影後に確認する -->
+        <section class="usage-section">
+          <h2 class="usage-title">撮影後に確認する</h2>
+          <p class="usage-kana">Review Photo</p>
+          <p class="usage-text">
+            撮影直後にプレビュー画面に切り替わります。気に入らない場合は、画面下の <span
+              class="usage-icon material-symbols-outlined is-primary">replay</span>（撮り直し）をタップすると、現在の設定を維持したまま即座に撮影画面へ戻れます。
+          </p>
+        </section>
+
+        <div class="usage-divider"></div>
+
+        <!-- SAVE: 写真を保存する -->
+        <section class="usage-section">
+          <h2 class="usage-title">写真を保存する</h2>
+          <p class="usage-kana">Save Photo</p>
+          <p class="usage-text">
+            プレビュー画面の <span
+              class="usage-icon material-symbols-outlined is-primary">download</span>（保存）ボタンから、撮影した写真を画像ファイルとして保存できます。保存先や表示方法は、使用している端末やブラウザによって異なります。
+          </p>
+        </section>
+
+        <div class="usage-divider"></div>
+
+        <!-- SHARE: 写真を共有する -->
+        <section class="usage-section">
+          <h2 class="usage-title">写真を共有する</h2>
+          <p class="usage-kana">Share Photo</p>
+          <p class="usage-text">
+            対応している端末・ブラウザでは、プレビュー画面の <span
+              class="usage-icon material-symbols-outlined is-primary">share</span>（共有）ボタンから端末の共有機能を利用して写真を直接シェアできます。環境によっては保存など別の方法へ切り替わります。
+          </p>
+        </section>
+
+        <div class="usage-divider"></div>
+
+        <!-- RESET: 設定をリセットする -->
+        <section class="usage-section">
+          <h2 class="usage-title">設定をリセットする</h2>
+          <p class="usage-kana">Reset Options</p>
+          <p class="usage-text">
+            画面下の <span
+              class="usage-icon material-symbols-outlined is-primary">restart_alt</span>（リセット）メニューから、各機能の設定を個別に初期状態へ戻せます。
+          </p>
+          <div class="usage-reset-list">
+            <div class="usage-reset-item">
+              <div class="usage-reset-icon-wrap">
+                <span class="usage-reset-icon material-symbols-outlined">view_in_ar</span>
+              </div>
+              <div class="usage-reset-body">
+                <div class="usage-reset-name">ARリセット</div>
+                <div class="usage-reset-desc">位置・拡大率・角度を初期化</div>
+              </div>
+            </div>
+            <div class="usage-reset-item">
+              <div class="usage-reset-icon-wrap">
+                <span class="usage-reset-icon material-symbols-outlined">auto_fix_high</span>
+              </div>
+              <div class="usage-reset-body">
+                <div class="usage-reset-name">加工リセット</div>
+                <div class="usage-reset-desc">10項目の補正値を0に</div>
+              </div>
+            </div>
+            <div class="usage-reset-item">
+              <div class="usage-reset-icon-wrap">
+                <span class="usage-reset-icon material-symbols-outlined">magic_button</span>
+              </div>
+              <div class="usage-reset-body">
+                <div class="usage-reset-name">特殊加工リセット</div>
+                <div class="usage-reset-desc">6種のエフェクトを0に</div>
+              </div>
+            </div>
+            <div class="usage-reset-item">
+              <div class="usage-reset-icon-wrap">
+                <span class="usage-reset-icon material-symbols-outlined">text_fields</span>
+              </div>
+              <div class="usage-reset-body">
+                <div class="usage-reset-name">文字リセット</div>
+                <div class="usage-reset-desc">字体・大きさ・色・配置を初期化</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- 画面下中央固定配置の閉じるボタン（円・枠なし単体×アイコン） -->
+      <button type="button" id="usage-close-btn" class="usage-close-btn" aria-label="使い方を閉じる" title="閉じる">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <!-- コントロールバー（撮影後プレビュー・撮り直し・保存・共有） -->
+    <div id="review-controls" class="controls-bar hidden">
+      <div class="review-btn-group">
+        <button type="button" id="retake-btn" class="review-icon-btn retake" title="撮り直す" aria-label="撮り直す">
+          <span class="material-symbols-outlined" style="font-size: 26px;">replay</span>
+        </button>
+        <button type="button" id="save-btn" class="review-icon-btn save" title="保存する" aria-label="保存する">
+          <span class="material-symbols-outlined" style="font-size: 26px;">download</span>
+        </button>
+        <button type="button" id="share-btn" class="review-icon-btn share" title="共有する" aria-label="共有する">
+          <span class="material-symbols-outlined" style="font-size: 26px;">share</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- カメラ起動中・エラー時のメッセージ表示 -->
+    <div id="status-message" class="status-message hidden">
+      <p id="status-text">カメラを起動中...</p>
+      <button id="retry-camera-btn" class="btn retry-btn hidden">カメラを再試行</button>
+    </div>
+
+    <!-- 写真切り出し・日時タイポグラフィ焼き込み用非表示Canvas -->
+    <canvas id="photo-canvas" class="hidden"></canvas>
+  </div>
+
+
+
+
+
+
+
+
+
+  <!-- ここまで -->
+  <!-- ここまで -->
+  <!-- ここまで -->
+
+
+  <!-- クッキーポップアップ -->
+  <div id="cookie-banner" class="cookie-popup">
+    <div class="cookie-content">
+      <p>このサイトでは、サイトの利便性向上とアクセス解析のためCookieを使用しています。
+        <br> | <a href="../privacy-policy.html" target="_blank">プライバシーポリシー</a> | <a href="../guideline.html"
+          target="_blank">コンテンツガイドライン</a> | に合わせて体験前には<a href="../terms-of-use.html" target="_blank">利用規約</a>をご覧ください。
+      </p>
+      <div class="cookie-buttons">
+        <button id="accept-all" class="btn primary">すべて同意する</button>
+        <button id="reject-all" class="btn secondary">すべて拒否する</button>
+        <button id="open-settings" class="btn tertiary">設定</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="cookie-settings-modal" class="cookie-popup modal" style="display:none;">
+    <div class="modal-cookie-content">
+      <h3>Cookie設定</h3>
+      <p>当サイトで使用するCookieの種類を選択できます。詳細については | <a href="../privacy-policy.html" target="_blank">プライバシーポリシー</a> | <a
+          href="../guideline.html" target="_blank">コンテンツガイドライン</a> | をご確認ください。</p>
+
+      <div class="cookie-category">
+        <h4><input type="checkbox" id="essential-cookies" checked disabled> 必須Cookie <span
+            class="tag tag-required">常に有効</span></h4>
+        <p>このCookieは、サイトの基本的な機能（セキュリティなど）に必要不可欠であり、無効にすることはできません。</p>
+      </div>
+
+      <div class="cookie-category">
+        <h4><input type="checkbox" id="analytics-cookies"> アナリティクスCookie</h4>
+        <p>このCookieは、サイトの利用状況を分析し、改善するために使用されます。（Googleアナリティクスなど）</p>
+      </div>
+
+      <div class="modal-buttons">
+        <button id="save-settings" class="btn primary">設定を保存する</button>
+        <button id="close-settings" class="btn secondary">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="../js/cookie.js"></script>
+  <script src="../js/nav.js"></script>
+  <script src="../js/ar-photo.js"></script>
+
+</body>
+
+</html>
