@@ -355,6 +355,8 @@ let countdownIntervalId = null;
 let currentGridMode = 'off'; // 'off' | 'rule-of-thirds'
 let isOrientationListening = false;
 let isMotionListening = false;
+let isPermissionRequested = false;
+let isPermissionDenied = false;
 let hasReceivedOrientationData = false;
 let smoothRollAngle = 0;
 let isLevelGuideActive = false; // 傾き検知による自動表示アクティブフラグ
@@ -1871,19 +1873,19 @@ function setGridMode(mode) {
 function startOrientationListener(isUserGesture = false) {
   const isIframe = window.self !== window.top;
   const isSecure = window.isSecureContext;
-  console.log(`[LEVEL DEBUG] startOrientationListener called (isUserGesture: ${isUserGesture}, isOrientationListening: ${isOrientationListening}, inIframe: ${isIframe}, isSecureContext: ${isSecure})`);
-  console.log(`[LEVEL DEBUG] DeviceOrientationEvent: ${'DeviceOrientationEvent' in window}, hasRequestPermission: ${typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'}`);
-  console.log(`[LEVEL DEBUG] DeviceMotionEvent: ${'DeviceMotionEvent' in window}, hasRequestPermission: ${typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function'}`);
 
   if (isOrientationListening) {
-    console.log('[LEVEL DEBUG] Listener already registered.');
+    return;
+  }
+  if (isPermissionDenied) {
     return;
   }
 
   // iOS 13+ Safariのパーミッション要求対応（ユーザー操作時のみ実行）
   if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-    if (isUserGesture) {
-      console.log('[LEVEL DEBUG] Requesting DeviceOrientationEvent.requestPermission()...');
+    if (isUserGesture && !isPermissionRequested) {
+      isPermissionRequested = true;
+      console.log(`[LEVEL DEBUG] startOrientationListener requesting permission (inIframe: ${isIframe}, isSecureContext: ${isSecure})`);
       DeviceOrientationEvent.requestPermission()
         .then((permissionState) => {
           console.log(`[LEVEL DEBUG] DeviceOrientation permission state: ${permissionState}`);
@@ -1891,18 +1893,19 @@ function startOrientationListener(isUserGesture = false) {
             window.addEventListener('deviceorientation', handleDeviceOrientation, true);
             isOrientationListening = true;
             setupMotionFallback(true);
+          } else {
+            isPermissionDenied = true;
           }
         })
         .catch((err) => {
           console.warn('[LEVEL DEBUG] DeviceOrientation permission error:', err);
+          isPermissionDenied = true;
         });
-    } else {
-      console.log('[LEVEL DEBUG] Skipped iOS requestPermission because isUserGesture is false.');
     }
   } else if ('DeviceOrientationEvent' in window) {
-    // Android Chrome / 一般ブラウザ
+    // Android Chrome / 一般ブラウザ（パーミッション不要）
     try {
-      console.log('[LEVEL DEBUG] Attaching window.deviceorientation listener (standard browser/Android)...');
+      console.log(`[LEVEL DEBUG] Attaching window.deviceorientation listener (standard browser/Android, inIframe: ${isIframe}, isSecureContext: ${isSecure})...`);
       window.addEventListener('deviceorientation', handleDeviceOrientation, true);
       isOrientationListening = true;
     } catch (err) {
@@ -1910,7 +1913,6 @@ function startOrientationListener(isUserGesture = false) {
     }
     setupMotionFallback(isUserGesture);
   } else {
-    console.log('[LEVEL DEBUG] DeviceOrientationEvent not in window, trying motion fallback...');
     setupMotionFallback(isUserGesture);
   }
 }
@@ -1920,11 +1922,12 @@ function startOrientationListener(isUserGesture = false) {
  * deviceorientation から値が届かない端末や環境で重力加速度を用いて水平角を補完
  */
 function setupMotionFallback(isUserGesture = false) {
-  if (isMotionListening) return;
+  if (isMotionListening || isPermissionDenied) return;
 
   // iOS 13+ Safari DeviceMotionEvent permission
   if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-    if (isUserGesture) {
+    if (isUserGesture && !isPermissionRequested) {
+      isPermissionRequested = true;
       console.log('[LEVEL DEBUG] Requesting DeviceMotionEvent.requestPermission()...');
       DeviceMotionEvent.requestPermission()
         .then((state) => {
@@ -1940,7 +1943,6 @@ function setupMotionFallback(isUserGesture = false) {
     }
   } else if (typeof window !== 'undefined' && 'DeviceMotionEvent' in window) {
     try {
-      console.log('[LEVEL DEBUG] Attaching window.devicemotion listener...');
       window.addEventListener('devicemotion', handleDeviceMotion, true);
       isMotionListening = true;
     } catch (err) {
@@ -1982,47 +1984,50 @@ let lastRollLogTime = 0;
 
 /**
  * 水平ガイドの描画更新（ロール角に基づく自動表示・ハイライト・フェードアウト共通処理）
- * @param {number} rawRoll 水平からの生の傾き角度
+ * @param {number} rawRoll 水平からの生の傾き角度 (-180 ~ 180)
  */
 function updateLevelGuideWithRoll(rawRoll) {
   if (!levelGuideOverlay || !levelRollBar) {
-    console.warn('[LEVEL DEBUG] Overlay or RollBar DOM element not found!');
     return;
   }
   if (typeof rawRoll !== 'number' || isNaN(rawRoll)) return;
 
   // 指数移動平均（EMA）による滑らかなジッター抑制フィルター
-  const SMOOTH_ALPHA = 0.28;
+  const SMOOTH_ALPHA = 0.25;
   smoothRollAngle = smoothRollAngle * (1 - SMOOTH_ALPHA) + rawRoll * SMOOTH_ALPHA;
 
   const absAngle = Math.abs(smoothRollAngle);
 
-  // 画面上のロールバー回転を更新
-  levelRollBar.style.transform = `rotate(${smoothRollAngle.toFixed(2)}deg)`;
+  // しきい値設定
+  const SHOW_THRESHOLD = 12.0;       // 約12°以上の傾きで自動表示開始
+  const ALIGNED_THRESHOLD = 1.1;     // ±1.1°以内を水平と判定（手持ちスマホで実用的な高精度範囲）
+  const STABLE_DURATION = 900;       // 水平が約0.9秒安定して継続したら自然にフェードアウト (ms)
 
-  // 自動表示・水平成立のしきい値設定
-  const SHOW_THRESHOLD = 15.0; // 約15〜20°以上の傾きで自動表示開始
-  const ALIGNED_THRESHOLD = 0.9; // ±0.9°以内を完全な水平と判定
-
+  // 1. 傾き検知による自動表示フラグの更新
   if (absAngle >= SHOW_THRESHOLD) {
-    isLevelGuideActive = true;
+    if (!isLevelGuideActive) {
+      isLevelGuideActive = true;
+      isLevelAligned = false;
+      levelAlignedStartTime = null;
+      console.log(`[LEVEL DEBUG] Level guide activated by tilt (angle: ${smoothRollAngle.toFixed(1)}°)`);
+    }
   }
 
+  // 2. ガイドのアクティブ状態に応じた表示・追従・ハイライト制御
   if (isLevelGuideActive) {
     levelGuideOverlay.classList.add('is-visible');
+    levelRollBar.style.transform = `rotate(${smoothRollAngle.toFixed(2)}deg)`;
 
     if (absAngle <= ALIGNED_THRESHOLD) {
-      // 水平成立！黄色ハイライト
+      // 水平成立！黄色ハイライト #FFD84D
       levelGuideOverlay.classList.add('is-aligned');
 
       if (!isLevelAligned) {
         isLevelAligned = true;
         levelAlignedStartTime = Date.now();
-        console.log(`[LEVEL DEBUG] Level ALIGNED reached (angle: ${smoothRollAngle.toFixed(2)}deg)`);
-      }
-
-      // 水平が約1.0秒安定して継続したら自然にフェードアウト
-      if (Date.now() - levelAlignedStartTime > 1000) {
+        console.log(`[LEVEL DEBUG] Level ALIGNED reached (angle: ${smoothRollAngle.toFixed(2)}°)`);
+      } else if (levelAlignedStartTime && (Date.now() - levelAlignedStartTime >= STABLE_DURATION)) {
+        // 水平が安定して約0.9秒継続したら自然にフェードアウト
         levelGuideOverlay.classList.remove('is-visible', 'is-aligned');
         isLevelGuideActive = false;
         isLevelAligned = false;
@@ -2037,6 +2042,8 @@ function updateLevelGuideWithRoll(rawRoll) {
     }
   } else {
     levelGuideOverlay.classList.remove('is-visible', 'is-aligned');
+    isLevelAligned = false;
+    levelAlignedStartTime = null;
   }
 
   const now = Date.now();
@@ -2966,9 +2973,11 @@ function setupAudioUnlock() {
   const unlockHandler = () => {
     initOrResumeAudioContext();
     startOrientationListener(true);
-    unlockEvents.forEach(evt => window.removeEventListener(evt, unlockHandler, true));
+    if (isOrientationListening || isPermissionDenied) {
+      unlockEvents.forEach(evt => window.removeEventListener(evt, unlockHandler, true));
+    }
   };
-  unlockEvents.forEach(evt => window.addEventListener(evt, unlockHandler, { capture: true, once: true }));
+  unlockEvents.forEach(evt => window.addEventListener(evt, unlockHandler, { capture: true }));
 }
 
 /**
