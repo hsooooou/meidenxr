@@ -3733,13 +3733,20 @@ function applyAllTransforms() {
 function getTargetMarkerId(clientX, clientY, maxDistance = null) {
   const sceneEl = document.querySelector('a-scene');
   const camera = sceneEl && sceneEl.camera;
-  const screenW = window.innerWidth;
-  const screenH = window.innerHeight;
+  const aCanvas = (sceneEl && sceneEl.canvas) || document.querySelector('.a-canvas');
   
   // 現在認識中のマーカー一覧
   const foundMarkers = Object.keys(AR_MARKERS_CONFIG).filter(id => AR_MARKERS_CONFIG[id].state.isFound);
 
   if (foundMarkers.length > 0 && camera) {
+    // 実際のAR Canvasの画面表示領域（getBoundingClientRect: cover配置、margin、scale(cameraZoom)を正確に反映）を取得
+    const rect = aCanvas ? aCanvas.getBoundingClientRect() : null;
+    const hasValidRect = rect && rect.width > 0 && rect.height > 0;
+    const canvasLeft = hasValidRect ? rect.left : 0;
+    const canvasTop = hasValidRect ? rect.top : 0;
+    const canvasWidth = hasValidRect ? rect.width : window.innerWidth;
+    const canvasHeight = hasValidRect ? rect.height : window.innerHeight;
+
     let closestId = null;
     let minDistanceSq = Infinity;
 
@@ -3750,11 +3757,11 @@ function getTargetMarkerId(clientX, clientY, maxDistance = null) {
         el.object3D.getWorldPosition(worldPos);
         const projected = worldPos.clone().project(camera);
 
-        // カメラ前方に存在するか判定（z < 1.0）
+        // カメラ前方に存在するか判定（z <= 1.0）
         if (projected.z <= 1.0) {
-          // スクリーン座標に変換
-          const sx = ((projected.x + 1) / 2) * screenW;
-          const sy = ((-projected.y + 1) / 2) * screenH;
+          // NDC座標（-1〜+1）を画面上の実際のピクセル座標（clientX / clientY基準）に高精度変換
+          const sx = canvasLeft + ((projected.x + 1) / 2) * canvasWidth;
+          const sy = canvasTop + ((-projected.y + 1) / 2) * canvasHeight;
 
           const distSq = (clientX - sx) ** 2 + (clientY - sy) ** 2;
           if (distSq < minDistanceSq) {
