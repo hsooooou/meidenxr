@@ -40,6 +40,89 @@ function getArSource(scene) {
 }
 
 /**
+ * 実カメラ映像の物理サイズから現在のOrientation（'portrait' | 'landscape'）を判定
+ */
+function getCameraOrientation(video) {
+  if (!video || !video.videoWidth || !video.videoHeight) return 'landscape';
+  return video.videoWidth < video.videoHeight ? 'portrait' : 'landscape';
+}
+
+/**
+ * 実カメラ映像のサイズ・OrientationとAR.jsの内部状態（Source / Controller）を同期
+ */
+function syncArOrientation(scene, video) {
+  if (!scene || !video || !video.videoWidth || !video.videoHeight) return;
+
+  const vW = video.videoWidth;
+  const vH = video.videoHeight;
+  const camOrientation = getCameraOrientation(video);
+
+  const arSource = getArSource(scene);
+  if (arSource) {
+    if (!arSource.parameters) arSource.parameters = {};
+    arSource.parameters.sourceWidth = vW;
+    arSource.parameters.sourceHeight = vH;
+  }
+
+  const arContext = getArContext(scene);
+  if (arContext && arContext.arController) {
+    const controller = arContext.arController;
+    if (typeof controller.setOrientation === 'function') {
+      try {
+        controller.setOrientation(camOrientation);
+      } catch (e) {
+        console.warn('arController.setOrientation failed:', e);
+      }
+    } else {
+      controller.orientation = camOrientation;
+    }
+  }
+}
+
+/**
+ * AR.jsのProjection Matrixを取得し、実カメラアスペクト比（vW / vH）と整合するよう同期
+ */
+function syncArProjection(scene, video) {
+  if (!scene || !scene.camera || !video || !video.videoWidth || !video.videoHeight) return;
+
+  const vW = video.videoWidth;
+  const vH = video.videoHeight;
+  const cameraAspect = vW / vH;
+
+  // 1. Three.js camera の aspect を実カメラ解像度に一致
+  scene.camera.aspect = cameraAspect;
+
+  // 2. AR.js ContextからProjection Matrixを取得
+  const arContext = getArContext(scene);
+  if (arContext && typeof arContext.getProjectionMatrix === 'function') {
+    const pMat = arContext.getProjectionMatrix();
+    if (pMat && pMat.elements) {
+      // 一旦 AR.js の投影行列をコピー
+      scene.camera.projectionMatrix.copy(pMat);
+
+      // 3. 実カメラの縦横比（cameraAspect）とAR.js Projection Matrixの整合性を同期
+      // Three.jsの透視投影では elements[0] (m00) = m11 / aspect
+      // AR.jsの pMat は横長 (通常4:3) 前提で生成されるため、
+      // 画面・カメラがPortrait (vW < vH) や 16:9 などの場合に m00 を cameraAspect に合わせて同期補正
+      const m = scene.camera.projectionMatrix.elements;
+      const m11 = m[5]; // Y軸焦点倍率 (fy)
+      if (m11 && Math.abs(m11) > 0.0001 && cameraAspect > 0) {
+        m[0] = m11 / cameraAspect; // X軸焦点倍率 (fx = fy / aspect) を完全同期
+      }
+
+      // 逆行列も更新
+      if (scene.camera.projectionMatrixInverse) {
+        scene.camera.projectionMatrixInverse.copy(scene.camera.projectionMatrix).invert();
+      }
+      return;
+    }
+  }
+
+  // フォールバック: 標準Three.js updateProjectionMatrix
+  scene.camera.updateProjectionMatrix();
+}
+
+/**
  * カメラ映像（AR.js Source）と A-Frame WebGL Canvas の座標系・cover表示領域を完全に同期
  */
 function syncArCanvasAndVideo() {
@@ -56,7 +139,7 @@ function syncArCanvasAndVideo() {
   const vW = video.videoWidth;
   const vH = video.videoHeight;
 
-  // AR.js cover計算（4:3のアスペクト比を維持）
+  // AR.js cover計算（カメラ生解像度のアスペクト比を完全維持）
   const scale = Math.max(sW / vW, sH / vH);
   const scaledW = Math.round(vW * scale);
   const scaledH = Math.round(vH * scale);
@@ -80,29 +163,18 @@ function syncArCanvasAndVideo() {
   aCanvas.style.marginLeft = marginLeft + 'px';
   aCanvas.style.marginTop = marginTop + 'px';
 
-  // WebGL renderer drawingBuffer を Canvas CSS 表示比率（4:3）に正確に一致させる
+  // WebGL renderer drawingBuffer を Canvas CSS 表示比率に正確に一致させる
   if (scene.renderer) {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     scene.renderer.setSize(scaledW, scaledH, false);
     scene.renderer.setPixelRatio(dpr);
   }
 
-  // Three.js camera.aspect をカメラ映像および描画バッファの比率（vW / vH = 4:3）に一致させる
-  if (scene.camera) {
-    scene.camera.aspect = vW / vH;
-  }
+  // 実カメラOrientationとAR.js内部状態を同期
+  syncArOrientation(scene, video);
 
-  // AR.jsの標準キャリブレーション投影行列を適用（elements直接操作は行わない）
-  const arContext = getArContext(scene);
-  if (arContext && typeof arContext.getProjectionMatrix === 'function' && scene.camera) {
-    const p = arContext.getProjectionMatrix();
-    if (p && p.elements) {
-      scene.camera.projectionMatrix.copy(p);
-      if (scene.camera.projectionMatrixInverse) {
-        scene.camera.projectionMatrixInverse.copy(p).invert();
-      }
-    }
-  }
+  // Three.js Camera と AR.js Projection Matrix を実カメラ解像度・アスペクト比に同期
+  syncArProjection(scene, video);
 
   // カメラズーム（Software Zoom）のCSS transformを反映
   applyCameraZoomToPreview();
