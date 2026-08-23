@@ -76,11 +76,16 @@ function syncArOrientation(scene, video) {
     } else {
       controller.orientation = camOrientation;
     }
+    if (controller.options) {
+      controller.options.orientation = camOrientation;
+    }
+    if (controller.videoWidth !== vW) controller.videoWidth = vW;
+    if (controller.videoHeight !== vH) controller.videoHeight = vH;
   }
 }
 
 /**
- * AR.jsのProjection Matrixを取得し、実カメラアスペクト比（vW / vH）と整合するよう同期
+ * AR.jsのProjection Matrixを取得し、Three.js Cameraと同期
  */
 function syncArProjection(scene, video) {
   if (!scene || !scene.camera || !video || !video.videoWidth || !video.videoHeight) return;
@@ -89,31 +94,38 @@ function syncArProjection(scene, video) {
   const vH = video.videoHeight;
   const cameraAspect = vW / vH;
 
-  // 1. Three.js camera の aspect を実カメラ解像度に一致
+  // 1. Three.js camera の aspect を実カメラ解像度に設定
   scene.camera.aspect = cameraAspect;
 
-  // 2. AR.js ContextからProjection Matrixを取得
+  // 2. AR.js Contextから ARController の正規 Projection Matrix を取得して適用
   const arContext = getArContext(scene);
   if (arContext && typeof arContext.getProjectionMatrix === 'function') {
     const pMat = arContext.getProjectionMatrix();
     if (pMat && pMat.elements) {
-      // 一旦 AR.js の投影行列をコピー
       scene.camera.projectionMatrix.copy(pMat);
-
-      // 3. 実カメラの縦横比（cameraAspect）とAR.js Projection Matrixの整合性を同期
-      // Three.jsの透視投影では elements[0] (m00) = m11 / aspect
-      // AR.jsの pMat は横長 (通常4:3) 前提で生成されるため、
-      // 画面・カメラがPortrait (vW < vH) や 16:9 などの場合に m00 を cameraAspect に合わせて同期補正
-      const m = scene.camera.projectionMatrix.elements;
-      const m11 = m[5]; // Y軸焦点倍率 (fy)
-      if (m11 && Math.abs(m11) > 0.0001 && cameraAspect > 0) {
-        m[0] = m11 / cameraAspect; // X軸焦点倍率 (fx = fy / aspect) を完全同期
-      }
 
       // 逆行列も更新
       if (scene.camera.projectionMatrixInverse) {
         scene.camera.projectionMatrixInverse.copy(scene.camera.projectionMatrix).invert();
       }
+
+      // 実機検証用ログ出力
+      const controller = arContext.arController;
+      console.log({
+        videoWidth: video.videoWidth,
+        videoHeight: video.videoHeight,
+        videoAspect: cameraAspect,
+        windowWidth: window.innerWidth,
+        windowHeight: window.innerHeight,
+        windowAspect: window.innerWidth / window.innerHeight,
+        orientation: controller ? controller.orientation : undefined,
+        controllerVideoWidth: controller ? controller.videoWidth : undefined,
+        controllerVideoHeight: controller ? controller.videoHeight : undefined,
+        controllerCanvasWidth: controller && controller.canvas ? controller.canvas.width : undefined,
+        controllerCanvasHeight: controller && controller.canvas ? controller.canvas.height : undefined,
+        canvasWidth: scene.renderer && scene.renderer.domElement ? scene.renderer.domElement.width : undefined,
+        canvasHeight: scene.renderer && scene.renderer.domElement ? scene.renderer.domElement.height : undefined
+      });
       return;
     }
   }
