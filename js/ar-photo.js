@@ -40,14 +40,6 @@ function getArSource(scene) {
 }
 
 /**
- * 実カメラ映像の物理入力Orientation（'portrait' | 'landscape'）を取得
- */
-function getCameraInputOrientation(video) {
-  if (!video || !video.videoWidth || !video.videoHeight) return 'landscape';
-  return video.videoWidth < video.videoHeight ? 'portrait' : 'landscape';
-}
-
-/**
  * 画面表示 / ViewportのOrientation（'portrait' | 'landscape'）を取得
  */
 function getDisplayOrientation() {
@@ -58,128 +50,35 @@ function getDisplayOrientation() {
 }
 
 /**
- * 実カメラ映像と画面のOrientationをAR.jsのARControllerおよびArToolkitSourceと完全に同期
+ * ARランタイム状態（Camera, Source, ARController, Detection Canvas, Projection Matrix, Renderer, Zoom）の完全同期
+ * 初期起動・再読み込み・回転・カメラ切替のすべてで同一の同期経路を使用
  */
-function syncArOrientation(scene, video) {
-  if (!scene || !video || !video.videoWidth || !video.videoHeight) return;
-
-  const vW = video.videoWidth;
-  const vH = video.videoHeight;
-  const camInputOrientation = getCameraInputOrientation(video);
-
-  // 1. ArToolkitSource の同期
-  const arSource = getArSource(scene);
-  if (arSource) {
-    if (typeof arSource.onResizeElement === 'function') {
-      try {
-        arSource.onResizeElement();
-      } catch (e) {
-        // ignore
-      }
-    }
-  }
-
-  // 2. AR.js の ARController の同期
-  const arContext = getArContext(scene);
-  if (arContext && arContext.arController) {
-    const controller = arContext.arController;
-
-    // orientation の同期
-    if (typeof controller.setOrientation === 'function') {
-      try {
-        controller.setOrientation(camInputOrientation);
-      } catch (e) {
-        console.warn('arController.setOrientation failed:', e);
-      }
-    } else {
-      controller.orientation = camInputOrientation;
-    }
-    if (controller.options) {
-      controller.options.orientation = camInputOrientation;
-    }
-
-    // ARController の内部 videoWidth / videoHeight
-    controller.videoWidth = vW;
-    controller.videoHeight = vH;
-
-    // ArToolkitSource から ARController の検出 canvas へサイズ同期
-    if (arSource && typeof arSource.copyElementSizeTo === 'function' && controller.canvas) {
-      try {
-        arSource.copyElementSizeTo(controller.canvas);
-      } catch (e) {
-        // fallback: 直接寸法同期
-        if (camInputOrientation === 'portrait') {
-          if (controller.canvas.width > controller.canvas.height) {
-            const temp = controller.canvas.width;
-            controller.canvas.width = controller.canvas.height;
-            controller.canvas.height = temp;
-          }
-        } else {
-          if (controller.canvas.width < controller.canvas.height) {
-            const temp = controller.canvas.width;
-            controller.canvas.width = controller.canvas.height;
-            controller.canvas.height = temp;
-          }
-        }
-      }
-    }
-  }
-}
-
-/**
- * AR.jsのProjection MatrixとThree.js Cameraを安全に同期
- */
-function syncArProjection(scene, video) {
-  if (!scene || !scene.camera || !video || !video.videoWidth || !video.videoHeight) return;
-
-  const vW = video.videoWidth;
-  const vH = video.videoHeight;
-  const cameraAspect = vW / vH;
-
-  // Three.js Camera の aspect をカメラ生比率に設定
-  scene.camera.aspect = cameraAspect;
-
-  const arContext = getArContext(scene);
-  if (arContext && typeof arContext.getProjectionMatrix === 'function') {
-    const pMat = arContext.getProjectionMatrix();
-    if (pMat && pMat.elements) {
-      scene.camera.projectionMatrix.copy(pMat);
-
-      if (scene.camera.projectionMatrixInverse) {
-        scene.camera.projectionMatrixInverse.copy(scene.camera.projectionMatrix).invert();
-      }
-      return;
-    }
-  }
-
-  scene.camera.updateProjectionMatrix();
-}
-
-/**
- * カメラ映像（AR.js Source）と A-Frame WebGL Canvas の座標系・cover表示領域を完全に同期
- */
-function syncArCanvasAndVideo() {
+function syncARRuntimeState() {
   const scene = document.querySelector('a-scene');
   if (!scene) return;
 
   const arSource = getArSource(scene);
+  const arContext = getArContext(scene);
   const video = (arSource && arSource.domElement) || getActiveVideo();
   const aCanvas = (scene && scene.canvas) || document.querySelector('.a-canvas');
-  if (!video || !video.videoWidth || !video.videoHeight || !aCanvas) return;
+
+  if (!video || !video.videoWidth || !video.videoHeight || !aCanvas) {
+    return;
+  }
 
   const sW = window.innerWidth;
   const sH = window.innerHeight;
   const vW = video.videoWidth;
   const vH = video.videoHeight;
+  const targetOrientation = getDisplayOrientation();
 
-  // AR.js cover計算（カメラ生解像度のアスペクト比を完全維持）
+  // 1. Video と WebGL Canvas の Cover 表示レイアウト同期（CSSスタイル完全一致）
   const scale = Math.max(sW / vW, sH / vH);
   const scaledW = Math.round(vW * scale);
   const scaledH = Math.round(vH * scale);
   const marginLeft = Math.round((sW - scaledW) / 2);
   const marginTop = Math.round((sH - scaledH) / 2);
 
-  // VideoとCanvasのCSS配置・サイズ・マージンを完全一致
   video.style.position = 'absolute';
   video.style.top = '0px';
   video.style.left = '0px';
@@ -196,21 +95,98 @@ function syncArCanvasAndVideo() {
   aCanvas.style.marginLeft = marginLeft + 'px';
   aCanvas.style.marginTop = marginTop + 'px';
 
-  // WebGL renderer drawingBuffer を Canvas CSS 表示比率に正確に一致させる
+  // 2. WebGL Renderer drawingBuffer の同期
   if (scene.renderer) {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     scene.renderer.setSize(scaledW, scaledH, false);
     scene.renderer.setPixelRatio(dpr);
   }
 
-  // 実カメラOrientationとAR.js内部状態を同期
-  syncArOrientation(scene, video);
+  // 3. ArToolkitSource の同期
+  if (arSource && arSource.parameters) {
+    if (targetOrientation === 'portrait') {
+      arSource.parameters.sourceWidth = Math.min(vW, vH);
+      arSource.parameters.sourceHeight = Math.max(vW, vH);
+    } else {
+      arSource.parameters.sourceWidth = Math.max(vW, vH);
+      arSource.parameters.sourceHeight = Math.min(vW, vH);
+    }
+  }
 
-  // Three.js Camera と AR.js Projection Matrix を実カメラ解像度・アスペクト比に同期
-  syncArProjection(scene, video);
+  // 4. ARController の同期（Orientation, dimensions, detection canvas）
+  if (arContext && arContext.arController) {
+    const controller = arContext.arController;
 
-  // カメラズーム（Software Zoom）のCSS transformを反映
+    // ARControllerのOrientation設定（画面向きに正確に同期）
+    if (typeof controller.setOrientation === 'function') {
+      try {
+        controller.setOrientation(targetOrientation);
+      } catch (e) {
+        controller.orientation = targetOrientation;
+      }
+    } else {
+      controller.orientation = targetOrientation;
+    }
+
+    if (controller.options) {
+      controller.options.orientation = targetOrientation;
+    }
+
+    controller.videoWidth = vW;
+    controller.videoHeight = vH;
+
+    // 検出 Canvas の寸法同期
+    if (controller.canvas) {
+      if (targetOrientation === 'portrait') {
+        const targetW = Math.min(vW, vH);
+        const targetH = Math.max(vW, vH);
+        if (controller.canvas.width !== targetW || controller.canvas.height !== targetH) {
+          controller.canvas.width = targetW;
+          controller.canvas.height = targetH;
+        }
+      } else {
+        const targetW = Math.max(vW, vH);
+        const targetH = Math.min(vW, vH);
+        if (controller.canvas.width !== targetW || controller.canvas.height !== targetH) {
+          controller.canvas.width = targetW;
+          controller.canvas.height = targetH;
+        }
+      }
+    }
+  }
+
+  // 5. Three.js Camera と Projection Matrix の同期
+  if (scene.camera) {
+    const cameraAspect = (targetOrientation === 'portrait')
+      ? (Math.min(vW, vH) / Math.max(vW, vH))
+      : (Math.max(vW, vH) / Math.min(vW, vH));
+    scene.camera.aspect = cameraAspect;
+
+    if (arContext && typeof arContext.getProjectionMatrix === 'function') {
+      const pMat = arContext.getProjectionMatrix();
+      if (pMat && pMat.elements) {
+        scene.camera.projectionMatrix.copy(pMat);
+
+        if (scene.camera.projectionMatrixInverse) {
+          scene.camera.projectionMatrixInverse.copy(scene.camera.projectionMatrix).invert();
+        }
+      } else {
+        scene.camera.updateProjectionMatrix();
+      }
+    } else {
+      scene.camera.updateProjectionMatrix();
+    }
+  }
+
+  // 6. カメラズーム（Software Zoom）のCSS transformを反映
   applyCameraZoomToPreview();
+}
+
+/**
+ * 互換性のためのエイリアス
+ */
+function syncArCanvasAndVideo() {
+  syncARRuntimeState();
 }
 
 /**
@@ -293,24 +269,29 @@ function setCameraZoom(newZoom, showHud = true) {
 }
 
 /**
- * A-Frameのデフォルトリサイズ処理（windowサイズでdrawingBufferを歪める処理）をオーバーライド
+ * A-Frameのデフォルトリサイズ処理（windowサイズでdrawingBufferを歪める処理）をオーバーライドし、ライフサイクル全般を同期
  */
 function hookSceneResizeHandler() {
   const scene = document.querySelector('a-scene');
   if (!scene) return;
-  scene.resize = syncArCanvasAndVideo;
+
+  scene.resize = syncARRuntimeState;
+
+  const onSceneEvent = () => {
+    scene.resize = syncARRuntimeState;
+    syncARRuntimeState();
+  };
+
   if (scene.hasLoaded) {
-    syncArCanvasAndVideo();
+    onSceneEvent();
   } else {
-    scene.addEventListener('loaded', () => {
-      scene.resize = syncArCanvasAndVideo;
-      syncArCanvasAndVideo();
-    }, { once: true });
-    scene.addEventListener('render-target-loaded', () => {
-      scene.resize = syncArCanvasAndVideo;
-      syncArCanvasAndVideo();
-    }, { once: true });
+    scene.addEventListener('loaded', onSceneEvent, { once: true });
+    scene.addEventListener('render-target-loaded', onSceneEvent, { once: true });
   }
+
+  // AR.js の内部初期化イベントリスナー
+  scene.addEventListener('camera-init', onSceneEvent);
+  scene.addEventListener('arjs-video-loaded', onSceneEvent);
 }
 
 // DOM要素の取得
@@ -1257,10 +1238,24 @@ function initCameraHandling() {
     hideStatus();
     shutterBtn.disabled = false;
     startClock();
-    syncArCanvasAndVideo();
+    syncARRuntimeState();
     applyAdjustmentsToPreview();
     // カメラ準備完了と同時にセンサー監視を開始（パーミッション不要環境では即座に監視開始）
     startOrientationListener(false);
+
+    // AR.js arContext / arController の生成完了を監視して即時完全同期
+    let arCheckCount = 0;
+    const arCheckInterval = setInterval(() => {
+      arCheckCount++;
+      const scene = document.querySelector('a-scene');
+      const arContext = getArContext(scene);
+      if (arContext && arContext.arController) {
+        syncARRuntimeState();
+        clearInterval(arCheckInterval);
+      } else if (arCheckCount > 40) {
+        clearInterval(arCheckInterval);
+      }
+    }, 100);
   };
 
   const checkVideo = () => {
