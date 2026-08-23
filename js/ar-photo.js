@@ -3649,7 +3649,7 @@ function hideStatus() {
 /**
  * 複数マーカーおよびARオブジェクトの定義と独立状態管理
  * Hiro -> Cube, Kanji -> Sphere
- * 将来的にMarker A / B / C、3Dモデル(OBJ/GLTF)、透過PNGフォトフレームなどを追加しやすい拡張構造
+ * 将来的にMarker A / B / C、3Dモデル(OBJ/GLTF)、透過PNGフォトフレーム、Custom Imageなどを追加しやすい拡張構造
  */
 const AR_MARKERS_CONFIG = {
   'hiro-marker': {
@@ -3658,6 +3658,9 @@ const AR_MARKERS_CONFIG = {
     preset: 'hiro',
     objectType: 'cube',
     targetSelector: '#ar-cube',
+    initialPosition: { x: 0, y: 0.5, z: 0 },
+    initialRotation: { x: 0, y: 45, z: 0 },
+    initialScale: { x: 1, y: 1, z: 1 },
     state: {
       scale: 1.0,
       rotationY: 45,
@@ -3670,6 +3673,9 @@ const AR_MARKERS_CONFIG = {
     preset: 'kanji',
     objectType: 'sphere',
     targetSelector: '#ar-sphere',
+    initialPosition: { x: 0, y: 0.5, z: 0 },
+    initialRotation: { x: 0, y: 45, z: 0 },
+    initialScale: { x: 1, y: 1, z: 1 },
     state: {
       scale: 1.0,
       rotationY: 45,
@@ -3685,16 +3691,125 @@ const ROTATION_SENSITIVITY = 0.4; // 1ピクセル移動あたりの回転角度
 let lastActiveMarkerId = 'hiro-marker';
 
 /**
+ * Custom ARマーカー・独自画像オブジェクトの探索
+ * ① 既存targetSelector
+ * ② marker内の代表表示オブジェクト（a-image, a-box, a-sphere, a-plane, a-entity, a-gltf-model, a-cylinder 等）
+ */
+function findVisualElementInsideMarker(markerEl) {
+  if (!markerEl) return null;
+
+  // 優先探索セレクタリスト
+  const selectors = [
+    'a-image',
+    'a-gltf-model',
+    'a-box',
+    'a-sphere',
+    'a-cylinder',
+    'a-plane',
+    'a-entity[gltf-model]',
+    'a-entity[geometry]',
+    'a-entity:not([camera]):not([cursor])'
+  ];
+
+  for (let sel of selectors) {
+    const el = markerEl.querySelector(sel);
+    if (el) return el;
+  }
+
+  // 子要素の探索
+  for (let child of Array.from(markerEl.children)) {
+    const tag = child.tagName.toLowerCase();
+    if (tag !== 'a-camera' && tag !== 'a-cursor' && tag !== 'a-light') {
+      return child;
+    }
+  }
+
+  return null;
+}
+
+/**
  * 指定マーカーのAR要素を取得
+ * 既存設定の targetSelector を最優先し、見つからない場合は該当 marker 内部の表示オブジェクトを動的探索
  */
 function getArElementForMarker(markerId) {
   const config = AR_MARKERS_CONFIG[markerId];
-  if (!config) return null;
-  return document.querySelector(config.targetSelector);
+  if (config && config.targetSelector) {
+    const el = document.querySelector(config.targetSelector);
+    if (el) return el;
+  }
+
+  const markerEl = document.getElementById(markerId);
+  if (markerEl) {
+    return findVisualElementInsideMarker(markerEl);
+  }
+
+  return null;
+}
+
+/**
+ * シーン内のすべての a-marker を走査し、Custom marker があれば既存設定を壊さず自動登録
+ */
+function scanAndRegisterCustomMarkers() {
+  const markerEls = document.querySelectorAll('a-scene a-marker');
+  markerEls.forEach((markerEl, index) => {
+    const markerId = markerEl.id || `custom-marker-${index}`;
+    if (!markerEl.id) {
+      markerEl.id = markerId;
+    }
+
+    // 既存設定があれば上書きしない
+    if (!AR_MARKERS_CONFIG[markerId]) {
+      const visualEl = findVisualElementInsideMarker(markerEl);
+      let initPos = { x: 0, y: 0.5, z: 0 };
+      let initRot = { x: 0, y: 0, z: 0 };
+      let initScale = { x: 1, y: 1, z: 1 };
+
+      if (visualEl) {
+        const posAttr = visualEl.getAttribute('position');
+        if (posAttr) {
+          if (typeof posAttr === 'object') {
+            initPos = { x: posAttr.x || 0, y: posAttr.y !== undefined ? posAttr.y : 0.5, z: posAttr.z || 0 };
+          }
+        }
+        const rotAttr = visualEl.getAttribute('rotation');
+        if (rotAttr) {
+          if (typeof rotAttr === 'object') {
+            initRot = { x: rotAttr.x || 0, y: rotAttr.y || 0, z: rotAttr.z || 0 };
+          }
+        }
+      }
+
+      AR_MARKERS_CONFIG[markerId] = {
+        id: markerId,
+        name: markerEl.getAttribute('preset') || markerId,
+        preset: markerEl.getAttribute('preset') || 'custom',
+        objectType: visualEl ? visualEl.tagName.toLowerCase().replace('a-', '') : 'custom',
+        targetSelector: visualEl && visualEl.id ? `#${visualEl.id}` : null,
+        initialPosition: initPos,
+        initialRotation: initRot,
+        initialScale: initScale,
+        state: {
+          scale: 1.0,
+          rotationY: initRot.y || 0,
+          isFound: false
+        }
+      };
+
+      // イベントリスナー登録
+      markerEl.addEventListener('markerFound', () => {
+        AR_MARKERS_CONFIG[markerId].state.isFound = true;
+        lastActiveMarkerId = markerId;
+      });
+      markerEl.addEventListener('markerLost', () => {
+        AR_MARKERS_CONFIG[markerId].state.isFound = false;
+      });
+    }
+  });
 }
 
 /**
  * 指定マーカーのスケール・回転・位置の反映（A-Frame属性とThree.js Object3Dの双方へ即時適用）
+ * Hiro/Kanjiの固定値を尊重しつつ、Customオブジェクトの初期姿勢（rotationX/Z, position）を破壊しない
  */
 function applyTransformForMarker(markerId) {
   const config = AR_MARKERS_CONFIG[markerId];
@@ -3705,13 +3820,31 @@ function applyTransformForMarker(markerId) {
   const s = config.state.scale;
   const rY = config.state.rotationY;
 
-  el.setAttribute('position', '0 0.5 0');
-  el.setAttribute('scale', `${s} ${s} ${s}`);
-  el.setAttribute('rotation', `0 ${rY} 0`);
+  // 初期値の取得
+  const initPos = config.initialPosition || { x: 0, y: 0.5, z: 0 };
+  const initRot = config.initialRotation || { x: 0, y: 0, z: 0 };
+  const initScale = config.initialScale || { x: 1, y: 1, z: 1 };
+
+  const finalRotX = initRot.x || 0;
+  const finalRotY = (initRot.y || 0) + (rY - (initRot.y || 0));
+  const finalRotZ = initRot.z || 0;
+
+  const finalScaleX = (initScale.x || 1) * s;
+  const finalScaleY = (initScale.y || 1) * s;
+  const finalScaleZ = (initScale.z || 1) * s;
+
+  el.setAttribute('position', `${initPos.x} ${initPos.y} ${initPos.z}`);
+  el.setAttribute('scale', `${finalScaleX} ${finalScaleY} ${finalScaleZ}`);
+  el.setAttribute('rotation', `${finalRotX} ${finalRotY} ${finalRotZ}`);
+
   if (el.object3D) {
-    el.object3D.position.set(0, 0.5, 0);
-    el.object3D.scale.set(s, s, s);
-    el.object3D.rotation.set(0, THREE.MathUtils.degToRad(rY), 0);
+    el.object3D.position.set(initPos.x, initPos.y, initPos.z);
+    el.object3D.scale.set(finalScaleX, finalScaleY, finalScaleZ);
+    el.object3D.rotation.set(
+      THREE.MathUtils.degToRad(finalRotX),
+      THREE.MathUtils.degToRad(finalRotY),
+      THREE.MathUtils.degToRad(finalRotZ)
+    );
   }
 }
 
@@ -3736,7 +3869,7 @@ function getTargetMarkerId(clientX, clientY, maxDistance = null) {
   const aCanvas = (sceneEl && sceneEl.canvas) || document.querySelector('.a-canvas');
   
   // 現在認識中のマーカー一覧
-  const foundMarkers = Object.keys(AR_MARKERS_CONFIG).filter(id => AR_MARKERS_CONFIG[id].state.isFound);
+  const foundMarkers = Object.keys(AR_MARKERS_CONFIG).filter(id => AR_MARKERS_CONFIG[id].state && AR_MARKERS_CONFIG[id].state.isFound);
 
   if (foundMarkers.length > 0 && camera) {
     // 実際のAR Canvasの画面表示領域（getBoundingClientRect: cover配置、margin、scale(cameraZoom)を正確に反映）を取得
@@ -3805,6 +3938,11 @@ function getTargetMarkerId(clientX, clientY, maxDistance = null) {
     return null;
   }
 
+  // 距離指定なし（ドラッグ回転等）の場合、現在認識中のマーカーがあればそれを優先
+  if (foundMarkers.length > 0) {
+    return foundMarkers[0];
+  }
+
   return lastActiveMarkerId || 'hiro-marker';
 }
 
@@ -3813,8 +3951,11 @@ function getTargetMarkerId(clientX, clientY, maxDistance = null) {
  */
 function resetAllTransforms() {
   Object.keys(AR_MARKERS_CONFIG).forEach(markerId => {
-    AR_MARKERS_CONFIG[markerId].state.scale = 1.0;
-    AR_MARKERS_CONFIG[markerId].state.rotationY = 45;
+    const config = AR_MARKERS_CONFIG[markerId];
+    if (config && config.state) {
+      config.state.scale = 1.0;
+      config.state.rotationY = (config.initialRotation && config.initialRotation.y !== undefined) ? config.initialRotation.y : 45;
+    }
   });
   applyAllTransforms();
 }
@@ -3827,19 +3968,39 @@ function resetAllTransforms() {
  * - 回転：PCはドラッグ、スマートフォンは1本指左右ドラッグ（Y軸1軸回転固定）
  */
 function initArObjectInteraction() {
+  // シーン内のすべての a-marker（カスタム含む）を走査・登録
+  scanAndRegisterCustomMarkers();
+
   // 初期状態を適用
   applyAllTransforms();
+
+  // シーンの読み込み完了時にもカスタムマーカーの補完走査を実施
+  const sceneEl = document.querySelector('a-scene');
+  if (sceneEl) {
+    if (sceneEl.hasLoaded) {
+      scanAndRegisterCustomMarkers();
+    } else {
+      sceneEl.addEventListener('loaded', () => {
+        scanAndRegisterCustomMarkers();
+        applyAllTransforms();
+      });
+    }
+  }
 
   // 各マーカーの認識イベント登録
   Object.keys(AR_MARKERS_CONFIG).forEach(markerId => {
     const markerEl = document.getElementById(markerId);
     if (markerEl) {
       markerEl.addEventListener('markerFound', () => {
-        AR_MARKERS_CONFIG[markerId].state.isFound = true;
+        if (AR_MARKERS_CONFIG[markerId] && AR_MARKERS_CONFIG[markerId].state) {
+          AR_MARKERS_CONFIG[markerId].state.isFound = true;
+        }
         lastActiveMarkerId = markerId;
       });
       markerEl.addEventListener('markerLost', () => {
-        AR_MARKERS_CONFIG[markerId].state.isFound = false;
+        if (AR_MARKERS_CONFIG[markerId] && AR_MARKERS_CONFIG[markerId].state) {
+          AR_MARKERS_CONFIG[markerId].state.isFound = false;
+        }
       });
     }
   });
