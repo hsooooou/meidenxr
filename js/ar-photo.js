@@ -39,6 +39,76 @@ function getArSource(scene) {
   return null;
 }
 
+let hasLoggedInitialGeometry = false;
+
+/**
+ * 初期化時のARジオメトリ状態を詳細にログ出力（初回のみ）
+ */
+function logArInitialGeometryOnce(scene, video, arSource, arContext, controller) {
+  if (hasLoggedInitialGeometry) return;
+  hasLoggedInitialGeometry = true;
+
+  const aCanvas = (scene && scene.canvas) || document.querySelector('.a-canvas');
+  let dbWidth = undefined;
+  let dbHeight = undefined;
+  if (scene && scene.renderer && typeof THREE !== 'undefined' && THREE.Vector2) {
+    try {
+      const dbSize = scene.renderer.getDrawingBufferSize(new THREE.Vector2());
+      dbWidth = dbSize.width;
+      dbHeight = dbSize.height;
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  console.log('=== AR INITIAL GEOMETRY ===', {
+    window: {
+      width: window.innerWidth,
+      height: window.innerHeight
+    },
+    screenOrientation: {
+      type: window.screen && window.screen.orientation ? window.screen.orientation.type : undefined,
+      angle: window.screen && window.screen.orientation ? window.screen.orientation.angle : undefined
+    },
+    video: {
+      videoWidth: video ? video.videoWidth : undefined,
+      videoHeight: video ? video.videoHeight : undefined,
+      readyState: video ? video.readyState : undefined,
+      clientWidth: video ? video.clientWidth : undefined,
+      clientHeight: video ? video.clientHeight : undefined
+    },
+    arToolkitSource: {
+      sourceWidth: arSource && arSource.parameters ? arSource.parameters.sourceWidth : undefined,
+      sourceHeight: arSource && arSource.parameters ? arSource.parameters.sourceHeight : undefined
+    },
+    arToolkitContext: {
+      canvasWidth: arContext && arContext.parameters ? arContext.parameters.canvasWidth : undefined,
+      canvasHeight: arContext && arContext.parameters ? arContext.parameters.canvasHeight : undefined
+    },
+    arController: {
+      canvasWidth: controller && controller.canvas ? controller.canvas.width : undefined,
+      canvasHeight: controller && controller.canvas ? controller.canvas.height : undefined,
+      orientation: controller ? controller.orientation : undefined,
+      videoWidth: controller ? controller.videoWidth : undefined,
+      videoHeight: controller ? controller.videoHeight : undefined
+    },
+    threeJs: {
+      rendererWidth: scene && scene.renderer && scene.renderer.domElement ? scene.renderer.domElement.width : undefined,
+      rendererHeight: scene && scene.renderer && scene.renderer.domElement ? scene.renderer.domElement.height : undefined,
+      drawingBufferWidth: dbWidth,
+      drawingBufferHeight: dbHeight
+    },
+    camera: {
+      aspect: scene && scene.camera ? scene.camera.aspect : undefined,
+      projectionMatrixElements: scene && scene.camera && scene.camera.projectionMatrix ? Array.from(scene.camera.projectionMatrix.elements) : undefined
+    },
+    dom: {
+      canvasClientWidth: aCanvas ? aCanvas.clientWidth : undefined,
+      canvasClientHeight: aCanvas ? aCanvas.clientHeight : undefined
+    }
+  });
+}
+
 /**
  * 実カメラ映像の物理入力Orientation（'portrait' | 'landscape'）を取得
  */
@@ -123,6 +193,9 @@ function syncArOrientation(scene, video) {
         }
       }
     }
+
+    // 初回初期化ログを出力
+    logArInitialGeometryOnce(scene, video, arSource, arContext, controller);
   }
 }
 
@@ -293,6 +366,45 @@ function setCameraZoom(newZoom, showHud = true) {
 }
 
 /**
+ * ARControllerの初期化完了を確実に検知し、Portrait / Landscapeの完全同期を実行
+ */
+function ensureArControllerInitialized() {
+  const scene = document.querySelector('a-scene');
+  if (!scene) return;
+
+  const checkAndSync = () => {
+    const arContext = getArContext(scene);
+    const video = getActiveVideo();
+    if (video && video.videoWidth > 0 && video.readyState >= 2) {
+      syncArCanvasAndVideo();
+      if (arContext && arContext.arController) {
+        syncArCanvasAndVideo();
+        return true;
+      }
+    }
+    return false;
+  };
+
+  if (checkAndSync()) return;
+
+  // AR.jsのイベントフック
+  scene.addEventListener('arjs-video-loaded', () => {
+    checkAndSync();
+  }, { once: true });
+
+  const intervalId = setInterval(() => {
+    if (checkAndSync()) {
+      clearInterval(intervalId);
+    }
+  }, 100);
+
+  setTimeout(() => {
+    clearInterval(intervalId);
+    syncArCanvasAndVideo();
+  }, 4000);
+}
+
+/**
  * A-Frameのデフォルトリサイズ処理（windowサイズでdrawingBufferを歪める処理）をオーバーライド
  */
 function hookSceneResizeHandler() {
@@ -301,14 +413,21 @@ function hookSceneResizeHandler() {
   scene.resize = syncArCanvasAndVideo;
   if (scene.hasLoaded) {
     syncArCanvasAndVideo();
+    ensureArControllerInitialized();
   } else {
     scene.addEventListener('loaded', () => {
       scene.resize = syncArCanvasAndVideo;
       syncArCanvasAndVideo();
+      ensureArControllerInitialized();
     }, { once: true });
     scene.addEventListener('render-target-loaded', () => {
       scene.resize = syncArCanvasAndVideo;
       syncArCanvasAndVideo();
+      ensureArControllerInitialized();
+    }, { once: true });
+    scene.addEventListener('arjs-video-loaded', () => {
+      syncArCanvasAndVideo();
+      ensureArControllerInitialized();
     }, { once: true });
   }
 }
@@ -1258,6 +1377,7 @@ function initCameraHandling() {
     shutterBtn.disabled = false;
     startClock();
     syncArCanvasAndVideo();
+    ensureArControllerInitialized();
     applyAdjustmentsToPreview();
     // カメラ準備完了と同時にセンサー監視を開始（パーミッション不要環境では即座に監視開始）
     startOrientationListener(false);
@@ -1413,6 +1533,7 @@ async function switchCameraFacingMode() {
     cameraZoom = 1.0;
     if (zoomIndicator) zoomIndicator.classList.add('hidden');
     syncArCanvasAndVideo();
+    ensureArControllerInitialized();
     applyAdjustmentsToPreview();
   } catch (error) {
     console.error('カメラ切り替えエラー:', error);
@@ -4344,15 +4465,6 @@ function initArObjectInteraction() {
     activeTouchMarkerId = null;
     isPinchingActive = false;
   }, { passive: true });
-}
-
-/**
- * 画面回転・リサイズ時の適応処理
- */
-function handleOrientationOrResize() {
-  setAspectRatio(selectedRatio);
-  syncTypographyCanvasSize();
-  syncArCanvasAndVideo();
 }
 
 // メインボタン（リセット / 調整 / 使い方）のイベント管理
