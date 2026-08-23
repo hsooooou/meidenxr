@@ -84,7 +84,7 @@ function syncArOrientation(scene, video) {
   if (arContext && arContext.arController) {
     const controller = arContext.arController;
 
-    // orientation の同期
+    // orientation の同期（ARController内部のPortrait用90度回転画像処理と連携）
     if (typeof controller.setOrientation === 'function') {
       try {
         controller.setOrientation(camInputOrientation);
@@ -101,28 +101,6 @@ function syncArOrientation(scene, video) {
     // ARController の内部 videoWidth / videoHeight
     controller.videoWidth = vW;
     controller.videoHeight = vH;
-
-    // ArToolkitSource から ARController の検出 canvas へサイズ同期
-    if (arSource && typeof arSource.copyElementSizeTo === 'function' && controller.canvas) {
-      try {
-        arSource.copyElementSizeTo(controller.canvas);
-      } catch (e) {
-        // fallback: 直接寸法同期
-        if (camInputOrientation === 'portrait') {
-          if (controller.canvas.width > controller.canvas.height) {
-            const temp = controller.canvas.width;
-            controller.canvas.width = controller.canvas.height;
-            controller.canvas.height = temp;
-          }
-        } else {
-          if (controller.canvas.width < controller.canvas.height) {
-            const temp = controller.canvas.width;
-            controller.canvas.width = controller.canvas.height;
-            controller.canvas.height = temp;
-          }
-        }
-      }
-    }
   }
 }
 
@@ -311,6 +289,11 @@ function hookSceneResizeHandler() {
       syncArCanvasAndVideo();
     }, { once: true });
   }
+
+  // AR.jsのビデオバインド完了イベント時にも同期
+  window.addEventListener('arjs-video-loaded', () => {
+    syncArCanvasAndVideo();
+  });
 }
 
 // DOM要素の取得
