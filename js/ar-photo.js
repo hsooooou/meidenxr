@@ -50,6 +50,46 @@ function getDisplayOrientation() {
 }
 
 /**
+ * AR.jsのキャリブレーションに基づく純粋なProjection MatrixをThree.js Cameraへ同期
+ * 経験則による補正（m[0], m[5]等の恣意的な改変）を排除し、AR.js / ARToolKitの真の投影行列を正確に反映
+ */
+function syncArProjectionMatrix(camera, arContext) {
+  if (!camera || !arContext) return;
+
+  if (typeof arContext.getProjectionMatrix === 'function') {
+    try {
+      const pMat = arContext.getProjectionMatrix();
+      if (pMat && pMat.elements && pMat.elements.length >= 16) {
+        camera.projectionMatrix.copy(pMat);
+        if (camera.projectionMatrixInverse) {
+          camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+        }
+        return;
+      }
+    } catch (e) {
+      console.warn('Projection matrix sync error:', e);
+    }
+  }
+
+  // フォールバック: 標準画角（50度）からパースペクティブ行列を構築
+  const fov = camera.fov || 50;
+  const near = camera.near || 0.1;
+  const far = camera.far || 1000;
+  const aspect = camera.aspect || (window.innerWidth / window.innerHeight);
+  camera.projectionMatrix.makePerspective(
+    -near * Math.tan(THREE.MathUtils.degToRad(fov * 0.5)) * aspect,
+    near * Math.tan(THREE.MathUtils.degToRad(fov * 0.5)) * aspect,
+    near * Math.tan(THREE.MathUtils.degToRad(fov * 0.5)),
+    -near * Math.tan(THREE.MathUtils.degToRad(fov * 0.5)),
+    near,
+    far
+  );
+  if (camera.projectionMatrixInverse) {
+    camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+  }
+}
+
+/**
  * ARランタイム状態（Camera, Source, ARController, Detection Canvas, Projection Matrix, Renderer, Zoom）の完全同期
  * 実カメラストリームの物理解像度（videoWidth / videoHeight）をSingle Source of Truthとして統一し、
  * 初期起動・再読み込み・回転・カメラ切替のすべてで一切の歪みを生じさせない完全同期を実現
@@ -72,7 +112,6 @@ function syncARRuntimeState() {
   const vW = video.videoWidth;
   const vH = video.videoHeight;
   const videoAspect = vW / vH;
-  const streamOrientation = (vW < vH) ? 'portrait' : 'landscape';
 
   // 1. Video と WebGL Canvas の Cover 表示レイアウト同期（CSSスタイル完全一致）
   const scale = Math.max(sW / vW, sH / vH);
@@ -105,33 +144,23 @@ function syncARRuntimeState() {
   }
 
   // 3. ArToolkitSource の同期
-  if (arSource && arSource.parameters) {
-    arSource.parameters.sourceWidth = vW;
-    arSource.parameters.sourceHeight = vH;
+  if (arSource) {
+    if (arSource.parameters) {
+      arSource.parameters.sourceWidth = vW;
+      arSource.parameters.sourceHeight = vH;
+    }
+    arSource.onResizeElement = syncARRuntimeState;
+    arSource.onResize = syncARRuntimeState;
   }
 
   // 4. ARController の同期（Orientation, dimensions, detection canvas）
   if (arContext && arContext.arController) {
     const controller = arContext.arController;
 
-    if (typeof controller.setOrientation === 'function') {
-      try {
-        controller.setOrientation(streamOrientation);
-      } catch (e) {
-        controller.orientation = streamOrientation;
-      }
-    } else {
-      controller.orientation = streamOrientation;
-    }
-
-    if (controller.options) {
-      controller.options.orientation = streamOrientation;
-    }
-
     controller.videoWidth = vW;
     controller.videoHeight = vH;
 
-    // 検出 Canvas の寸法同期（ビデオ実解像度に一致）
+    // 検出 Canvas の寸法同期
     if (controller.canvas) {
       if (controller.canvas.width !== vW || controller.canvas.height !== vH) {
         controller.canvas.width = vW;
@@ -144,20 +173,12 @@ function syncARRuntimeState() {
   if (scene.camera) {
     scene.camera.aspect = videoAspect;
 
-    if (arContext && typeof arContext.getProjectionMatrix === 'function') {
-      const pMat = arContext.getProjectionMatrix();
-      if (pMat && pMat.elements) {
-        scene.camera.projectionMatrix.copy(pMat);
+    syncArProjectionMatrix(scene.camera, arContext);
 
-        if (scene.camera.projectionMatrixInverse) {
-          scene.camera.projectionMatrixInverse.copy(scene.camera.projectionMatrix).invert();
-        }
-      } else {
-        scene.camera.updateProjectionMatrix();
-      }
-    } else {
-      scene.camera.updateProjectionMatrix();
-    }
+    // A-Frame内部によるProjection Matrix破壊を防ぐため、updateProjectionMatrixを保護
+    scene.camera.updateProjectionMatrix = function() {
+      syncArProjectionMatrix(scene.camera, arContext);
+    };
   }
 
   // 6. カメラズーム（Software Zoom）のCSS transformを反映
