@@ -58,19 +58,33 @@ function getDisplayOrientation() {
 }
 
 /**
- * 実カメラ映像と画面のOrientationをAR.jsのARControllerと同期
+ * 実カメラ映像と画面のOrientationをAR.jsのARControllerおよびArToolkitSourceと完全に同期
  */
 function syncArOrientation(scene, video) {
   if (!scene || !video || !video.videoWidth || !video.videoHeight) return;
 
+  const vW = video.videoWidth;
+  const vH = video.videoHeight;
   const camInputOrientation = getCameraInputOrientation(video);
-  const displayOrientation = getDisplayOrientation();
 
-  // AR.jsのARControllerのorientation設定
-  // ARControllerは入力映像フレームの向き (camInputOrientation) を基準に処理を行う
+  // 1. ArToolkitSource の同期
+  const arSource = getArSource(scene);
+  if (arSource) {
+    if (typeof arSource.onResizeElement === 'function') {
+      try {
+        arSource.onResizeElement();
+      } catch (e) {
+        // ignore
+      }
+    }
+  }
+
+  // 2. AR.js の ARController の同期
   const arContext = getArContext(scene);
   if (arContext && arContext.arController) {
     const controller = arContext.arController;
+
+    // orientation の同期
     if (typeof controller.setOrientation === 'function') {
       try {
         controller.setOrientation(camInputOrientation);
@@ -82,6 +96,32 @@ function syncArOrientation(scene, video) {
     }
     if (controller.options) {
       controller.options.orientation = camInputOrientation;
+    }
+
+    // ARController の内部 videoWidth / videoHeight
+    controller.videoWidth = vW;
+    controller.videoHeight = vH;
+
+    // ArToolkitSource から ARController の検出 canvas へサイズ同期
+    if (arSource && typeof arSource.copyElementSizeTo === 'function' && controller.canvas) {
+      try {
+        arSource.copyElementSizeTo(controller.canvas);
+      } catch (e) {
+        // fallback: 直接寸法同期
+        if (camInputOrientation === 'portrait') {
+          if (controller.canvas.width > controller.canvas.height) {
+            const temp = controller.canvas.width;
+            controller.canvas.width = controller.canvas.height;
+            controller.canvas.height = temp;
+          }
+        } else {
+          if (controller.canvas.width < controller.canvas.height) {
+            const temp = controller.canvas.width;
+            controller.canvas.width = controller.canvas.height;
+            controller.canvas.height = temp;
+          }
+        }
+      }
     }
   }
 }
