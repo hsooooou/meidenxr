@@ -3760,6 +3760,34 @@ function scanAndRegisterCustomMarkers() {
     // 既存設定があれば上書きしない（Hiro / Kanji は完全保護）
     if (!AR_MARKERS_CONFIG[markerId]) {
       const visualEl = findVisualElementInsideMarker(markerEl);
+      let baseEuler = { x: 0, y: 0, z: 0 };
+      if (visualEl) {
+        if (visualEl.object3D && (visualEl.object3D.rotation.x !== 0 || visualEl.object3D.rotation.y !== 0 || visualEl.object3D.rotation.z !== 0)) {
+          baseEuler = {
+            x: visualEl.object3D.rotation.x,
+            y: visualEl.object3D.rotation.y,
+            z: visualEl.object3D.rotation.z
+          };
+        } else {
+          const rotAttr = visualEl.getAttribute('rotation');
+          if (rotAttr) {
+            if (typeof rotAttr === 'object') {
+              baseEuler = {
+                x: THREE.MathUtils.degToRad(Number(rotAttr.x) || 0),
+                y: THREE.MathUtils.degToRad(Number(rotAttr.y) || 0),
+                z: THREE.MathUtils.degToRad(Number(rotAttr.z) || 0)
+              };
+            } else if (typeof rotAttr === 'string') {
+              const parts = rotAttr.trim().split(/\s+/).map(Number);
+              baseEuler = {
+                x: THREE.MathUtils.degToRad(!isNaN(parts[0]) ? parts[0] : 0),
+                y: THREE.MathUtils.degToRad(!isNaN(parts[1]) ? parts[1] : 0),
+                z: THREE.MathUtils.degToRad(!isNaN(parts[2]) ? parts[2] : 0)
+              };
+            }
+          }
+        }
+      }
 
       AR_MARKERS_CONFIG[markerId] = {
         id: markerId,
@@ -3767,6 +3795,7 @@ function scanAndRegisterCustomMarkers() {
         preset: markerEl.getAttribute('preset') || 'custom',
         objectType: visualEl ? visualEl.tagName.toLowerCase().replace('a-', '') : 'custom',
         targetSelector: visualEl && visualEl.id ? `#${visualEl.id}` : null,
+        baseEuler: baseEuler,
         state: {
           scale: 1.0,
           rotationY: 0,
@@ -3791,46 +3820,56 @@ function scanAndRegisterCustomMarkers() {
 }
 
 /**
- * 指定マーカーのスケールのみを反映（Three.js Object3D と A-Frame 属性）
- * rotation や position には一切触れない
+ * 指定マーカーのスケールのみを反映（Three.js Object3D のみで完結）
+ * A-Frame の setAttribute('scale') による DOM/Transform 再同期（rotation巻き込み）を防ぐため
+ * el.object3D.scale のみを更新し、rotation や position には一切触れない
  */
 function applyMarkerScale(markerId) {
   const config = AR_MARKERS_CONFIG[markerId];
   if (!config || !config.state) return;
   const el = getArElementForMarker(markerId);
-  if (!el) return;
+  if (!el || !el.object3D) return;
 
   const s = config.state.scale;
-  el.setAttribute('scale', `${s} ${s} ${s}`);
-  if (el.object3D) {
-    el.object3D.scale.set(s, s, s);
-  }
+  el.object3D.scale.set(s, s, s);
 }
 
 /**
- * 指定マーカーのY軸回転のみを反映（Three.js Object3D と A-Frame 属性）
+ * 指定マーカーの回転のみを反映（Three.js Object3D）
  * scale や position には一切触れない
+ * - Hiro / Kanji: Y軸回転
+ * - Custom (Image, Plane, Model等): 初期Euler角（HTML/A-Frame定義）を基準姿勢とし、
+ *   マーカー法線（Y軸）周りの相対回転をオイラー合成して自然な平面回転を実現
  */
 function applyMarkerRotation(markerId) {
   const config = AR_MARKERS_CONFIG[markerId];
   if (!config || !config.state) return;
   const el = getArElementForMarker(markerId);
-  if (!el) return;
+  if (!el || !el.object3D) return;
 
   const rY = config.state.rotationY;
 
   if (markerId === 'hiro-marker' || markerId === 'kanji-marker') {
     el.setAttribute('rotation', `0 ${rY} 0`);
-    if (el.object3D) {
-      el.object3D.rotation.set(0, THREE.MathUtils.degToRad(rY), 0);
-    }
+    el.object3D.rotation.set(0, THREE.MathUtils.degToRad(rY), 0);
     return;
   }
 
-  // Custom オブジェクトの場合：Three.js の object3D.rotation.y を直接更新
-  if (el.object3D) {
-    el.object3D.rotation.y = THREE.MathUtils.degToRad(rY);
-  }
+  // Custom オブジェクトの場合：初期姿勢（baseEuler）にユーザー回転量 rY を合成
+  const baseEuler = config.baseEuler || { x: 0, y: 0, z: 0 };
+  
+  // 初期オイラー角からクォータニオンを生成し、Y軸周りのユーザー回転クォータニオンを合成
+  const qBase = new THREE.Quaternion().setFromEuler(
+    new THREE.Euler(baseEuler.x, baseEuler.y, baseEuler.z, 'YXZ')
+  );
+  const qUserRot = new THREE.Quaternion().setFromAxisAngle(
+    new THREE.Vector3(0, 1, 0),
+    THREE.MathUtils.degToRad(rY)
+  );
+
+  // マーカー座標系のY軸周り回転を適用
+  qUserRot.multiply(qBase);
+  el.object3D.quaternion.copy(qUserRot);
 }
 
 /**
