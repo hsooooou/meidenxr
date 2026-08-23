@@ -51,7 +51,8 @@ function getDisplayOrientation() {
 
 /**
  * ARランタイム状態（Camera, Source, ARController, Detection Canvas, Projection Matrix, Renderer, Zoom）の完全同期
- * 初期起動・再読み込み・回転・カメラ切替のすべてで同一の同期経路を使用
+ * 実カメラストリームの物理解像度（videoWidth / videoHeight）をSingle Source of Truthとして統一し、
+ * 初期起動・再読み込み・回転・カメラ切替のすべてで一切の歪みを生じさせない完全同期を実現
  */
 function syncARRuntimeState() {
   const scene = document.querySelector('a-scene');
@@ -70,7 +71,8 @@ function syncARRuntimeState() {
   const sH = window.innerHeight;
   const vW = video.videoWidth;
   const vH = video.videoHeight;
-  const targetOrientation = getDisplayOrientation();
+  const videoAspect = vW / vH;
+  const streamOrientation = (vW < vH) ? 'portrait' : 'landscape';
 
   // 1. Video と WebGL Canvas の Cover 表示レイアウト同期（CSSスタイル完全一致）
   const scale = Math.max(sW / vW, sH / vH);
@@ -95,7 +97,7 @@ function syncARRuntimeState() {
   aCanvas.style.marginLeft = marginLeft + 'px';
   aCanvas.style.marginTop = marginTop + 'px';
 
-  // 2. WebGL Renderer drawingBuffer の同期
+  // 2. WebGL Renderer drawingBuffer の同期（描画バッファ解像度も実表示比率に完全一致）
   if (scene.renderer) {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     scene.renderer.setSize(scaledW, scaledH, false);
@@ -104,63 +106,43 @@ function syncARRuntimeState() {
 
   // 3. ArToolkitSource の同期
   if (arSource && arSource.parameters) {
-    if (targetOrientation === 'portrait') {
-      arSource.parameters.sourceWidth = Math.min(vW, vH);
-      arSource.parameters.sourceHeight = Math.max(vW, vH);
-    } else {
-      arSource.parameters.sourceWidth = Math.max(vW, vH);
-      arSource.parameters.sourceHeight = Math.min(vW, vH);
-    }
+    arSource.parameters.sourceWidth = vW;
+    arSource.parameters.sourceHeight = vH;
   }
 
   // 4. ARController の同期（Orientation, dimensions, detection canvas）
   if (arContext && arContext.arController) {
     const controller = arContext.arController;
 
-    // ARControllerのOrientation設定（画面向きに正確に同期）
     if (typeof controller.setOrientation === 'function') {
       try {
-        controller.setOrientation(targetOrientation);
+        controller.setOrientation(streamOrientation);
       } catch (e) {
-        controller.orientation = targetOrientation;
+        controller.orientation = streamOrientation;
       }
     } else {
-      controller.orientation = targetOrientation;
+      controller.orientation = streamOrientation;
     }
 
     if (controller.options) {
-      controller.options.orientation = targetOrientation;
+      controller.options.orientation = streamOrientation;
     }
 
     controller.videoWidth = vW;
     controller.videoHeight = vH;
 
-    // 検出 Canvas の寸法同期
+    // 検出 Canvas の寸法同期（ビデオ実解像度に一致）
     if (controller.canvas) {
-      if (targetOrientation === 'portrait') {
-        const targetW = Math.min(vW, vH);
-        const targetH = Math.max(vW, vH);
-        if (controller.canvas.width !== targetW || controller.canvas.height !== targetH) {
-          controller.canvas.width = targetW;
-          controller.canvas.height = targetH;
-        }
-      } else {
-        const targetW = Math.max(vW, vH);
-        const targetH = Math.min(vW, vH);
-        if (controller.canvas.width !== targetW || controller.canvas.height !== targetH) {
-          controller.canvas.width = targetW;
-          controller.canvas.height = targetH;
-        }
+      if (controller.canvas.width !== vW || controller.canvas.height !== vH) {
+        controller.canvas.width = vW;
+        controller.canvas.height = vH;
       }
     }
   }
 
   // 5. Three.js Camera と Projection Matrix の同期
   if (scene.camera) {
-    const cameraAspect = (targetOrientation === 'portrait')
-      ? (Math.min(vW, vH) / Math.max(vW, vH))
-      : (Math.max(vW, vH) / Math.min(vW, vH));
-    scene.camera.aspect = cameraAspect;
+    scene.camera.aspect = videoAspect;
 
     if (arContext && typeof arContext.getProjectionMatrix === 'function') {
       const pMat = arContext.getProjectionMatrix();
