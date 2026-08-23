@@ -3746,12 +3746,15 @@ function getTargetMarkerId(clientX, clientY, maxDistance = null) {
     const canvasTop = hasValidRect ? rect.top : 0;
     const canvasWidth = hasValidRect ? rect.width : window.innerWidth;
     const canvasHeight = hasValidRect ? rect.height : window.innerHeight;
+    const isUserMode = (currentFacingMode === 'user');
 
     let closestId = null;
     let minDistanceSq = Infinity;
+    let closestEffectiveThreshold = maxDistance ? (maxDistance * maxDistance) : Infinity;
 
     foundMarkers.forEach(markerId => {
       const el = getArElementForMarker(markerId);
+      const markerConfig = AR_MARKERS_CONFIG[markerId];
       if (el && el.object3D) {
         const worldPos = new THREE.Vector3();
         el.object3D.getWorldPosition(worldPos);
@@ -3760,13 +3763,26 @@ function getTargetMarkerId(clientX, clientY, maxDistance = null) {
         // カメラ前方に存在するか判定（z <= 1.0）
         if (projected.z <= 1.0) {
           // NDC座標（-1〜+1）を画面上の実際のピクセル座標（clientX / clientY基準）に高精度変換
-          const sx = canvasLeft + ((projected.x + 1) / 2) * canvasWidth;
+          // 前面カメラ（ミラー反転）時はX座標の左右を反転
+          let sx;
+          if (isUserMode) {
+            sx = canvasLeft + ((-projected.x + 1) / 2) * canvasWidth;
+          } else {
+            sx = canvasLeft + ((projected.x + 1) / 2) * canvasWidth;
+          }
           const sy = canvasTop + ((-projected.y + 1) / 2) * canvasHeight;
 
           const distSq = (clientX - sx) ** 2 + (clientY - sy) ** 2;
+
+          // オブジェクトの現在のscaleを考慮した実効ヒット半径（基本120px、拡大時はオブジェクトサイズに自然追従）
+          const currentScale = (markerConfig && markerConfig.state && markerConfig.state.scale) ? markerConfig.state.scale : 1.0;
+          const effectiveMaxDist = maxDistance !== null ? Math.max(maxDistance, maxDistance * Math.min(currentScale, 2.5) * 0.75) : null;
+          const effectiveThresholdSq = effectiveMaxDist !== null ? (effectiveMaxDist * effectiveMaxDist) : Infinity;
+
           if (distSq < minDistanceSq) {
             minDistanceSq = distSq;
             closestId = markerId;
+            closestEffectiveThreshold = effectiveThresholdSq;
           }
         }
       }
@@ -3774,7 +3790,7 @@ function getTargetMarkerId(clientX, clientY, maxDistance = null) {
 
     if (closestId) {
       if (maxDistance !== null) {
-        if (minDistanceSq <= maxDistance * maxDistance) {
+        if (minDistanceSq <= closestEffectiveThreshold) {
           lastActiveMarkerId = closestId;
           return closestId;
         }
@@ -3931,7 +3947,13 @@ function initArObjectInteraction() {
       const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
 
       // 認識中ARオブジェクトから120px以内であればARオブジェクトのスケール操作、それ以外はカメラズーム操作
-      const targetArId = getTargetMarkerId(midX, midY, AR_PINCH_MAX_DISTANCE);
+      let targetArId = getTargetMarkerId(midX, midY, AR_PINCH_MAX_DISTANCE);
+      // ピンチ開始時に中心点または各指がARオブジェクト上にある場合、または直前の1本指タッチがARオブジェクト上だった場合をサポート
+      if (!targetArId) {
+        targetArId = getTargetMarkerId(e.touches[0].clientX, e.touches[0].clientY, AR_PINCH_MAX_DISTANCE) ||
+                     getTargetMarkerId(e.touches[1].clientX, e.touches[1].clientY, AR_PINCH_MAX_DISTANCE) ||
+                     (activeTouchMarkerId && AR_MARKERS_CONFIG[activeTouchMarkerId] && AR_MARKERS_CONFIG[activeTouchMarkerId].state.isFound ? activeTouchMarkerId : null);
+      }
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       initialPinchDistance = Math.hypot(dx, dy);
