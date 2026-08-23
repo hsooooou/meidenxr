@@ -91,8 +91,12 @@ function syncArProjectionMatrix(camera, arContext) {
 
 /**
  * ARランタイム状態（Camera, Source, ARController, Detection Canvas, Projection Matrix, Renderer, Zoom）の完全同期
- * 実カメラストリームの物理解像度（videoWidth / videoHeight）をSingle Source of Truthとして統一し、
- * 初期起動・再読み込み・回転・カメラ切替のすべてで一切の歪みを生じさせない完全同期を実現
+ * 
+ * 【重要: 4つのOrientationと寸法の明確な分離】
+ * 1. Display Orientation: window.innerWidth / window.innerHeight（画面の向き）
+ * 2. Camera Input Orientation: video.videoWidth / video.videoHeight（物理カメラストリームの向き）
+ * 3. AR.js Source Orientation: AR.js Source が認識する入力寸法
+ * 4. ARController / Detection Canvas Orientation: ARToolKit がマーカー検出に用いる座標系
  */
 function syncARRuntimeState() {
   const scene = document.querySelector('a-scene');
@@ -143,7 +147,7 @@ function syncARRuntimeState() {
     scene.renderer.setPixelRatio(dpr);
   }
 
-  // 3. ArToolkitSource の同期
+  // 3. ArToolkitSource の同期（AR.js公式標準に沿った寸法同期）
   if (arSource) {
     if (arSource.parameters) {
       arSource.parameters.sourceWidth = vW;
@@ -153,9 +157,24 @@ function syncARRuntimeState() {
     arSource.onResize = syncARRuntimeState;
   }
 
-  // 4. ARController の同期（Orientation, dimensions, detection canvas）
+  // 4. ARController の同期（カメラ入力の真の縦横比に基づく標準Orientation同期）
   if (arContext && arContext.arController) {
     const controller = arContext.arController;
+    const sourceOrientation = (vW < vH) ? 'portrait' : 'landscape';
+
+    if (typeof controller.setOrientation === 'function') {
+      try {
+        controller.setOrientation(sourceOrientation);
+      } catch (e) {
+        controller.orientation = sourceOrientation;
+      }
+    } else {
+      controller.orientation = sourceOrientation;
+    }
+
+    if (controller.options) {
+      controller.options.orientation = sourceOrientation;
+    }
 
     controller.videoWidth = vW;
     controller.videoHeight = vH;
