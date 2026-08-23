@@ -66,26 +66,10 @@ function syncArOrientation(scene, video) {
   const vW = video.videoWidth;
   const vH = video.videoHeight;
   const camInputOrientation = getCameraInputOrientation(video);
-  const isPortrait = (camInputOrientation === 'portrait');
 
-  // 1. ArToolkitSource のパラメータと内部状態の同期
+  // 1. ArToolkitSource の同期
   const arSource = getArSource(scene);
   if (arSource) {
-    if (arSource.parameters) {
-      if (isPortrait) {
-        if (arSource.parameters.sourceWidth > arSource.parameters.sourceHeight) {
-          const temp = arSource.parameters.sourceWidth;
-          arSource.parameters.sourceWidth = arSource.parameters.sourceHeight;
-          arSource.parameters.sourceHeight = temp;
-        }
-      } else {
-        if (arSource.parameters.sourceWidth < arSource.parameters.sourceHeight) {
-          const temp = arSource.parameters.sourceWidth;
-          arSource.parameters.sourceWidth = arSource.parameters.sourceHeight;
-          arSource.parameters.sourceHeight = temp;
-        }
-      }
-    }
     if (typeof arSource.onResizeElement === 'function') {
       try {
         arSource.onResizeElement();
@@ -123,23 +107,19 @@ function syncArOrientation(scene, video) {
       try {
         arSource.copyElementSizeTo(controller.canvas);
       } catch (e) {
-        // ignore
-      }
-    }
-
-    // 検出 Canvas の縦横比を入力 Orientation と厳密に一致させる（非等方歪みの根本解消）
-    if (controller.canvas) {
-      if (isPortrait) {
-        if (controller.canvas.width > controller.canvas.height) {
-          const temp = controller.canvas.width;
-          controller.canvas.width = controller.canvas.height;
-          controller.canvas.height = temp;
-        }
-      } else {
-        if (controller.canvas.width < controller.canvas.height) {
-          const temp = controller.canvas.width;
-          controller.canvas.width = controller.canvas.height;
-          controller.canvas.height = temp;
+        // fallback: 直接寸法同期
+        if (camInputOrientation === 'portrait') {
+          if (controller.canvas.width > controller.canvas.height) {
+            const temp = controller.canvas.width;
+            controller.canvas.width = controller.canvas.height;
+            controller.canvas.height = temp;
+          }
+        } else {
+          if (controller.canvas.width < controller.canvas.height) {
+            const temp = controller.canvas.width;
+            controller.canvas.width = controller.canvas.height;
+            controller.canvas.height = temp;
+          }
         }
       }
     }
@@ -319,23 +299,18 @@ function hookSceneResizeHandler() {
   const scene = document.querySelector('a-scene');
   if (!scene) return;
   scene.resize = syncArCanvasAndVideo;
-
-  const triggerSync = () => {
-    scene.resize = syncArCanvasAndVideo;
-    syncArCanvasAndVideo();
-  };
-
   if (scene.hasLoaded) {
-    triggerSync();
+    syncArCanvasAndVideo();
   } else {
-    scene.addEventListener('loaded', triggerSync, { once: true });
-    scene.addEventListener('render-target-loaded', triggerSync, { once: true });
+    scene.addEventListener('loaded', () => {
+      scene.resize = syncArCanvasAndVideo;
+      syncArCanvasAndVideo();
+    }, { once: true });
+    scene.addEventListener('render-target-loaded', () => {
+      scene.resize = syncArCanvasAndVideo;
+      syncArCanvasAndVideo();
+    }, { once: true });
   }
-
-  // AR.js / A-Frame のライフサイクルイベントフック
-  scene.addEventListener('camera-init', triggerSync);
-  scene.addEventListener('arjs-video-loaded', triggerSync);
-  window.addEventListener('arjs-video-loaded', triggerSync);
 }
 
 // DOM要素の取得
@@ -1286,13 +1261,6 @@ function initCameraHandling() {
     applyAdjustmentsToPreview();
     // カメラ準備完了と同時にセンサー監視を開始（パーミッション不要環境では即座に監視開始）
     startOrientationListener(false);
-
-    // AR.js ARController の非同期生成に備えた確定同期パルス
-    requestAnimationFrame(syncArCanvasAndVideo);
-    setTimeout(syncArCanvasAndVideo, 100);
-    setTimeout(syncArCanvasAndVideo, 300);
-    setTimeout(syncArCanvasAndVideo, 600);
-    setTimeout(syncArCanvasAndVideo, 1200);
   };
 
   const checkVideo = () => {
@@ -1308,18 +1276,11 @@ function initCameraHandling() {
       onCameraReady(v);
       return true;
     }
-    if (v && !v._hasMetadataListener) {
-      v._hasMetadataListener = true;
-      const readyHandler = () => {
+    if (v && !v.onloadedmetadata) {
+      v.addEventListener('loadedmetadata', () => {
         v.style.pointerEvents = 'none';
-        if (v.videoWidth > 0) {
-          onCameraReady(v);
-        }
-      };
-      v.addEventListener('loadedmetadata', readyHandler, { once: true });
-      v.addEventListener('loadeddata', readyHandler, { once: true });
-      v.addEventListener('canplay', readyHandler, { once: true });
-      v.addEventListener('playing', readyHandler, { once: true });
+        onCameraReady(v);
+      }, { once: true });
     }
     return false;
   };
@@ -1329,7 +1290,7 @@ function initCameraHandling() {
       if (checkVideo()) {
         clearInterval(checkInterval);
       }
-    }, 150);
+    }, 200);
 
     setTimeout(() => {
       const v = getActiveVideo();
