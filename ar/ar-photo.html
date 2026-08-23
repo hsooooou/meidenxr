@@ -186,7 +186,7 @@
 
     <!-- AR.js A-Frame シーン（Webcamをソースとしてマーカーを認識） -->
     <a-scene id="ar-scene" embedded
-      arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; "
+      arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; sourceWidth: 1920; sourceHeight: 1080;"
       renderer="preserveDrawingBuffer: true; logarithmicDepthBuffer: true; alpha: true; antialias: true;"
       vr-mode-ui="enabled: false">
 
@@ -221,7 +221,7 @@
         </a-image>
       </a-marker>
 
-      <a-entity camera look-controls="enabled: false" wasd-controls="enabled: false"></a-entity>
+      <a-entity camera></a-entity>
     </a-scene>
 
     <!-- リアルタイム・特殊加工用 SVG フィルタ定義（色収差・モザイク） -->

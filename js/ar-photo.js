@@ -50,52 +50,6 @@ function getDisplayOrientation() {
 }
 
 /**
- * Three.js Camera へ幾何学的に真（一切の歪みがない）Projection Matrix を適用
- * ・AR.jsのキャリブレーション値（垂直画角 P11）を尊重
- * ・水平画角（P00）を P11 / videoAspect で厳密計算（Fx = Fy を 100% 保証）
- * ・アスペクト比不一致による横伸び・縦縮みを根絶
- */
-function applyTrueProjectionMatrix(camera, arContext, videoAspect) {
-  if (!camera || !videoAspect) return;
-
-  let pMat = null;
-  if (arContext && typeof arContext.getProjectionMatrix === 'function') {
-    try {
-      pMat = arContext.getProjectionMatrix();
-    } catch (e) {
-      pMat = null;
-    }
-  }
-
-  if (pMat && pMat.elements && pMat.elements.length >= 16) {
-    camera.projectionMatrix.copy(pMat);
-
-    // P11（垂直画角成分、elements[5]）を基準とし、P00（水平画角成分、elements[0]）を正しく同期
-    const p11 = pMat.elements[5] || (1 / Math.tan(THREE.MathUtils.degToRad(camera.fov || 50) * 0.5));
-    camera.projectionMatrix.elements[5] = p11;
-    camera.projectionMatrix.elements[0] = p11 / videoAspect;
-
-    // 光軸中心の直交性維持（不要なオフセンター歪みの補正）
-    camera.projectionMatrix.elements[8] = 0;
-    camera.projectionMatrix.elements[9] = 0;
-  } else {
-    // フォールバック: 標準画角（50度）から無歪みプロジェクション行列を構築
-    const fov = camera.fov || 50;
-    const near = camera.near || 0.1;
-    const far = camera.far || 1000;
-    const top = near * Math.tan(THREE.MathUtils.degToRad(fov * 0.5));
-    const height = 2 * top;
-    const width = videoAspect * height;
-    const left = -0.5 * width;
-    camera.projectionMatrix.makePerspective(left, left + width, top, top - height, near, far);
-  }
-
-  if (camera.projectionMatrixInverse) {
-    camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
-  }
-}
-
-/**
  * ARランタイム状態（Camera, Source, ARController, Detection Canvas, Projection Matrix, Renderer, Zoom）の完全同期
  * 実カメラストリームの物理解像度（videoWidth / videoHeight）をSingle Source of Truthとして統一し、
  * 初期起動・再読み込み・回転・カメラ切替のすべてで一切の歪みを生じさせない完全同期を実現
@@ -151,13 +105,9 @@ function syncARRuntimeState() {
   }
 
   // 3. ArToolkitSource の同期
-  if (arSource) {
-    if (arSource.parameters) {
-      arSource.parameters.sourceWidth = vW;
-      arSource.parameters.sourceHeight = vH;
-    }
-    arSource.onResizeElement = syncARRuntimeState;
-    arSource.onResize = syncARRuntimeState;
+  if (arSource && arSource.parameters) {
+    arSource.parameters.sourceWidth = vW;
+    arSource.parameters.sourceHeight = vH;
   }
 
   // 4. ARController の同期（Orientation, dimensions, detection canvas）
@@ -190,16 +140,24 @@ function syncARRuntimeState() {
     }
   }
 
-  // 5. Three.js Camera と Projection Matrix の数学的無歪み同期
+  // 5. Three.js Camera と Projection Matrix の同期
   if (scene.camera) {
     scene.camera.aspect = videoAspect;
 
-    applyTrueProjectionMatrix(scene.camera, arContext, videoAspect);
+    if (arContext && typeof arContext.getProjectionMatrix === 'function') {
+      const pMat = arContext.getProjectionMatrix();
+      if (pMat && pMat.elements) {
+        scene.camera.projectionMatrix.copy(pMat);
 
-    // A-Frame内部によるProjection Matrix破壊を恒久的に防ぐため、updateProjectionMatrixを保護
-    scene.camera.updateProjectionMatrix = function() {
-      applyTrueProjectionMatrix(scene.camera, arContext, videoAspect);
-    };
+        if (scene.camera.projectionMatrixInverse) {
+          scene.camera.projectionMatrixInverse.copy(scene.camera.projectionMatrix).invert();
+        }
+      } else {
+        scene.camera.updateProjectionMatrix();
+      }
+    } else {
+      scene.camera.updateProjectionMatrix();
+    }
   }
 
   // 6. カメラズーム（Software Zoom）のCSS transformを反映
