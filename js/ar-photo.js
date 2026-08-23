@@ -4160,6 +4160,14 @@ function initArObjectInteraction() {
     }
   });
 
+  // インタラクティブUI（ボタン・メニュー・加工シート・特殊加工シート・文字シート・プレビュー画面等）上での誤操作防止判定
+  function isInteractiveUiElement(target) {
+    if (!target) return false;
+    return !!target.closest(
+      '#capture-controls, #review-controls, .controls-bar, .submenu-panel, .submenu-item, .ratio-opt-btn, #adjustment-sheet, #special-adjustment-sheet, .special-sheet, #typography-sheet, .typography-sheet, .sheet-tab-btn, .custom-range-slider, .sheet-drag-handle-container, .sheet-close-btn, .font-card, .font-cards-scroll, #status-message, button, .icon-btn, .shutter-btn, .photo-preview, .preview-actions'
+    );
+  }
+
   function isReviewing() {
     return reviewControls && !reviewControls.classList.contains('hidden');
   }
@@ -4336,6 +4344,15 @@ function initArObjectInteraction() {
     activeTouchMarkerId = null;
     isPinchingActive = false;
   }, { passive: true });
+}
+
+/**
+ * 画面回転・リサイズ時の適応処理
+ */
+function handleOrientationOrResize() {
+  setAspectRatio(selectedRatio);
+  syncTypographyCanvasSize();
+  syncArCanvasAndVideo();
 }
 
 // メインボタン（リセット / 調整 / 使い方）のイベント管理
