@@ -3760,34 +3760,6 @@ function scanAndRegisterCustomMarkers() {
     // 既存設定があれば上書きしない（Hiro / Kanji は完全保護）
     if (!AR_MARKERS_CONFIG[markerId]) {
       const visualEl = findVisualElementInsideMarker(markerEl);
-      let baseEuler = { x: 0, y: 0, z: 0 };
-      if (visualEl) {
-        if (visualEl.object3D && (visualEl.object3D.rotation.x !== 0 || visualEl.object3D.rotation.y !== 0 || visualEl.object3D.rotation.z !== 0)) {
-          baseEuler = {
-            x: visualEl.object3D.rotation.x,
-            y: visualEl.object3D.rotation.y,
-            z: visualEl.object3D.rotation.z
-          };
-        } else {
-          const rotAttr = visualEl.getAttribute('rotation');
-          if (rotAttr) {
-            if (typeof rotAttr === 'object') {
-              baseEuler = {
-                x: THREE.MathUtils.degToRad(Number(rotAttr.x) || 0),
-                y: THREE.MathUtils.degToRad(Number(rotAttr.y) || 0),
-                z: THREE.MathUtils.degToRad(Number(rotAttr.z) || 0)
-              };
-            } else if (typeof rotAttr === 'string') {
-              const parts = rotAttr.trim().split(/\s+/).map(Number);
-              baseEuler = {
-                x: THREE.MathUtils.degToRad(!isNaN(parts[0]) ? parts[0] : 0),
-                y: THREE.MathUtils.degToRad(!isNaN(parts[1]) ? parts[1] : 0),
-                z: THREE.MathUtils.degToRad(!isNaN(parts[2]) ? parts[2] : 0)
-              };
-            }
-          }
-        }
-      }
 
       AR_MARKERS_CONFIG[markerId] = {
         id: markerId,
@@ -3795,7 +3767,7 @@ function scanAndRegisterCustomMarkers() {
         preset: markerEl.getAttribute('preset') || 'custom',
         objectType: visualEl ? visualEl.tagName.toLowerCase().replace('a-', '') : 'custom',
         targetSelector: visualEl && visualEl.id ? `#${visualEl.id}` : null,
-        baseEuler: baseEuler,
+        initialQuaternion: null, // A-Frame初期化完了後またはドラッグ時に正しく保存
         state: {
           scale: 1.0,
           rotationY: 0,
@@ -3837,9 +3809,10 @@ function applyMarkerScale(markerId) {
 /**
  * 指定マーカーの回転のみを反映（Three.js Object3D）
  * scale や position には一切触れない
- * - Hiro / Kanji: Y軸回転
- * - Custom (Image, Plane, Model等): 初期Euler角（HTML/A-Frame定義）を基準姿勢とし、
- *   マーカー法線（Y軸）周りの相対回転をオイラー合成して自然な平面回転を実現
+ * - Hiro / Kanji: 既存の初期角度（Hiro: 45°, Kanji: 0°）およびY軸回転を維持
+ * - Custom: JavaScript側で初期回転を一切強制設定せず、HTML/A-Frameの生成姿勢を100%そのまま使用。
+ *   rY === 0 の初期状態では rotation/quaternion に一切書き込まない。
+ *   ユーザーがドラッグ操作（rY !== 0）を行った場合のみ、HTML/A-Frame初期姿勢に対するマーカー法線（Y軸）周りの相対回転を適用。
  */
 function applyMarkerRotation(markerId) {
   const config = AR_MARKERS_CONFIG[markerId];
@@ -3855,19 +3828,26 @@ function applyMarkerRotation(markerId) {
     return;
   }
 
-  // Custom オブジェクトの場合：初期姿勢（baseEuler）にユーザー回転量 rY を合成
-  const baseEuler = config.baseEuler || { x: 0, y: 0, z: 0 };
-  
-  // 初期オイラー角からクォータニオンを生成し、Y軸周りのユーザー回転クォータニオンを合成
-  const qBase = new THREE.Quaternion().setFromEuler(
-    new THREE.Euler(baseEuler.x, baseEuler.y, baseEuler.z, 'YXZ')
-  );
+  // Custom オブジェクトの場合：
+  // ユーザーが一度も回転ドラッグしていない初期状態（rY === 0）では、
+  // JavaScriptから rotation/quaternion を一切書き換えない（HTML/A-Frameの初期姿勢を100%そのまま保持）
+  if (rY === 0) {
+    return;
+  }
+
+  // 初回ドラッグ操作時に初期クォータニオンが未保存であれば、現在のA-Frame生成姿勢を初期姿勢として保存
+  if (!config.initialQuaternion) {
+    config.initialQuaternion = el.object3D.quaternion.clone();
+  }
+
+  // 初期姿勢に対してユーザー回転量 rY（Y軸周り）を合成
+  const qBase = config.initialQuaternion.clone();
   const qUserRot = new THREE.Quaternion().setFromAxisAngle(
     new THREE.Vector3(0, 1, 0),
     THREE.MathUtils.degToRad(rY)
   );
 
-  // マーカー座標系のY軸周り回転を適用
+  // マーカー座標系のY軸周り回転を合成して適用
   qUserRot.multiply(qBase);
   el.object3D.quaternion.copy(qUserRot);
 }
@@ -4008,6 +3988,11 @@ function resetAllTransforms() {
         config.state.rotationY = 0;
       } else {
         config.state.rotationY = 0;
+        // Custom オブジェクトは A-Frame 初期化完了時に保存した初期姿勢へ復元
+        const el = getArElementForMarker(markerId);
+        if (el && el.object3D && config.initialQuaternion) {
+          el.object3D.quaternion.copy(config.initialQuaternion);
+        }
       }
     }
   });
@@ -4025,19 +4010,30 @@ function initArObjectInteraction() {
   // シーン内のすべての a-marker（カスタム含む）を走査・登録
   scanAndRegisterCustomMarkers();
 
-  // 初期状態を適用
+  // 初期状態を適用（Hiro/Kanjiのスケール・回転、Customのスケールのみ反映）
   applyAllTransforms();
 
-  // シーンの読み込み完了時にもカスタムマーカーの補完走査を実施
+  // シーンの読み込み完了時にもカスタムマーカーの補完走査とリセット用初期姿勢の記録を実施
   const sceneEl = document.querySelector('a-scene');
   if (sceneEl) {
-    if (sceneEl.hasLoaded) {
+    const onSceneReady = () => {
       scanAndRegisterCustomMarkers();
-    } else {
-      sceneEl.addEventListener('loaded', () => {
-        scanAndRegisterCustomMarkers();
-        applyAllTransforms();
+      // A-Frame初期化完了後の正規の姿勢をリセット用基準値として一度だけ保存
+      Object.keys(AR_MARKERS_CONFIG).forEach(markerId => {
+        if (markerId !== 'hiro-marker' && markerId !== 'kanji-marker') {
+          const config = AR_MARKERS_CONFIG[markerId];
+          const el = getArElementForMarker(markerId);
+          if (config && el && el.object3D && !config.initialQuaternion) {
+            config.initialQuaternion = el.object3D.quaternion.clone();
+          }
+        }
       });
+    };
+
+    if (sceneEl.hasLoaded) {
+      onSceneReady();
+    } else {
+      sceneEl.addEventListener('loaded', onSceneReady);
     }
   }
 
