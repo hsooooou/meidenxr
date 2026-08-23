@@ -272,6 +272,17 @@ input[type="checkbox"].ar-on-off {
   background-color: #231815;
 }
 
+.ar-explanation-btn-in-gr {
+  color: #f9f9f9;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 12px;
+  margin: 10px 5px 0 5px;
+  padding: 5px;
+  text-align: center;
+  background-image: linear-gradient(150deg, #e96af7, #c5f8b8);
+  border-radius: 100px;
+}
+
 /*  */
 /* AR実施スケジュール */
 .ar-schedule-box-1 {
@@ -279,39 +290,45 @@ input[type="checkbox"].ar-on-off {
   background-color: #ffffff;
   border-radius: 20px;
   margin-top: 10px;
-   background-image: linear-gradient(150deg,#e96af7,#c5f8b8);
+  background-image: linear-gradient(150deg, #e96af7, #c5f8b8);
 }
+
 .ar-schedule-box-2 {
   padding: 10px 20px;
   background-color: #ffffff;
   border-radius: 20px;
   margin-top: 10px;
-   background-image: linear-gradient(150deg,#df9b2f,#f8dfde);
+  background-image: linear-gradient(150deg, #df9b2f, #f8dfde);
 }
-.ar-schedule-event-title{
+
+.ar-schedule-event-title {
   font-family: "Noto Sans JP", sans-serif;
   color: #fafafa;
   font-size: 12px;
   font-weight: 600;
 }
-.ar-schedule-event-mounth{
+
+.ar-schedule-event-mounth {
   font-family: "Noto Sans JP", sans-serif;
   color: #fafafa;
   font-size: 16px;
   font-weight: 900;
   line-height: 1.2;
 }
-.ar-schedule-event-day{
+
+.ar-schedule-event-day {
   font-family: "Noto Sans JP", sans-serif;
   color: #fafafa;
   font-size: 32px;
   font-weight: 900;
   line-height: 1.2;
 }
-.ar-schedule-tip-area{
+
+.ar-schedule-tip-area {
   display: flex;
 }
-.ar-schedule-tip{
+
+.ar-schedule-tip {
   background-color: #fafafa;
   padding: 5px 10px;
   margin: 5px 5px 0 0;
@@ -321,8 +338,9 @@ input[type="checkbox"].ar-on-off {
   border-radius: 20px;
   color: #668BC7;
 }
+
 .ar-schedule-tip p {
-  background-image: linear-gradient(150deg,#e68af0,#80a9db);
+  background-image: linear-gradient(150deg, #e68af0, #80a9db);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -375,13 +393,15 @@ input[type="checkbox"].ar-on-off {
 
 
 @media screen and (min-width: 698px) and (max-width: 1024px) {
-  .ar-schedule-box-area{
-  display:flex;
+  .ar-schedule-box-area {
+    display: flex;
   }
+
   .ar-schedule-box-1 {
     min-width: 70%;
-    margin-right:10px;
+    margin-right: 10px;
   }
+
   .ar-schedule-box-2 {
     min-width: 30%;
   }
