@@ -3747,29 +3747,6 @@ function getArElementForMarker(markerId) {
 }
 
 /**
- * 属性値（文字列またはオブジェクト）から {x, y, z} 座標・回転を安全にパース
- */
-function parseVector3Attr(attr, defaultVal = { x: 0, y: 0, z: 0 }) {
-  if (!attr) return { ...defaultVal };
-  if (typeof attr === 'object') {
-    return {
-      x: (attr.x !== undefined) ? Number(attr.x) : defaultVal.x,
-      y: (attr.y !== undefined) ? Number(attr.y) : defaultVal.y,
-      z: (attr.z !== undefined) ? Number(attr.z) : defaultVal.z
-    };
-  }
-  if (typeof attr === 'string') {
-    const parts = attr.trim().split(/\s+/).map(Number);
-    return {
-      x: (!isNaN(parts[0])) ? parts[0] : defaultVal.x,
-      y: (!isNaN(parts[1])) ? parts[1] : defaultVal.y,
-      z: (!isNaN(parts[2])) ? parts[2] : defaultVal.z
-    };
-  }
-  return { ...defaultVal };
-}
-
-/**
  * シーン内のすべての a-marker を走査し、Custom marker があれば既存設定を壊さず自動登録
  */
 function scanAndRegisterCustomMarkers() {
@@ -3783,15 +3760,6 @@ function scanAndRegisterCustomMarkers() {
     // 既存設定があれば上書きしない（Hiro / Kanji は完全保護）
     if (!AR_MARKERS_CONFIG[markerId]) {
       const visualEl = findVisualElementInsideMarker(markerEl);
-      let initPos = { x: 0, y: 0.5, z: 0 };
-      let initRot = { x: 0, y: 0, z: 0 };
-      let initScale = { x: 1, y: 1, z: 1 };
-
-      if (visualEl) {
-        initPos = parseVector3Attr(visualEl.getAttribute('position'), { x: 0, y: 0.5, z: 0 });
-        initRot = parseVector3Attr(visualEl.getAttribute('rotation'), { x: 0, y: 0, z: 0 });
-        initScale = parseVector3Attr(visualEl.getAttribute('scale'), { x: 1, y: 1, z: 1 });
-      }
 
       AR_MARKERS_CONFIG[markerId] = {
         id: markerId,
@@ -3799,9 +3767,6 @@ function scanAndRegisterCustomMarkers() {
         preset: markerEl.getAttribute('preset') || 'custom',
         objectType: visualEl ? visualEl.tagName.toLowerCase().replace('a-', '') : 'custom',
         targetSelector: visualEl && visualEl.id ? `#${visualEl.id}` : null,
-        initialPosition: initPos,
-        initialRotation: initRot,
-        initialScale: initScale,
         state: {
           scale: 1.0,
           rotationY: 0,
@@ -3827,7 +3792,7 @@ function scanAndRegisterCustomMarkers() {
 
 /**
  * 指定マーカーのスケール・回転・位置の反映（A-Frame属性とThree.js Object3Dの双方へ即時適用）
- * Hiro/Kanjiの固定値を尊重しつつ、Customオブジェクトの初期姿勢（rotationX/Z, position）を破壊しない
+ * Hiro/Kanjiの固定値を尊重しつつ、Customオブジェクトの初期姿勢（HTML/A-Frame定義）を破壊しない
  */
 function applyTransformForMarker(markerId) {
   const config = AR_MARKERS_CONFIG[markerId];
@@ -3851,26 +3816,37 @@ function applyTransformForMarker(markerId) {
     return;
   }
 
-  // Custom オブジェクトの場合：元の初期姿勢を基準にユーザー操作（Y軸回転・スケール倍率）を加算
-  const initPos = config.initialPosition || { x: 0, y: 0.5, z: 0 };
-  const initRot = config.initialRotation || { x: 0, y: 0, z: 0 };
-  const initScale = config.initialScale || { x: 1, y: 1, z: 1 };
+  // Custom オブジェクトの場合：HTML/A-Frameの初期設定を正とし、ユーザー操作（Y軸回転・スケール倍率）のみを反映
+  // 1. スケール反映（ユーザー倍率 s）
+  el.setAttribute('scale', `${s} ${s} ${s}`);
+  if (el.object3D) {
+    el.object3D.scale.set(s, s, s);
+  }
 
-  const finalRotX = initRot.x || 0;
-  const finalRotY = (initRot.y || 0) + rY;
-  const finalRotZ = initRot.z || 0;
+  // 2. 回転反映（A-Frame / HTMLに元々指定された rotation 属性を尊重し、Y軸にユーザー操作 rY を加算）
+  const origRotAttr = el.getAttribute('rotation');
+  let baseRotX = 0;
+  let baseRotY = 0;
+  let baseRotZ = 0;
 
-  const finalScaleX = (initScale.x || 1) * s;
-  const finalScaleY = (initScale.y || 1) * s;
-  const finalScaleZ = (initScale.z || 1) * s;
+  if (origRotAttr) {
+    if (typeof origRotAttr === 'object') {
+      baseRotX = Number(origRotAttr.x) || 0;
+      baseRotY = Number(origRotAttr.y) || 0;
+      baseRotZ = Number(origRotAttr.z) || 0;
+    } else if (typeof origRotAttr === 'string') {
+      const parts = origRotAttr.trim().split(/\s+/).map(Number);
+      baseRotX = !isNaN(parts[0]) ? parts[0] : 0;
+      baseRotY = !isNaN(parts[1]) ? parts[1] : 0;
+      baseRotZ = !isNaN(parts[2]) ? parts[2] : 0;
+    }
+  }
 
-  el.setAttribute('position', `${initPos.x} ${initPos.y} ${initPos.z}`);
-  el.setAttribute('scale', `${finalScaleX} ${finalScaleY} ${finalScaleZ}`);
-  el.setAttribute('rotation', `${finalRotX} ${finalRotY} ${finalRotZ}`);
+  const finalRotX = baseRotX;
+  const finalRotY = baseRotY + rY;
+  const finalRotZ = baseRotZ;
 
   if (el.object3D) {
-    el.object3D.position.set(initPos.x, initPos.y, initPos.z);
-    el.object3D.scale.set(finalScaleX, finalScaleY, finalScaleZ);
     el.object3D.rotation.set(
       THREE.MathUtils.degToRad(finalRotX),
       THREE.MathUtils.degToRad(finalRotY),
