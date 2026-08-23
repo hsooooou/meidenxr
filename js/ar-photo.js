@@ -40,52 +40,54 @@ function getArSource(scene) {
 }
 
 /**
- * 実カメラ映像の物理サイズから現在のOrientation（'portrait' | 'landscape'）を判定
+ * 実カメラ映像の物理入力Orientation（'portrait' | 'landscape'）を取得
  */
-function getCameraOrientation(video) {
+function getCameraInputOrientation(video) {
   if (!video || !video.videoWidth || !video.videoHeight) return 'landscape';
   return video.videoWidth < video.videoHeight ? 'portrait' : 'landscape';
 }
 
 /**
- * 実カメラ映像のサイズ・OrientationとAR.jsの内部状態（Source / Controller）を同期
+ * 画面表示 / ViewportのOrientation（'portrait' | 'landscape'）を取得
+ */
+function getDisplayOrientation() {
+  if (window.screen && window.screen.orientation && window.screen.orientation.type) {
+    return window.screen.orientation.type.startsWith('portrait') ? 'portrait' : 'landscape';
+  }
+  return window.innerWidth < window.innerHeight ? 'portrait' : 'landscape';
+}
+
+/**
+ * 実カメラ映像と画面のOrientationをAR.jsのARControllerと同期
  */
 function syncArOrientation(scene, video) {
   if (!scene || !video || !video.videoWidth || !video.videoHeight) return;
 
-  const vW = video.videoWidth;
-  const vH = video.videoHeight;
-  const camOrientation = getCameraOrientation(video);
+  const camInputOrientation = getCameraInputOrientation(video);
+  const displayOrientation = getDisplayOrientation();
 
-  const arSource = getArSource(scene);
-  if (arSource) {
-    if (!arSource.parameters) arSource.parameters = {};
-    arSource.parameters.sourceWidth = vW;
-    arSource.parameters.sourceHeight = vH;
-  }
-
+  // AR.jsのARControllerのorientation設定
+  // ARControllerは入力映像フレームの向き (camInputOrientation) を基準に処理を行う
   const arContext = getArContext(scene);
   if (arContext && arContext.arController) {
     const controller = arContext.arController;
     if (typeof controller.setOrientation === 'function') {
       try {
-        controller.setOrientation(camOrientation);
+        controller.setOrientation(camInputOrientation);
       } catch (e) {
         console.warn('arController.setOrientation failed:', e);
       }
     } else {
-      controller.orientation = camOrientation;
+      controller.orientation = camInputOrientation;
     }
     if (controller.options) {
-      controller.options.orientation = camOrientation;
+      controller.options.orientation = camInputOrientation;
     }
-    if (controller.videoWidth !== vW) controller.videoWidth = vW;
-    if (controller.videoHeight !== vH) controller.videoHeight = vH;
   }
 }
 
 /**
- * AR.jsのProjection Matrixを取得し、Three.js Cameraと同期
+ * AR.jsのProjection MatrixとThree.js Cameraを安全に同期
  */
 function syncArProjection(scene, video) {
   if (!scene || !scene.camera || !video || !video.videoWidth || !video.videoHeight) return;
@@ -94,43 +96,22 @@ function syncArProjection(scene, video) {
   const vH = video.videoHeight;
   const cameraAspect = vW / vH;
 
-  // 1. Three.js camera の aspect を実カメラ解像度に設定
+  // Three.js Camera の aspect をカメラ生比率に設定
   scene.camera.aspect = cameraAspect;
 
-  // 2. AR.js Contextから ARController の正規 Projection Matrix を取得して適用
   const arContext = getArContext(scene);
   if (arContext && typeof arContext.getProjectionMatrix === 'function') {
     const pMat = arContext.getProjectionMatrix();
     if (pMat && pMat.elements) {
       scene.camera.projectionMatrix.copy(pMat);
 
-      // 逆行列も更新
       if (scene.camera.projectionMatrixInverse) {
         scene.camera.projectionMatrixInverse.copy(scene.camera.projectionMatrix).invert();
       }
-
-      // 実機検証用ログ出力
-      const controller = arContext.arController;
-      console.log({
-        videoWidth: video.videoWidth,
-        videoHeight: video.videoHeight,
-        videoAspect: cameraAspect,
-        windowWidth: window.innerWidth,
-        windowHeight: window.innerHeight,
-        windowAspect: window.innerWidth / window.innerHeight,
-        orientation: controller ? controller.orientation : undefined,
-        controllerVideoWidth: controller ? controller.videoWidth : undefined,
-        controllerVideoHeight: controller ? controller.videoHeight : undefined,
-        controllerCanvasWidth: controller && controller.canvas ? controller.canvas.width : undefined,
-        controllerCanvasHeight: controller && controller.canvas ? controller.canvas.height : undefined,
-        canvasWidth: scene.renderer && scene.renderer.domElement ? scene.renderer.domElement.width : undefined,
-        canvasHeight: scene.renderer && scene.renderer.domElement ? scene.renderer.domElement.height : undefined
-      });
       return;
     }
   }
 
-  // フォールバック: 標準Three.js updateProjectionMatrix
   scene.camera.updateProjectionMatrix();
 }
 
@@ -4836,7 +4817,7 @@ retryCameraBtn.addEventListener('click', () => {
 });
 
 /**
- * 画面回転 & リサイズ検知イベント処理
+ * 画面回転 & リサイズ検知イベント処理（デバイスの解像度確定待機と多段階同期）
  */
 function handleOrientationOrResize() {
   syncArCanvasAndVideo();
@@ -4844,15 +4825,26 @@ function handleOrientationOrResize() {
   if (activeSubmenu) {
     updateSubmenuPositionLandscape();
   }
+
+  // 画面回転時、OSやブラウザによるvideo要素のvideoWidth/videoHeight更新タイミングのズレを吸収
+  requestAnimationFrame(() => {
+    syncArCanvasAndVideo();
+  });
 }
 
 // 画面回転 & リサイズ検知イベント
 window.addEventListener('resize', handleOrientationOrResize);
 window.addEventListener('orientationchange', () => {
-  setTimeout(handleOrientationOrResize, 100);
+  handleOrientationOrResize();
+  setTimeout(handleOrientationOrResize, 150);
+  setTimeout(handleOrientationOrResize, 350);
 });
 if (window.screen && window.screen.orientation) {
-  window.screen.orientation.addEventListener('change', handleOrientationOrResize);
+  window.screen.orientation.addEventListener('change', () => {
+    handleOrientationOrResize();
+    setTimeout(handleOrientationOrResize, 150);
+    setTimeout(handleOrientationOrResize, 350);
+  });
 }
 
 // ページ読み込み時に初期比率適用 & カメラ監視開始 & ARオブジェクト操作初期化 & オーディオアンロック設定 & 自動水平検知リスナー開始
