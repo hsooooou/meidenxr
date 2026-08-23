@@ -3674,11 +3674,11 @@ const AR_MARKERS_CONFIG = {
     objectType: 'sphere',
     targetSelector: '#ar-sphere',
     initialPosition: { x: 0, y: 0.5, z: 0 },
-    initialRotation: { x: 0, y: 45, z: 0 },
+    initialRotation: { x: 0, y: 0, z: 0 },
     initialScale: { x: 1, y: 1, z: 1 },
     state: {
       scale: 1.0,
-      rotationY: 45,
+      rotationY: 0,
       isFound: false
     }
   }
@@ -3747,6 +3747,29 @@ function getArElementForMarker(markerId) {
 }
 
 /**
+ * 属性値（文字列またはオブジェクト）から {x, y, z} 座標・回転を安全にパース
+ */
+function parseVector3Attr(attr, defaultVal = { x: 0, y: 0, z: 0 }) {
+  if (!attr) return { ...defaultVal };
+  if (typeof attr === 'object') {
+    return {
+      x: (attr.x !== undefined) ? Number(attr.x) : defaultVal.x,
+      y: (attr.y !== undefined) ? Number(attr.y) : defaultVal.y,
+      z: (attr.z !== undefined) ? Number(attr.z) : defaultVal.z
+    };
+  }
+  if (typeof attr === 'string') {
+    const parts = attr.trim().split(/\s+/).map(Number);
+    return {
+      x: (!isNaN(parts[0])) ? parts[0] : defaultVal.x,
+      y: (!isNaN(parts[1])) ? parts[1] : defaultVal.y,
+      z: (!isNaN(parts[2])) ? parts[2] : defaultVal.z
+    };
+  }
+  return { ...defaultVal };
+}
+
+/**
  * シーン内のすべての a-marker を走査し、Custom marker があれば既存設定を壊さず自動登録
  */
 function scanAndRegisterCustomMarkers() {
@@ -3757,7 +3780,7 @@ function scanAndRegisterCustomMarkers() {
       markerEl.id = markerId;
     }
 
-    // 既存設定があれば上書きしない
+    // 既存設定があれば上書きしない（Hiro / Kanji は完全保護）
     if (!AR_MARKERS_CONFIG[markerId]) {
       const visualEl = findVisualElementInsideMarker(markerEl);
       let initPos = { x: 0, y: 0.5, z: 0 };
@@ -3765,18 +3788,9 @@ function scanAndRegisterCustomMarkers() {
       let initScale = { x: 1, y: 1, z: 1 };
 
       if (visualEl) {
-        const posAttr = visualEl.getAttribute('position');
-        if (posAttr) {
-          if (typeof posAttr === 'object') {
-            initPos = { x: posAttr.x || 0, y: posAttr.y !== undefined ? posAttr.y : 0.5, z: posAttr.z || 0 };
-          }
-        }
-        const rotAttr = visualEl.getAttribute('rotation');
-        if (rotAttr) {
-          if (typeof rotAttr === 'object') {
-            initRot = { x: rotAttr.x || 0, y: rotAttr.y || 0, z: rotAttr.z || 0 };
-          }
-        }
+        initPos = parseVector3Attr(visualEl.getAttribute('position'), { x: 0, y: 0.5, z: 0 });
+        initRot = parseVector3Attr(visualEl.getAttribute('rotation'), { x: 0, y: 0, z: 0 });
+        initScale = parseVector3Attr(visualEl.getAttribute('scale'), { x: 1, y: 1, z: 1 });
       }
 
       AR_MARKERS_CONFIG[markerId] = {
@@ -3790,18 +3804,22 @@ function scanAndRegisterCustomMarkers() {
         initialScale: initScale,
         state: {
           scale: 1.0,
-          rotationY: initRot.y || 0,
+          rotationY: 0,
           isFound: false
         }
       };
 
       // イベントリスナー登録
       markerEl.addEventListener('markerFound', () => {
-        AR_MARKERS_CONFIG[markerId].state.isFound = true;
+        if (AR_MARKERS_CONFIG[markerId] && AR_MARKERS_CONFIG[markerId].state) {
+          AR_MARKERS_CONFIG[markerId].state.isFound = true;
+        }
         lastActiveMarkerId = markerId;
       });
       markerEl.addEventListener('markerLost', () => {
-        AR_MARKERS_CONFIG[markerId].state.isFound = false;
+        if (AR_MARKERS_CONFIG[markerId] && AR_MARKERS_CONFIG[markerId].state) {
+          AR_MARKERS_CONFIG[markerId].state.isFound = false;
+        }
       });
     }
   });
@@ -3820,13 +3838,26 @@ function applyTransformForMarker(markerId) {
   const s = config.state.scale;
   const rY = config.state.rotationY;
 
-  // 初期値の取得
+  // 既存の Hiro / Kanji は Custom 対応前と全く同一の処理を適用
+  if (markerId === 'hiro-marker' || markerId === 'kanji-marker') {
+    el.setAttribute('position', '0 0.5 0');
+    el.setAttribute('scale', `${s} ${s} ${s}`);
+    el.setAttribute('rotation', `0 ${rY} 0`);
+    if (el.object3D) {
+      el.object3D.position.set(0, 0.5, 0);
+      el.object3D.scale.set(s, s, s);
+      el.object3D.rotation.set(0, THREE.MathUtils.degToRad(rY), 0);
+    }
+    return;
+  }
+
+  // Custom オブジェクトの場合：元の初期姿勢を基準にユーザー操作（Y軸回転・スケール倍率）を加算
   const initPos = config.initialPosition || { x: 0, y: 0.5, z: 0 };
   const initRot = config.initialRotation || { x: 0, y: 0, z: 0 };
   const initScale = config.initialScale || { x: 1, y: 1, z: 1 };
 
   const finalRotX = initRot.x || 0;
-  const finalRotY = (initRot.y || 0) + (rY - (initRot.y || 0));
+  const finalRotY = (initRot.y || 0) + rY;
   const finalRotZ = initRot.z || 0;
 
   const finalScaleX = (initScale.x || 1) * s;
@@ -3954,7 +3985,13 @@ function resetAllTransforms() {
     const config = AR_MARKERS_CONFIG[markerId];
     if (config && config.state) {
       config.state.scale = 1.0;
-      config.state.rotationY = (config.initialRotation && config.initialRotation.y !== undefined) ? config.initialRotation.y : 45;
+      if (markerId === 'hiro-marker') {
+        config.state.rotationY = 45;
+      } else if (markerId === 'kanji-marker') {
+        config.state.rotationY = 0;
+      } else {
+        config.state.rotationY = 0;
+      }
     }
   });
   applyAllTransforms();
