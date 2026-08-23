@@ -3791,68 +3791,70 @@ function scanAndRegisterCustomMarkers() {
 }
 
 /**
- * 指定マーカーのスケール・回転・位置の反映（A-Frame属性とThree.js Object3Dの双方へ即時適用）
- * Hiro/Kanjiの固定値を尊重しつつ、Customオブジェクトの初期姿勢（HTML/A-Frame定義）を破壊しない
+ * 指定マーカーのスケールのみを反映（Three.js Object3D と A-Frame 属性）
+ * rotation や position には一切触れない
  */
-function applyTransformForMarker(markerId) {
+function applyMarkerScale(markerId) {
   const config = AR_MARKERS_CONFIG[markerId];
-  if (!config) return;
+  if (!config || !config.state) return;
   const el = getArElementForMarker(markerId);
   if (!el) return;
 
   const s = config.state.scale;
+  el.setAttribute('scale', `${s} ${s} ${s}`);
+  if (el.object3D) {
+    el.object3D.scale.set(s, s, s);
+  }
+}
+
+/**
+ * 指定マーカーのY軸回転のみを反映（Three.js Object3D と A-Frame 属性）
+ * scale や position には一切触れない
+ */
+function applyMarkerRotation(markerId) {
+  const config = AR_MARKERS_CONFIG[markerId];
+  if (!config || !config.state) return;
+  const el = getArElementForMarker(markerId);
+  if (!el) return;
+
   const rY = config.state.rotationY;
 
-  // 既存の Hiro / Kanji は Custom 対応前と全く同一の処理を適用
   if (markerId === 'hiro-marker' || markerId === 'kanji-marker') {
-    el.setAttribute('position', '0 0.5 0');
-    el.setAttribute('scale', `${s} ${s} ${s}`);
     el.setAttribute('rotation', `0 ${rY} 0`);
     if (el.object3D) {
-      el.object3D.position.set(0, 0.5, 0);
-      el.object3D.scale.set(s, s, s);
       el.object3D.rotation.set(0, THREE.MathUtils.degToRad(rY), 0);
     }
     return;
   }
 
-  // Custom オブジェクトの場合：HTML/A-Frameの初期設定を正とし、ユーザー操作（Y軸回転・スケール倍率）のみを反映
-  // 1. スケール反映（ユーザー倍率 s）
-  el.setAttribute('scale', `${s} ${s} ${s}`);
+  // Custom オブジェクトの場合：Three.js の object3D.rotation.y を直接更新
   if (el.object3D) {
-    el.object3D.scale.set(s, s, s);
+    el.object3D.rotation.y = THREE.MathUtils.degToRad(rY);
   }
+}
 
-  // 2. 回転反映（A-Frame / HTMLに元々指定された rotation 属性を尊重し、Y軸にユーザー操作 rY を加算）
-  const origRotAttr = el.getAttribute('rotation');
-  let baseRotX = 0;
-  let baseRotY = 0;
-  let baseRotZ = 0;
+/**
+ * 指定マーカーの位置のみを反映
+ */
+function applyMarkerPosition(markerId) {
+  const el = getArElementForMarker(markerId);
+  if (!el) return;
 
-  if (origRotAttr) {
-    if (typeof origRotAttr === 'object') {
-      baseRotX = Number(origRotAttr.x) || 0;
-      baseRotY = Number(origRotAttr.y) || 0;
-      baseRotZ = Number(origRotAttr.z) || 0;
-    } else if (typeof origRotAttr === 'string') {
-      const parts = origRotAttr.trim().split(/\s+/).map(Number);
-      baseRotX = !isNaN(parts[0]) ? parts[0] : 0;
-      baseRotY = !isNaN(parts[1]) ? parts[1] : 0;
-      baseRotZ = !isNaN(parts[2]) ? parts[2] : 0;
+  if (markerId === 'hiro-marker' || markerId === 'kanji-marker') {
+    el.setAttribute('position', '0 0.5 0');
+    if (el.object3D) {
+      el.object3D.position.set(0, 0.5, 0);
     }
   }
+}
 
-  const finalRotX = baseRotX;
-  const finalRotY = baseRotY + rY;
-  const finalRotZ = baseRotZ;
-
-  if (el.object3D) {
-    el.object3D.rotation.set(
-      THREE.MathUtils.degToRad(finalRotX),
-      THREE.MathUtils.degToRad(finalRotY),
-      THREE.MathUtils.degToRad(finalRotZ)
-    );
-  }
+/**
+ * 初期化時またはリセット時用の一括トランスフォーム反映
+ */
+function applyTransformForMarker(markerId) {
+  applyMarkerPosition(markerId);
+  applyMarkerScale(markerId);
+  applyMarkerRotation(markerId);
 }
 
 /**
@@ -4053,11 +4055,11 @@ function initArObjectInteraction() {
     const targetMarkerId = getTargetMarkerId(e.clientX, e.clientY, AR_PINCH_MAX_DISTANCE);
 
     if (targetMarkerId && AR_MARKERS_CONFIG[targetMarkerId]) {
-      // 120px以内の認識中ARオブジェクトの拡大・縮小
+      // 120px以内の認識中ARオブジェクトの拡大・縮小（Scale のみ変更し Rotation には一切触れない）
       const targetConfig = AR_MARKERS_CONFIG[targetMarkerId];
       const zoomFactor = e.deltaY < 0 ? 1.08 : 0.92;
       targetConfig.state.scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, targetConfig.state.scale * zoomFactor));
-      applyTransformForMarker(targetMarkerId);
+      applyMarkerScale(targetMarkerId);
     } else {
       // カメラズーム（1.0x 〜 3.0x）: 上回転でズームイン、下回転でズームアウト
       const zoomStep = e.deltaY < 0 ? 0.08 : -0.08;
@@ -4084,7 +4086,7 @@ function initArObjectInteraction() {
     const targetConfig = AR_MARKERS_CONFIG[activeDragMarkerId];
     if (targetConfig) {
       targetConfig.state.rotationY = (targetConfig.state.rotationY + deltaX * ROTATION_SENSITIVITY) % 360;
-      applyTransformForMarker(activeDragMarkerId);
+      applyMarkerRotation(activeDragMarkerId);
     }
   });
 
@@ -4100,29 +4102,33 @@ function initArObjectInteraction() {
   let pinchStartCameraZoom = 1.0;
   let pinchMode = null; // 'ar' | 'camera' | null
   let activeTouchMarkerId = null;
+  let isPinchingActive = false; // ピンチジェスチャー中フラグ（終了時に全指が離れるまでドラッグ誤発火を防止）
 
   window.addEventListener('touchstart', (e) => {
     if (isUsageOpen() || isReviewing() || isInteractiveUiElement(e.target)) {
       initialPinchDistance = null;
       pinchMode = null;
       activeTouchMarkerId = null;
+      isPinchingActive = false;
       return;
     }
 
-    if (e.touches.length === 1) {
-      // 1本指回転開始
+    if (e.touches.length === 1 && !isPinchingActive) {
+      // 1本指回転開始（ピンチジェスチャー終了後の残留指でない場合のみ）
       lastTouchX = e.touches[0].clientX;
       activeTouchMarkerId = getTargetMarkerId(e.touches[0].clientX, e.touches[0].clientY);
       initialPinchDistance = null;
       pinchMode = null;
     } else if (e.touches.length >= 2) {
-      // 2本指ピンチ開始: ピンチ中心座標を算出
+      // 2本指ピンチ開始: 直前の1本指ドラッグ状態を即座に破棄・解除
+      isPinchingActive = true;
+
+      // ピンチ中心座標を算出
       const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
       const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
 
       // 認識中ARオブジェクトから120px以内であればARオブジェクトのスケール操作、それ以外はカメラズーム操作
       let targetArId = getTargetMarkerId(midX, midY, AR_PINCH_MAX_DISTANCE);
-      // ピンチ開始時に中心点または各指がARオブジェクト上にある場合、または直前の1本指タッチがARオブジェクト上だった場合をサポート
       if (!targetArId) {
         targetArId = getTargetMarkerId(e.touches[0].clientX, e.touches[0].clientY, AR_PINCH_MAX_DISTANCE) ||
                      getTargetMarkerId(e.touches[1].clientX, e.touches[1].clientY, AR_PINCH_MAX_DISTANCE) ||
@@ -4147,15 +4153,15 @@ function initArObjectInteraction() {
   window.addEventListener('touchmove', (e) => {
     if (isUsageOpen() || isReviewing() || isInteractiveUiElement(e.target)) return;
 
-    if (e.touches.length === 1 && !pinchMode && activeTouchMarkerId) {
-      // 1本指左右ドラッグでARオブジェクト回転
+    if (e.touches.length === 1 && !isPinchingActive && !pinchMode && activeTouchMarkerId) {
+      // 1本指左右ドラッグでARオブジェクト回転（Rotation のみ変更）
       const targetConfig = AR_MARKERS_CONFIG[activeTouchMarkerId];
       if (!targetConfig) return;
       const touchX = e.touches[0].clientX;
       const deltaX = touchX - lastTouchX;
       lastTouchX = touchX;
       targetConfig.state.rotationY = (targetConfig.state.rotationY + deltaX * ROTATION_SENSITIVITY) % 360;
-      applyTransformForMarker(activeTouchMarkerId);
+      applyMarkerRotation(activeTouchMarkerId);
     } else if (e.touches.length >= 2 && initialPinchDistance && initialPinchDistance > 0) {
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
@@ -4163,11 +4169,11 @@ function initArObjectInteraction() {
       const ratio = currentDistance / initialPinchDistance;
 
       if (pinchMode === 'ar' && activeTouchMarkerId) {
-        // ARオブジェクトのピンチ拡大・縮小
+        // ARオブジェクトのピンチ拡大・縮小（Scale のみ変更）
         const targetConfig = AR_MARKERS_CONFIG[activeTouchMarkerId];
         if (targetConfig) {
           targetConfig.state.scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, pinchStartScale * ratio));
-          applyTransformForMarker(activeTouchMarkerId);
+          applyMarkerScale(activeTouchMarkerId);
         }
       } else if (pinchMode === 'camera') {
         // カメラ映像全体のピンチズーム（1.0x 〜 3.0x）
@@ -4178,13 +4184,14 @@ function initArObjectInteraction() {
   }, { passive: true });
 
   window.addEventListener('touchend', (e) => {
-    if (e.touches.length === 1) {
-      // 2本指ピンチ終了後に1本指が残っている場合、回転基準座標を更新
-      lastTouchX = e.touches[0].clientX;
-      activeTouchMarkerId = getTargetMarkerId(e.touches[0].clientX, e.touches[0].clientY);
+    if (e.touches.length === 0) {
+      // 全ての指が離れた時にピンチ完了フラグをリセットし、次のジェスチャーを受け付け
       initialPinchDistance = null;
       pinchMode = null;
-    } else if (e.touches.length === 0) {
+      activeTouchMarkerId = null;
+      isPinchingActive = false;
+    } else if (e.touches.length === 1 && isPinchingActive) {
+      // 2本指ピンチから1本指が離れた瞬間は回転ドラッグへ誤遷移させず、ピンチモード終了のみ行う
       initialPinchDistance = null;
       pinchMode = null;
       activeTouchMarkerId = null;
@@ -4195,6 +4202,7 @@ function initArObjectInteraction() {
     initialPinchDistance = null;
     pinchMode = null;
     activeTouchMarkerId = null;
+    isPinchingActive = false;
   }, { passive: true });
 }
 
