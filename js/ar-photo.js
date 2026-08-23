@@ -1261,11 +1261,6 @@ function initCameraHandling() {
     applyAdjustmentsToPreview();
     // カメラ準備完了と同時にセンサー監視を開始（パーミッション不要環境では即座に監視開始）
     startOrientationListener(false);
-
-    // 初期ロード時のARController生成待機・確定同期
-    requestAnimationFrame(() => {
-      syncArCanvasAndVideo();
-    });
   };
 
   const checkVideo = () => {
