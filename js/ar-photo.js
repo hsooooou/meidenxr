@@ -4,20 +4,6 @@
  */
 
 /**
- * AR.js 3.4.0 (aframe-ar.js) の system-arjs tick() を安全にオーバーライド
- * 毎フレームの _arSession.onResize() による 4:3 強制上書き・Projection Matrix 破壊のみを停止し、
- * ARToolKit マーカー検出・追従を行う _arSession.update() は通常通り継続
- */
-if (typeof AFRAME !== 'undefined' && AFRAME.systems && AFRAME.systems.arjs) {
-  AFRAME.systems.arjs.prototype.tick = function (t, dt) {
-    if (this._arSession) {
-      this._arSession.update();
-      // NOTE: 毎フレームの this._arSession.onResize() は意図的に実行しない
-    }
-  };
-}
-
-/**
  * AR.jsのコンテキストオブジェクトを安全に取得
  */
 function getArContext(scene) {
@@ -361,51 +347,13 @@ function setCameraZoom(newZoom, showHud = true) {
 }
 
 /**
- * AR.js システムインスタンスの tick() を安全にオーバーライド
- * シーンのライフサイクル（初期化・loaded・arjs-video-loaded等）に合わせて確実に適用
- */
-function hookArjsSystemTick() {
-  const scene = document.querySelector('a-scene');
-  if (!scene) return;
-
-  const patchArjsSystemInstance = () => {
-    const arjsSystem = (scene.systems && scene.systems.arjs) || (scene.systems && scene.systems['arjs']);
-    if (arjsSystem && !arjsSystem.__tickPatched) {
-      arjsSystem.__tickPatched = true;
-      arjsSystem.tick = function (t, dt) {
-        if (this._arSession) {
-          // ARToolKit のマーカー検出・姿勢更新（_arSession.update()）は毎フレーム継続実行
-          this._arSession.update();
-          // 毎フレームの _arSession.onResize() は停止（Portrait時の4:3強制上書き・Projection Matrix破壊を防止）
-        }
-      };
-    }
-  };
-
-  patchArjsSystemInstance();
-
-  if (scene.hasLoaded) {
-    patchArjsSystemInstance();
-  } else {
-    scene.addEventListener('loaded', patchArjsSystemInstance);
-    scene.addEventListener('render-target-loaded', patchArjsSystemInstance);
-  }
-
-  scene.addEventListener('camera-init', patchArjsSystemInstance);
-  scene.addEventListener('arjs-video-loaded', patchArjsSystemInstance);
-}
-
-/**
- * A-Frameのデフォルトリサイズ処理（windowサイズでdrawingBufferを歪める処理）をオーバーライドし、ライフサイクル全般を同期
+ * A-FrameシーンおよびAR.jsの初期化ライフサイクルに合わせてAR表示状態を同期
  */
 function hookSceneResizeHandler() {
   const scene = document.querySelector('a-scene');
   if (!scene) return;
 
-  hookArjsSystemTick();
-
   const onSceneEvent = () => {
-    hookArjsSystemTick();
     syncARRuntimeState();
   };
 
@@ -4970,42 +4918,87 @@ retryCameraBtn.addEventListener('click', () => {
 });
 
 /**
- * 画面回転 & リサイズ検知イベント処理（デバイスの解像度確定待機と多段階同期）
+ * 前回のViewport/Orientation状態の記録
  */
-function handleOrientationOrResize() {
+let lastRecordedViewportState = {
+  innerWidth: null,
+  innerHeight: null,
+  visualWidth: null,
+  visualHeight: null,
+  orientationAngle: null,
+  orientationType: null
+};
+
+/**
+ * 実際にViewportまたは端末の向きが変化したかを判定
+ */
+function hasViewportDimensionsOrOrientationChanged() {
+  const curInnerW = window.innerWidth;
+  const curInnerH = window.innerHeight;
+  const curVisualW = window.visualViewport ? window.visualViewport.width : null;
+  const curVisualH = window.visualViewport ? window.visualViewport.height : null;
+  const curAngle = (window.screen && window.screen.orientation && typeof window.screen.orientation.angle === 'number')
+    ? window.screen.orientation.angle
+    : (typeof window.orientation === 'number' ? window.orientation : null);
+  const curType = (window.screen && window.screen.orientation && window.screen.orientation.type)
+    ? window.screen.orientation.type
+    : null;
+
+  if (
+    lastRecordedViewportState.innerWidth === curInnerW &&
+    lastRecordedViewportState.innerHeight === curInnerH &&
+    lastRecordedViewportState.visualWidth === curVisualW &&
+    lastRecordedViewportState.visualHeight === curVisualH &&
+    lastRecordedViewportState.orientationAngle === curAngle &&
+    lastRecordedViewportState.orientationType === curType
+  ) {
+    return false;
+  }
+
+  lastRecordedViewportState = {
+    innerWidth: curInnerW,
+    innerHeight: curInnerH,
+    visualWidth: curVisualW,
+    visualHeight: curVisualH,
+    orientationAngle: curAngle,
+    orientationType: curType
+  };
+  return true;
+}
+
+/**
+ * 画面回転 & リサイズ検知イベント処理
+ * AR.jsのsetBackoff等により定期発生するサイズ不変の擬似resizeイベントでは再同期を実行せず即return
+ */
+function handleOrientationOrResize(force = false) {
+  if (!force && !hasViewportDimensionsOrOrientationChanged()) {
+    return;
+  }
+
   syncArControllerOrientation();
   syncArCanvasAndVideo();
   syncTypographyCanvasSize();
   if (activeSubmenu) {
     updateSubmenuPositionLandscape();
   }
-
-  // 画面回転時、OSやブラウザによるvideo要素のvideoWidth/videoHeight更新タイミングのズレを吸収
-  requestAnimationFrame(() => {
-    syncArControllerOrientation();
-    syncArCanvasAndVideo();
-  });
 }
 
 // 画面回転 & リサイズ検知イベント
-window.addEventListener('resize', handleOrientationOrResize);
+window.addEventListener('resize', () => {
+  handleOrientationOrResize(false);
+});
 window.addEventListener('orientationchange', () => {
-  handleOrientationOrResize();
-  setTimeout(handleOrientationOrResize, 150);
-  setTimeout(handleOrientationOrResize, 350);
+  handleOrientationOrResize(true);
 });
 if (window.screen && window.screen.orientation) {
   window.screen.orientation.addEventListener('change', () => {
-    handleOrientationOrResize();
-    setTimeout(handleOrientationOrResize, 150);
-    setTimeout(handleOrientationOrResize, 350);
+    handleOrientationOrResize(true);
   });
 }
 
 // AR.js video loaded イベント
 window.addEventListener('arjs-video-loaded', () => {
-  syncArControllerOrientation();
-  syncArCanvasAndVideo();
+  handleOrientationOrResize(true);
 });
 
 // Portrait/Landscape 実値比較用 AR 診断ロガー
