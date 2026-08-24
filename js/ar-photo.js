@@ -291,60 +291,6 @@ function setCameraZoom(newZoom, showHud = true) {
 }
 
 /**
- * AR.js 3.4.0 (aframe/src/system-arjs.js) の tick() は毎フレーム
- *   this._arSession.update()   … ARToolKitのmarker detection / pose計算
- *   this._arSession.onResize() … Source.onResize() 経由で copyElementSizeTo() を呼び、
- *                                  Portrait時に arController.canvas 幅を4:3へ強制し、
- *                                  camera.projectionMatrix を上書きコピーする
- * を順に実行する。update()はそのまま必要な処理なので触らず、
- * tick()経由でのonResize()呼び出しだけを、そのフレームに限り無害化する。
- *
- * camera-init / arjs-video-loaded 等、AR.js自身がtickの外側（初期化・カメラ切替時）で
- * 明示的に呼ぶonResizeはこの仕組みの対象外であり、従来通り実行される
- * （このガードは system.tick() 呼び出しの間だけ onResize を差し替え、
- *  tick() の呼び出しが終わり次第、元の onResize に戻すため）。
- * ARController.orientation・marker detection・marker transform・
- * Cube/Sphere/Custom Imageのposition/rotation/scale・camera.aspect・
- * 既存のProjection Matrix同期処理・CSSのCover処理・video解像度には一切触れない。
- */
-function disablePerFrameArjsResize() {
-  const scene = document.querySelector('a-scene');
-  if (!scene || !scene.systems || !scene.systems.arjs) return false;
-
-  const system = scene.systems.arjs;
-
-  // 既にパッチ済みなら何もしない（多重ラップ防止）
-  if (system.__arResizeGuardApplied) return true;
-
-  if (typeof system.tick !== 'function') return false;
-
-  const originalTick = system.tick.bind(system);
-
-  system.tick = function(t, dt) {
-    const session = system._arSession || system.arSession;
-
-    if (session && typeof session.onResize === 'function') {
-      const realOnResize = session.onResize;
-      // このtick呼び出しの間だけ onResize を無害化する
-      session.onResize = function() {};
-      try {
-        originalTick(t, dt);
-      } finally {
-        // tick() が終わり次第、元のonResizeへ復元
-        // （camera-init / arjs-video-loaded 等、tick外からの明示呼び出しに影響させないため）
-        session.onResize = realOnResize;
-      }
-    } else {
-      // _arSession が未取得の場合は従来通り（安全側フォールバック）
-      originalTick(t, dt);
-    }
-  };
-
-  system.__arResizeGuardApplied = true;
-  return true;
-}
-
-/**
  * A-Frameのデフォルトリサイズ処理（windowサイズでdrawingBufferを歪める処理）をオーバーライドし、ライフサイクル全般を同期
  */
 function hookSceneResizeHandler() {
@@ -356,7 +302,6 @@ function hookSceneResizeHandler() {
   const onSceneEvent = () => {
     scene.resize = syncARRuntimeState;
     syncARRuntimeState();
-    disablePerFrameArjsResize();
   };
 
   if (scene.hasLoaded) {
