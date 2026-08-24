@@ -53,6 +53,41 @@ function getArSource(scene) {
   return null;
 }
 
+function getActiveScene() {
+  return document.querySelector('a-scene');
+}
+
+function getActiveArContext() {
+  const scene = getActiveScene();
+  return getArContext(scene);
+}
+
+function getActiveVideo() {
+  const scene = getActiveScene();
+  const arSource = getArSource(scene);
+  if (arSource && arSource.domElement) return arSource.domElement;
+  return document.querySelector('video') || document.getElementById('arjs-video');
+}
+
+function syncArControllerOrientation() {
+  const arContext = getActiveArContext();
+  const video = getActiveVideo();
+
+  if (!arContext || !arContext.arController || !video) return;
+  if (!video.videoWidth || !video.videoHeight) return;
+
+  const orientation =
+    video.videoWidth > video.videoHeight
+      ? 'landscape'
+      : 'portrait';
+
+  arContext.arController.orientation = orientation;
+
+  if (arContext.arController.options) {
+    arContext.arController.options.orientation = orientation;
+  }
+}
+
 /**
  * 画面表示 / ViewportのOrientation（'portrait' | 'landscape'）を取得
  */
@@ -65,39 +100,74 @@ function getDisplayOrientation() {
 
 /**
  * AR.jsのキャリブレーションに基づく純粋なProjection MatrixをThree.js Cameraへ同期
- * 経験則による補正（m[0], m[5]等の恣意的な改変）を排除し、AR.js / ARToolKitの真の投影行列を正確に反映
+ * 
+ * 【数学的補正の原理】
+ * ARToolKitの剛体姿勢推定（modelViewMatrix）はカメラセンサー物理ピクセル（fx, fy, cx, cy）に基づきます。
+ * WebGL Canvas / Viewport は Video の縦横比（vW / vH = videoAspect）と完全一致させて Cover 表示されるため、
+ * Three.js Cameraの射影行列 P は P[0,0] = P[1,1] / videoAspect を満たすことで、
+ * Portrait / Landscape のいずれの端末姿勢・解像度でも縦横比の歪みが数学的にゼロ（1:1 等方描画）になります。
+ * 
+ * ※ marker.object3D.matrix / position / quaternion / scale には一切の補正を行わず、剛体変換を100%維持します。
  */
-function syncArProjectionMatrix(camera, arContext) {
-  if (!camera || !arContext) return;
+function syncArProjectionMatrix(camera, arContext, video) {
+  if (!camera) return;
 
-  if (typeof arContext.getProjectionMatrix === 'function') {
+  const vid = video || getActiveVideo();
+  const vW = (vid && vid.videoWidth) ? vid.videoWidth : 1280;
+  const vH = (vid && vid.videoHeight) ? vid.videoHeight : 720;
+  const videoAspect = vW / vH;
+
+  camera.aspect = videoAspect;
+
+  let baseP11 = null;
+  let baseNear = 0.1;
+  let baseFar = 1000;
+
+  // 1. ARToolKit の内部カメラパラメータから真の垂直画角/焦点距離 (P[1,1]) を取得
+  if (arContext && typeof arContext.getProjectionMatrix === 'function') {
     try {
       const pMat = arContext.getProjectionMatrix();
       if (pMat && pMat.elements && pMat.elements.length >= 16) {
-        camera.projectionMatrix.copy(pMat);
-        if (camera.projectionMatrixInverse) {
-          camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+        const m = pMat.elements;
+        // m[5] は P[1,1] = 2 * fy / vH
+        if (m[5] && !isNaN(m[5]) && m[5] > 0.1) {
+          baseP11 = m[5];
+          // 深度クリッピング面の取得
+          if (m[10] && m[14]) {
+            baseNear = camera.near || 0.1;
+            baseFar = camera.far || 1000;
+          }
         }
-        return;
       }
     } catch (e) {
-      console.warn('Projection matrix sync error:', e);
+      console.warn('Projection matrix extraction from arContext:', e);
     }
   }
 
-  // フォールバック: 標準画角（50度）からパースペクティブ行列を構築
-  const fov = camera.fov || 50;
-  const near = camera.near || 0.1;
-  const far = camera.far || 1000;
-  const aspect = camera.aspect || (window.innerWidth / window.innerHeight);
-  camera.projectionMatrix.makePerspective(
-    -near * Math.tan(THREE.MathUtils.degToRad(fov * 0.5)) * aspect,
-    near * Math.tan(THREE.MathUtils.degToRad(fov * 0.5)) * aspect,
-    near * Math.tan(THREE.MathUtils.degToRad(fov * 0.5)),
-    -near * Math.tan(THREE.MathUtils.degToRad(fov * 0.5)),
-    near,
-    far
+  // 2. ARToolKitから取得できない場合のフォールバック画角（標準50度）
+  if (!baseP11 || isNaN(baseP11)) {
+    const fov = camera.fov || 50;
+    baseP11 = 1.0 / Math.tan(THREE.MathUtils.degToRad(fov * 0.5));
+    baseNear = camera.near || 0.1;
+    baseFar = camera.far || 1000;
+  }
+
+  // 3. WebGL Viewport (videoAspect) と完全に整合する射影行列を生成
+  // P[0,0] = P[1,1] / videoAspect
+  const p00 = baseP11 / videoAspect;
+  const p11 = baseP11;
+  const near = baseNear;
+  const far = baseFar;
+  const p22 = -(far + near) / (far - near);
+  const p23 = -(2 * far * near) / (far - near);
+
+  camera.projectionMatrix.set(
+    p00,  0,    0,    0,
+    0,    p11,  0,    0,
+    0,    0,    p22,  p23,
+    0,    0,   -1,    0
   );
+
   if (camera.projectionMatrixInverse) {
     camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
   }
@@ -120,6 +190,9 @@ function syncARRuntimeState() {
   const arContext = getArContext(scene);
   const video = (arSource && arSource.domElement) || getActiveVideo();
   const aCanvas = (scene && scene.canvas) || document.querySelector('.a-canvas');
+
+  // arContext / video 取得直後に orientation 同期を実行
+  syncArControllerOrientation();
 
   if (!video || !video.videoWidth || !video.videoHeight || !aCanvas) {
     return;
@@ -206,11 +279,11 @@ function syncARRuntimeState() {
   if (scene.camera) {
     scene.camera.aspect = videoAspect;
 
-    syncArProjectionMatrix(scene.camera, arContext);
+    syncArProjectionMatrix(scene.camera, arContext, video);
 
     // A-Frame内部によるProjection Matrix破壊を防ぐため、updateProjectionMatrixを保護
     scene.camera.updateProjectionMatrix = function() {
-      syncArProjectionMatrix(scene.camera, arContext);
+      syncArProjectionMatrix(scene.camera, arContext, video);
     };
   }
 
@@ -4929,6 +5002,7 @@ retryCameraBtn.addEventListener('click', () => {
  * 画面回転 & リサイズ検知イベント処理（デバイスの解像度確定待機と多段階同期）
  */
 function handleOrientationOrResize() {
+  syncArControllerOrientation();
   syncArCanvasAndVideo();
   syncTypographyCanvasSize();
   if (activeSubmenu) {
@@ -4937,6 +5011,7 @@ function handleOrientationOrResize() {
 
   // 画面回転時、OSやブラウザによるvideo要素のvideoWidth/videoHeight更新タイミングのズレを吸収
   requestAnimationFrame(() => {
+    syncArControllerOrientation();
     syncArCanvasAndVideo();
   });
 }
@@ -4955,6 +5030,36 @@ if (window.screen && window.screen.orientation) {
     setTimeout(handleOrientationOrResize, 350);
   });
 }
+
+// AR.js video loaded イベント
+window.addEventListener('arjs-video-loaded', () => {
+  syncArControllerOrientation();
+  syncArCanvasAndVideo();
+});
+
+// Portrait/Landscape 実値比較用 AR 診断ロガー
+window.logARDiagnostics = function() {
+  const arContext = getActiveArContext();
+  const video = getActiveVideo();
+  const canvas = arContext && arContext.arController ? arContext.arController.canvas : null;
+  const aCanvas = document.querySelector('.a-canvas');
+  const info = {
+    orientation: arContext && arContext.arController ? arContext.arController.orientation : 'N/A',
+    optionsOrientation: arContext && arContext.arController && arContext.arController.options ? arContext.arController.options.orientation : 'N/A',
+    videoWidth: video ? video.videoWidth : 'N/A',
+    videoHeight: video ? video.videoHeight : 'N/A',
+    videoAspect: (video && video.videoWidth && video.videoHeight) ? (video.videoWidth / video.videoHeight).toFixed(4) : 'N/A',
+    detectionCanvasWidth: canvas ? canvas.width : 'N/A',
+    detectionCanvasHeight: canvas ? canvas.height : 'N/A',
+    webglCanvasWidth: aCanvas ? aCanvas.width : 'N/A',
+    webglCanvasHeight: aCanvas ? aCanvas.height : 'N/A',
+    windowInnerWidth: window.innerWidth,
+    windowInnerHeight: window.innerHeight,
+    displayOrientation: getDisplayOrientation()
+  };
+  console.log('[AR Diagnostics]', info);
+  return info;
+};
 
 // ページ読み込み時に初期比率適用 & カメラ監視開始 & ARオブジェクト操作初期化 & オーディオアンロック設定 & 自動水平検知リスナー開始
 window.addEventListener('DOMContentLoaded', () => {
