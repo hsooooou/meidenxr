@@ -235,6 +235,11 @@ function syncARRuntimeState() {
   aCanvas.style.marginLeft = marginLeft + 'px';
   aCanvas.style.marginTop = marginTop + 'px';
 
+  // WebGL Renderer の drawingBuffer 解像度を scaledW × scaledH に同期（第3引数 false によりCSSスタイルは維持）
+  if (scene && scene.renderer) {
+    scene.renderer.setSize(scaledW, scaledH, false);
+  }
+
   // 2. ArToolkitSource の同期（AR.js公式標準に沿った寸法同期）
   if (arSource && arSource.parameters) {
     arSource.parameters.sourceWidth = vW;
