@@ -5019,6 +5019,9 @@ window.logARDiagnostics = function() {
     windowInnerWidth: window.innerWidth,
     windowInnerHeight: window.innerHeight,
     displayOrientation: getDisplayOrientation(),
+    projectionMatrix: (arContext && typeof arContext.getProjectionMatrix === 'function') 
+      ? (arContext.getProjectionMatrix() ? Array.from(arContext.getProjectionMatrix().elements).map(v => Number(v.toFixed(4))) : 'N/A')
+      : 'N/A',
 
     // 5. Marker Pose
     markerTrackingState: {
