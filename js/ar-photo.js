@@ -55,7 +55,14 @@ function getActiveVideo() {
   return document.querySelector('video') || document.getElementById('arjs-video');
 }
 
-function syncArControllerOrientation() {
+let lastArControllerOrientation = null;
+
+/**
+ * カメラの実アスペクト比に基づき、ARControllerのorientationを同期
+ * AR.js内部のPortrait処理と表示画角の不一致による歪みを防止
+ * orientationが実際に変化した初回・画面回転時のみ1回書き込みを行い、毎フレーム・毎同期での冗長書き換えを防止
+ */
+function syncArControllerOrientation(force = false) {
   const arContext = getActiveArContext();
   const video = getActiveVideo();
 
@@ -67,10 +74,25 @@ function syncArControllerOrientation() {
       ? 'landscape'
       : 'portrait';
 
-  arContext.arController.orientation = orientation;
+  if (!force && lastArControllerOrientation === orientation) {
+    return;
+  }
 
-  if (arContext.arController.options) {
-    arContext.arController.options.orientation = orientation;
+  lastArControllerOrientation = orientation;
+
+  const controller = arContext.arController;
+  if (typeof controller.setOrientation === 'function') {
+    try {
+      controller.setOrientation(orientation);
+    } catch (e) {
+      controller.orientation = orientation;
+    }
+  } else {
+    controller.orientation = orientation;
+  }
+
+  if (controller.options) {
+    controller.options.orientation = orientation;
   }
 }
 
@@ -219,24 +241,9 @@ function syncARRuntimeState() {
     arSource.parameters.sourceHeight = vH;
   }
 
-  // 3. ARController の同期（カメラ入力の真の縦横比に基づく標準Orientation同期）
+  // 3. ARController の同期（カメラ入力の真の縦横比に基づく標準Orientation同期と寸法同期）
   if (arContext && arContext.arController) {
     const controller = arContext.arController;
-    const sourceOrientation = (vW < vH) ? 'portrait' : 'landscape';
-
-    if (typeof controller.setOrientation === 'function') {
-      try {
-        controller.setOrientation(sourceOrientation);
-      } catch (e) {
-        controller.orientation = sourceOrientation;
-      }
-    } else {
-      controller.orientation = sourceOrientation;
-    }
-
-    if (controller.options) {
-      controller.options.orientation = sourceOrientation;
-    }
 
     controller.videoWidth = vW;
     controller.videoHeight = vH;
