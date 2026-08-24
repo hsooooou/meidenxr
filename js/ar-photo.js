@@ -235,13 +235,9 @@ function syncARRuntimeState() {
   }
 
   // 3. ArToolkitSource の同期（AR.js公式標準に沿った寸法同期）
-  if (arSource) {
-    if (arSource.parameters) {
-      arSource.parameters.sourceWidth = vW;
-      arSource.parameters.sourceHeight = vH;
-    }
-    arSource.onResizeElement = syncARRuntimeState;
-    arSource.onResize = syncARRuntimeState;
+  if (arSource && arSource.parameters) {
+    arSource.parameters.sourceWidth = vW;
+    arSource.parameters.sourceHeight = vH;
   }
 
   // 4. ARController の同期（カメラ入力の真の縦横比に基づく標準Orientation同期）
@@ -4486,15 +4482,6 @@ function initArObjectInteraction() {
     activeTouchMarkerId = null;
     isPinchingActive = false;
   }, { passive: true });
-}
-
-/**
- * 画面回転・リサイズ時の適応処理
- */
-function handleOrientationOrResize() {
-  setAspectRatio(selectedRatio);
-  syncTypographyCanvasSize();
-  syncArCanvasAndVideo();
 }
 
 // メインボタン（リセット / 調整 / 使い方）のイベント管理
