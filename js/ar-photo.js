@@ -107,77 +107,29 @@ function getDisplayOrientation() {
 }
 
 /**
- * AR.jsのキャリブレーションに基づく純粋なProjection MatrixをThree.js Cameraへ同期
- * 
- * 【数学的補正の原理】
- * ARToolKitの剛体姿勢推定（modelViewMatrix）はカメラセンサー物理ピクセル（fx, fy, cx, cy）に基づきます。
- * WebGL Canvas / Viewport は Video の縦横比（vW / vH = videoAspect）と完全一致させて Cover 表示されるため、
- * Three.js Cameraの射影行列 P は P[0,0] = P[1,1] / videoAspect を満たすことで、
- * Portrait / Landscape のいずれの端末姿勢・解像度でも縦横比の歪みが数学的にゼロ（1:1 等方描画）になります。
- * 
- * ※ marker.object3D.matrix / position / quaternion / scale には一切の補正を行わず、剛体変換を100%維持します。
+ * AR.js / ARToolKit Context が持つ本来のProjection MatrixをThree.js Cameraへ同期
  */
-function syncArProjectionMatrix(camera, arContext, video) {
-  if (!camera) return;
+function syncArProjectionMatrix(camera, arContext) {
+  if (!camera || !arContext) return;
 
-  const vid = video || getActiveVideo();
-  const vW = (vid && vid.videoWidth) ? vid.videoWidth : 1280;
-  const vH = (vid && vid.videoHeight) ? vid.videoHeight : 720;
-  const videoAspect = vW / vH;
+  try {
+    const projection = typeof arContext.getProjectionMatrix === 'function'
+      ? arContext.getProjectionMatrix()
+      : null;
 
-  camera.aspect = videoAspect;
+    if (projection) {
+      camera.projectionMatrix.copy(projection);
 
-  let baseP11 = null;
-  let baseNear = 0.1;
-  let baseFar = 1000;
-
-  // 1. ARToolKit の内部カメラパラメータから真の垂直画角/焦点距離 (P[1,1]) を取得
-  if (arContext && typeof arContext.getProjectionMatrix === 'function') {
-    try {
-      const pMat = arContext.getProjectionMatrix();
-      if (pMat && pMat.elements && pMat.elements.length >= 16) {
-        const m = pMat.elements;
-        // m[5] は P[1,1] = 2 * fy / vH
-        if (m[5] && !isNaN(m[5]) && m[5] > 0.1) {
-          baseP11 = m[5];
-          // 深度クリッピング面の取得
-          if (m[10] && m[14]) {
-            baseNear = camera.near || 0.1;
-            baseFar = camera.far || 1000;
-          }
-        }
+      if (camera.projectionMatrixInverse) {
+        camera.projectionMatrixInverse
+          .copy(camera.projectionMatrix)
+          .invert();
       }
-    } catch (e) {
-      console.warn('Projection matrix extraction from arContext:', e);
+
+      camera.__arProjectionSynced = true;
     }
-  }
-
-  // 2. ARToolKitから取得できない場合のフォールバック画角（標準50度）
-  if (!baseP11 || isNaN(baseP11)) {
-    const fov = camera.fov || 50;
-    baseP11 = 1.0 / Math.tan(THREE.MathUtils.degToRad(fov * 0.5));
-    baseNear = camera.near || 0.1;
-    baseFar = camera.far || 1000;
-  }
-
-  // 3. WebGL Viewport (videoAspect) と完全に整合する射影行列を生成
-  // P[0,0] = P[1,1] / videoAspect
-  const p00 = baseP11 / videoAspect;
-  const p11 = baseP11;
-  const near = baseNear;
-  const far = baseFar;
-  const p22 = -(far + near) / (far - near);
-  const p23 = -(2 * far * near) / (far - near);
-
-  camera.projectionMatrix.set(
-    p00,  0,    0,    0,
-    0,    p11,  0,    0,
-    0,    0,    p22,  p23,
-    0,    0,   -1,    0
-  );
-
-  if (camera.projectionMatrixInverse) {
-    camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+  } catch (e) {
+    console.warn('[AR] Projection Matrix sync failed:', e);
   }
 }
 
@@ -210,7 +162,6 @@ function syncARRuntimeState() {
   const sH = window.innerHeight;
   const vW = video.videoWidth;
   const vH = video.videoHeight;
-  const videoAspect = vW / vH;
 
   // 1. Video と WebGL Canvas の Cover 表示レイアウト同期（CSSスタイル完全一致）
   const scale = Math.max(sW / vW, sH / vH);
@@ -240,13 +191,7 @@ function syncARRuntimeState() {
     scene.renderer.setSize(scaledW, scaledH, false);
   }
 
-  // 2. ArToolkitSource の同期（AR.js公式標準に沿った寸法同期）
-  if (arSource && arSource.parameters) {
-    arSource.parameters.sourceWidth = vW;
-    arSource.parameters.sourceHeight = vH;
-  }
-
-  // 3. ARController の同期（カメラ入力の真の縦横比に基づく標準Orientation同期と寸法同期）
+  // 2. ARController の同期（カメラ入力の真の縦横比に基づく標準Orientation同期と寸法同期）
   if (arContext && arContext.arController) {
     const controller = arContext.arController;
 
@@ -262,13 +207,12 @@ function syncARRuntimeState() {
     }
   }
 
-  // 4. Three.js Camera と Projection Matrix の同期
+  // 3. Three.js Camera と Projection Matrix の同期（AR.js標準Projection Matrixを適用）
   if (scene.camera) {
-    scene.camera.aspect = videoAspect;
-    syncArProjectionMatrix(scene.camera, arContext, video);
+    syncArProjectionMatrix(scene.camera, arContext);
   }
 
-  // 5. カメラズーム（Software Zoom）のCSS transformを反映
+  // 4. カメラズーム（Software Zoom）のCSS transformを反映
   applyCameraZoomToPreview();
 }
 
