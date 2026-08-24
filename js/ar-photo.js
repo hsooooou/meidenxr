@@ -227,20 +227,13 @@ function syncARRuntimeState() {
   aCanvas.style.marginLeft = marginLeft + 'px';
   aCanvas.style.marginTop = marginTop + 'px';
 
-  // 2. WebGL Renderer drawingBuffer の同期（描画バッファ解像度も実表示比率に完全一致）
-  if (scene.renderer) {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    scene.renderer.setSize(scaledW, scaledH, false);
-    scene.renderer.setPixelRatio(dpr);
-  }
-
-  // 3. ArToolkitSource の同期（AR.js公式標準に沿った寸法同期）
+  // 2. ArToolkitSource の同期（AR.js公式標準に沿った寸法同期）
   if (arSource && arSource.parameters) {
     arSource.parameters.sourceWidth = vW;
     arSource.parameters.sourceHeight = vH;
   }
 
-  // 4. ARController の同期（カメラ入力の真の縦横比に基づく標準Orientation同期）
+  // 3. ARController の同期（カメラ入力の真の縦横比に基づく標準Orientation同期）
   if (arContext && arContext.arController) {
     const controller = arContext.arController;
     const sourceOrientation = (vW < vH) ? 'portrait' : 'landscape';
@@ -271,19 +264,13 @@ function syncARRuntimeState() {
     }
   }
 
-  // 5. Three.js Camera と Projection Matrix の同期
+  // 4. Three.js Camera と Projection Matrix の同期
   if (scene.camera) {
     scene.camera.aspect = videoAspect;
-
     syncArProjectionMatrix(scene.camera, arContext, video);
-
-    // A-Frame内部によるProjection Matrix破壊を防ぐため、updateProjectionMatrixを保護
-    scene.camera.updateProjectionMatrix = function() {
-      syncArProjectionMatrix(scene.camera, arContext, video);
-    };
   }
 
-  // 6. カメラズーム（Software Zoom）のCSS transformを反映
+  // 5. カメラズーム（Software Zoom）のCSS transformを反映
   applyCameraZoomToPreview();
 }
 
@@ -417,11 +404,8 @@ function hookSceneResizeHandler() {
 
   hookArjsSystemTick();
 
-  scene.resize = syncARRuntimeState;
-
   const onSceneEvent = () => {
     hookArjsSystemTick();
-    scene.resize = syncARRuntimeState;
     syncARRuntimeState();
   };
 
