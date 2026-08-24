@@ -163,7 +163,7 @@ function syncARRuntimeState() {
   const vW = video.videoWidth;
   const vH = video.videoHeight;
 
-  // 1. Video と WebGL Canvas の Cover 表示レイアウト同期（CSSスタイル完全一致）
+  // 1. Video の Cover 表示レイアウト同期
   const scale = Math.max(sW / vW, sH / vH);
   const scaledW = Math.round(vW * scale);
   const scaledH = Math.round(vH * scale);
@@ -178,15 +178,7 @@ function syncARRuntimeState() {
   video.style.marginLeft = marginLeft + 'px';
   video.style.marginTop = marginTop + 'px';
 
-  aCanvas.style.position = 'absolute';
-  aCanvas.style.top = '0px';
-  aCanvas.style.left = '0px';
-  aCanvas.style.width = scaledW + 'px';
-  aCanvas.style.height = scaledH + 'px';
-  aCanvas.style.marginLeft = marginLeft + 'px';
-  aCanvas.style.marginTop = marginTop + 'px';
-
-  // 1. ArToolkitSource による AR.js 標準のリサイズ・Canvas寸法同期
+  // 2. ArToolkitSource による AR.js 標準のリサイズ・Canvas寸法同期（AR.jsの管理するサイズ設定を尊重）
   if (arSource) {
     if (typeof arSource.onResizeElement === 'function') {
       arSource.onResizeElement();
@@ -201,12 +193,12 @@ function syncARRuntimeState() {
     }
   }
 
-  // 2. Three.js Camera と Projection Matrix の同期（AR.js標準Projection Matrixを適用）
+  // 3. Three.js Camera と Projection Matrix の同期（AR.js標準Projection Matrixを適用）
   if (scene.camera) {
     syncArProjectionMatrix(scene.camera, arContext);
   }
 
-  // 3. カメラズーム（Software Zoom）のCSS transformを反映
+  // 4. カメラズーム（Software Zoom）のCSS transformを反映
   applyCameraZoomToPreview();
 }
 
