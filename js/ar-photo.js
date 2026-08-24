@@ -79,11 +79,22 @@ function syncARRuntimeState() {
   if (arSource && typeof arSource.onResizeElement === 'function') {
     try {
       arSource.onResizeElement();
-      if (scene.renderer && scene.renderer.domElement) {
-        arSource.copyElementSizeTo(scene.renderer.domElement);
+      const aCanvas = (scene && scene.canvas) || (scene.renderer && scene.renderer.domElement) || document.querySelector('.a-canvas');
+      if (aCanvas) {
+        arSource.copyElementSizeTo(aCanvas);
       }
       if (arContext && arContext.arController && arContext.arController.canvas) {
         arSource.copyElementSizeTo(arContext.arController.canvas);
+      }
+      // AR.js標準resize完了後に、arContext.getProjectionMatrix() をThree.js Cameraへ1回だけ同期
+      if (arContext && typeof arContext.getProjectionMatrix === 'function' && scene.camera) {
+        const pMat = arContext.getProjectionMatrix();
+        if (pMat && pMat.elements) {
+          scene.camera.projectionMatrix.copy(pMat);
+          if (scene.camera.projectionMatrixInverse) {
+            scene.camera.projectionMatrixInverse.copy(scene.camera.projectionMatrix).invert();
+          }
+        }
       }
     } catch (e) {
       console.warn('[AR.js] Standard resize execution:', e);
