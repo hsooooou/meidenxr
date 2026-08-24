@@ -186,33 +186,27 @@ function syncARRuntimeState() {
   aCanvas.style.marginLeft = marginLeft + 'px';
   aCanvas.style.marginTop = marginTop + 'px';
 
-  // WebGL Renderer の drawingBuffer 解像度を scaledW × scaledH に同期（第3引数 false によりCSSスタイルは維持）
-  if (scene && scene.renderer) {
-    scene.renderer.setSize(scaledW, scaledH, false);
-  }
+  // 1. ArToolkitSource による AR.js 標準のリサイズ・Canvas寸法同期
+  if (arSource) {
+    if (typeof arSource.onResizeElement === 'function') {
+      arSource.onResizeElement();
+    }
 
-  // 2. ARController の同期（カメラ入力の真の縦横比に基づく標準Orientation同期と寸法同期）
-  if (arContext && arContext.arController) {
-    const controller = arContext.arController;
+    if (scene && scene.renderer && typeof arSource.copyElementSizeTo === 'function') {
+      arSource.copyElementSizeTo(scene.renderer.domElement);
+    }
 
-    controller.videoWidth = vW;
-    controller.videoHeight = vH;
-
-    // 検出 Canvas の寸法同期
-    if (controller.canvas) {
-      if (controller.canvas.width !== vW || controller.canvas.height !== vH) {
-        controller.canvas.width = vW;
-        controller.canvas.height = vH;
-      }
+    if (arContext && arContext.arController && typeof arSource.copyElementSizeTo === 'function') {
+      arSource.copyElementSizeTo(arContext.arController.canvas);
     }
   }
 
-  // 3. Three.js Camera と Projection Matrix の同期（AR.js標準Projection Matrixを適用）
+  // 2. Three.js Camera と Projection Matrix の同期（AR.js標準Projection Matrixを適用）
   if (scene.camera) {
     syncArProjectionMatrix(scene.camera, arContext);
   }
 
-  // 4. カメラズーム（Software Zoom）のCSS transformを反映
+  // 3. カメラズーム（Software Zoom）のCSS transformを反映
   applyCameraZoomToPreview();
 }
 
@@ -4957,12 +4951,14 @@ window.addEventListener('arjs-video-loaded', () => {
   handleOrientationOrResize(true);
 });
 
-// Portrait/Landscape 実値比較用 AR 診断ロガー（親マーカーの姿勢Matrixと子要素のRotationを分離記録）
+// Portrait/Landscape 実値比較用 AR 診断ロガー（親マーカーの姿勢Matrixと各層エレメントのRect/解像度を比較記録）
 window.logARDiagnostics = function() {
+  const scene = document.querySelector('a-scene');
+  const arSource = getActiveArSource();
   const arContext = getActiveArContext();
   const video = getActiveVideo();
   const canvas = arContext && arContext.arController ? arContext.arController.canvas : null;
-  const aCanvas = document.querySelector('.a-canvas');
+  const aCanvas = (scene && scene.canvas) || document.querySelector('.a-canvas');
   const hiroMarker = document.getElementById('hiro-marker');
   const arCube = document.getElementById('ar-cube');
 
@@ -4988,19 +4984,51 @@ window.logARDiagnostics = function() {
     }
   }
 
+  const arSourceDom = arSource ? arSource.domElement : null;
+  const rendererDom = (scene && scene.renderer) ? scene.renderer.domElement : aCanvas;
+
   const info = {
     orientation: arContext && arContext.arController ? arContext.arController.orientation : 'N/A',
     optionsOrientation: arContext && arContext.arController && arContext.arController.options ? arContext.arController.options.orientation : 'N/A',
-    videoWidth: video ? video.videoWidth : 'N/A',
-    videoHeight: video ? video.videoHeight : 'N/A',
-    videoAspect: (video && video.videoWidth && video.videoHeight) ? (video.videoWidth / video.videoHeight).toFixed(4) : 'N/A',
-    detectionCanvasWidth: canvas ? canvas.width : 'N/A',
-    detectionCanvasHeight: canvas ? canvas.height : 'N/A',
-    webglCanvasWidth: aCanvas ? aCanvas.width : 'N/A',
-    webglCanvasHeight: aCanvas ? aCanvas.height : 'N/A',
+    
+    // 1. Camera Source
+    videoElement: {
+      videoWidth: video ? video.videoWidth : 'N/A',
+      videoHeight: video ? video.videoHeight : 'N/A',
+      clientWidth: video ? video.clientWidth : 'N/A',
+      clientHeight: video ? video.clientHeight : 'N/A',
+      boundingRect: video ? video.getBoundingClientRect() : 'N/A'
+    },
+    arSourceElement: {
+      videoWidth: arSourceDom ? arSourceDom.videoWidth : 'N/A',
+      videoHeight: arSourceDom ? arSourceDom.videoHeight : 'N/A',
+      boundingRect: arSourceDom ? arSourceDom.getBoundingClientRect() : 'N/A'
+    },
+
+    // 2. ARToolKit Detection Canvas
+    arControllerCanvas: {
+      width: canvas ? canvas.width : 'N/A',
+      height: canvas ? canvas.height : 'N/A',
+      clientWidth: canvas ? canvas.clientWidth : 'N/A',
+      clientHeight: canvas ? canvas.clientHeight : 'N/A',
+      boundingRect: canvas ? canvas.getBoundingClientRect() : 'N/A'
+    },
+
+    // 3. WebGL Renderer
+    webglRenderer: {
+      drawingBufferWidth: rendererDom ? rendererDom.width : 'N/A',
+      drawingBufferHeight: rendererDom ? rendererDom.height : 'N/A',
+      clientWidth: rendererDom ? rendererDom.clientWidth : 'N/A',
+      clientHeight: rendererDom ? rendererDom.clientHeight : 'N/A',
+      boundingRect: rendererDom ? rendererDom.getBoundingClientRect() : 'N/A'
+    },
+
+    // 4. Viewport & Screen
     windowInnerWidth: window.innerWidth,
     windowInnerHeight: window.innerHeight,
     displayOrientation: getDisplayOrientation(),
+
+    // 5. Marker Pose
     markerTrackingState: {
       parentMarkerMatrix: markerMatrixElements,
       parentMarkerEuler: markerEuler,
