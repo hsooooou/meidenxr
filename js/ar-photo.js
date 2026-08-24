@@ -4,6 +4,20 @@
  */
 
 /**
+ * AR.js 3.4.0 (aframe-ar.js) の system-arjs tick() を安全にオーバーライド
+ * 毎フレームの _arSession.onResize() による 4:3 強制上書き・Projection Matrix 破壊のみを停止し、
+ * ARToolKit マーカー検出・追従を行う _arSession.update() は通常通り継続
+ */
+if (typeof AFRAME !== 'undefined' && AFRAME.systems && AFRAME.systems.arjs) {
+  AFRAME.systems.arjs.prototype.tick = function (t, dt) {
+    if (this._arSession) {
+      this._arSession.update();
+      // NOTE: 毎フレームの this._arSession.onResize() は意図的に実行しない
+    }
+  };
+}
+
+/**
  * AR.jsのコンテキストオブジェクトを安全に取得
  */
 function getArContext(scene) {
@@ -291,15 +305,53 @@ function setCameraZoom(newZoom, showHud = true) {
 }
 
 /**
+ * AR.js システムインスタンスの tick() を安全にオーバーライド
+ * シーンのライフサイクル（初期化・loaded・arjs-video-loaded等）に合わせて確実に適用
+ */
+function hookArjsSystemTick() {
+  const scene = document.querySelector('a-scene');
+  if (!scene) return;
+
+  const patchArjsSystemInstance = () => {
+    const arjsSystem = (scene.systems && scene.systems.arjs) || (scene.systems && scene.systems['arjs']);
+    if (arjsSystem && !arjsSystem.__tickPatched) {
+      arjsSystem.__tickPatched = true;
+      arjsSystem.tick = function (t, dt) {
+        if (this._arSession) {
+          // ARToolKit のマーカー検出・姿勢更新（_arSession.update()）は毎フレーム継続実行
+          this._arSession.update();
+          // 毎フレームの _arSession.onResize() は停止（Portrait時の4:3強制上書き・Projection Matrix破壊を防止）
+        }
+      };
+    }
+  };
+
+  patchArjsSystemInstance();
+
+  if (scene.hasLoaded) {
+    patchArjsSystemInstance();
+  } else {
+    scene.addEventListener('loaded', patchArjsSystemInstance);
+    scene.addEventListener('render-target-loaded', patchArjsSystemInstance);
+  }
+
+  scene.addEventListener('camera-init', patchArjsSystemInstance);
+  scene.addEventListener('arjs-video-loaded', patchArjsSystemInstance);
+}
+
+/**
  * A-Frameのデフォルトリサイズ処理（windowサイズでdrawingBufferを歪める処理）をオーバーライドし、ライフサイクル全般を同期
  */
 function hookSceneResizeHandler() {
   const scene = document.querySelector('a-scene');
   if (!scene) return;
 
+  hookArjsSystemTick();
+
   scene.resize = syncARRuntimeState;
 
   const onSceneEvent = () => {
+    hookArjsSystemTick();
     scene.resize = syncARRuntimeState;
     syncARRuntimeState();
   };
