@@ -5001,12 +5001,37 @@ window.addEventListener('arjs-video-loaded', () => {
   handleOrientationOrResize(true);
 });
 
-// Portrait/Landscape 実値比較用 AR 診断ロガー
+// Portrait/Landscape 実値比較用 AR 診断ロガー（親マーカーの姿勢Matrixと子要素のRotationを分離記録）
 window.logARDiagnostics = function() {
   const arContext = getActiveArContext();
   const video = getActiveVideo();
   const canvas = arContext && arContext.arController ? arContext.arController.canvas : null;
   const aCanvas = document.querySelector('.a-canvas');
+  const hiroMarker = document.getElementById('hiro-marker');
+  const arCube = document.getElementById('ar-cube');
+
+  let markerMatrixElements = null;
+  let markerEuler = null;
+  let markerQuaternion = null;
+  let childEuler = null;
+  let childHtmlRotation = null;
+
+  if (hiroMarker && hiroMarker.object3D) {
+    markerMatrixElements = Array.from(hiroMarker.object3D.matrix.elements).map(v => Number(v.toFixed(3)));
+    const rot = hiroMarker.object3D.rotation;
+    markerEuler = { x: Number(rot.x.toFixed(3)), y: Number(rot.y.toFixed(3)), z: Number(rot.z.toFixed(3)) };
+    const q = hiroMarker.object3D.quaternion;
+    markerQuaternion = { x: Number(q.x.toFixed(3)), y: Number(q.y.toFixed(3)), z: Number(q.z.toFixed(3)), w: Number(q.w.toFixed(3)) };
+  }
+
+  if (arCube) {
+    childHtmlRotation = arCube.getAttribute('rotation');
+    if (arCube.object3D) {
+      const cRot = arCube.object3D.rotation;
+      childEuler = { x: Number(cRot.x.toFixed(3)), y: Number(cRot.y.toFixed(3)), z: Number(cRot.z.toFixed(3)) };
+    }
+  }
+
   const info = {
     orientation: arContext && arContext.arController ? arContext.arController.orientation : 'N/A',
     optionsOrientation: arContext && arContext.arController && arContext.arController.options ? arContext.arController.options.orientation : 'N/A',
@@ -5019,7 +5044,14 @@ window.logARDiagnostics = function() {
     webglCanvasHeight: aCanvas ? aCanvas.height : 'N/A',
     windowInnerWidth: window.innerWidth,
     windowInnerHeight: window.innerHeight,
-    displayOrientation: getDisplayOrientation()
+    displayOrientation: getDisplayOrientation(),
+    markerTrackingState: {
+      parentMarkerMatrix: markerMatrixElements,
+      parentMarkerEuler: markerEuler,
+      parentMarkerQuaternion: markerQuaternion,
+      childHtmlRotation: childHtmlRotation,
+      childObject3DEuler: childEuler
+    }
   };
   console.log('[AR Diagnostics]', info);
   return info;
