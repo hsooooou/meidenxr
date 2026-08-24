@@ -4,15 +4,72 @@
  */
 
 /**
+ * ビューポート寸法・向き・ソース要素サイズの実際の変化を検知
+ * 変化がない通常フレームでの onResize() 重複実行を抑制
+ */
+let _lastViewportState = {
+  innerWidth: 0,
+  innerHeight: 0,
+  vvWidth: 0,
+  vvHeight: 0,
+  orientAngle: null,
+  orientType: null,
+  sourceClientWidth: 0,
+  sourceClientHeight: 0,
+  initialized: false
+};
+
+function hasViewportDimensionsOrOrientationChanged(arSource) {
+  const domElem = (arSource && arSource.domElement) ? arSource.domElement : null;
+  const vv = window.visualViewport;
+  const orient = (window.screen && window.screen.orientation) ? window.screen.orientation : null;
+
+  const current = {
+    innerWidth: window.innerWidth || 0,
+    innerHeight: window.innerHeight || 0,
+    vvWidth: vv ? vv.width : 0,
+    vvHeight: vv ? vv.height : 0,
+    orientAngle: orient ? orient.angle : (window.orientation !== undefined ? window.orientation : 0),
+    orientType: orient ? orient.type : '',
+    sourceClientWidth: domElem ? domElem.clientWidth : 0,
+    sourceClientHeight: domElem ? domElem.clientHeight : 0
+  };
+
+  if (!_lastViewportState.initialized) {
+    _lastViewportState = { ...current, initialized: true };
+    return false;
+  }
+
+  const changed =
+    current.innerWidth !== _lastViewportState.innerWidth ||
+    current.innerHeight !== _lastViewportState.innerHeight ||
+    current.vvWidth !== _lastViewportState.vvWidth ||
+    current.vvHeight !== _lastViewportState.vvHeight ||
+    current.orientAngle !== _lastViewportState.orientAngle ||
+    current.orientType !== _lastViewportState.orientType ||
+    current.sourceClientWidth !== _lastViewportState.sourceClientWidth ||
+    current.sourceClientHeight !== _lastViewportState.sourceClientHeight;
+
+  if (changed) {
+    _lastViewportState = { ...current, initialized: true };
+    return true;
+  }
+  return false;
+}
+
+/**
  * AR.js 3.4.0 (aframe-ar.js) の system-arjs tick() を安全にオーバーライド
- * 毎フレームの _arSession.onResize() による 4:3 強制上書き・Projection Matrix 破壊のみを停止し、
- * ARToolKit マーカー検出・追従を行う _arSession.update() は通常通り継続
+ * 毎フレームの _arSession.update()（マーカー検出・追従）は100%維持し、
+ * _arSession.onResize() は実際に寸法・向きの変化が発生したときのみ1回実行
  */
 if (typeof AFRAME !== 'undefined' && AFRAME.systems && AFRAME.systems.arjs) {
   AFRAME.systems.arjs.prototype.tick = function (t, dt) {
     if (this._arSession) {
       this._arSession.update();
-      // NOTE: 毎フレームの this._arSession.onResize() は意図的に実行しない
+      const arSource = this._arSession.arSource || this._arToolkitSource || null;
+      if (hasViewportDimensionsOrOrientationChanged(arSource)) {
+        this._arSession.onResize();
+      }
     }
   };
 }
@@ -393,7 +450,11 @@ function hookArjsSystemTick() {
         if (this._arSession) {
           // ARToolKit のマーカー検出・姿勢更新（_arSession.update()）は毎フレーム継続実行
           this._arSession.update();
-          // 毎フレームの _arSession.onResize() は停止（Portrait時の4:3強制上書き・Projection Matrix破壊を防止）
+          // サイズ・向きが実際に変化した時のみ _arSession.onResize() を1回実行（通常フレームでの毎フレーム再計算・一瞬拡大縮小を防止）
+          const arSource = this._arSession.arSource || this._arToolkitSource || null;
+          if (hasViewportDimensionsOrOrientationChanged(arSource)) {
+            this._arSession.onResize();
+          }
         }
       };
     }
@@ -5002,6 +5063,16 @@ retryCameraBtn.addEventListener('click', () => {
  * 画面回転 & リサイズ検知イベント処理（デバイスの解像度確定待機と多段階同期）
  */
 function handleOrientationOrResize() {
+  const scene = document.querySelector('a-scene');
+  const arjsSystem = scene && scene.systems && (scene.systems.arjs || scene.systems['arjs']);
+  const arSource = getArSource(scene);
+
+  if (hasViewportDimensionsOrOrientationChanged(arSource)) {
+    if (arjsSystem && arjsSystem._arSession && typeof arjsSystem._arSession.onResize === 'function') {
+      arjsSystem._arSession.onResize();
+    }
+  }
+
   syncArControllerOrientation();
   syncArCanvasAndVideo();
   syncTypographyCanvasSize();
